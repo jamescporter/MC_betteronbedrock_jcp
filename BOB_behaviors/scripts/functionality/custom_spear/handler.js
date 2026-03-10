@@ -2,6 +2,13 @@ import { EntityEquippableComponent, EntityInventoryComponent, EntityProjectileCo
 import { CustomTridents, waitTicks } from "./data";
 import { TridentManager } from "./manager";
 import { hasFamilies } from "../entity/manager";
+
+const CUSTOM_TRIDENT_ENTITY_TAG = "better_on_bedrock:custom_trident_entity";
+const PICKUP_COOLDOWN_PROPERTY = "better_on_bedrock:pickup_cooldown_until";
+const DURABILITY_DAMAGE_PROPERTY = "better_on_bedrock:durability_damage";
+const PICKUP_COOLDOWN_TICKS = 20;
+const KNOWN_TRIDENT_PROJECTILE_IDS = new Set(CustomTridents.map((trident) => trident.projectile?.entityID).filter((entityID) => entityID));
+
 world.afterEvents.itemReleaseUse.subscribe((data) => {
     const { source, useDuration } = data;
     if (!data.itemStack)
@@ -52,7 +59,10 @@ world.afterEvents.itemReleaseUse.subscribe((data) => {
     const headLoc = source.getHeadLocation();
     const projectile = source.dimension.spawnEntity(projectileData.entityID, { x: headLoc.x, y: 100, z: headLoc.z });
     projectile.teleport(headLoc);
-    projectile.setDynamicProperty("item", JSON.stringify(TridentManager.getTridentItem(item)));
+    const tridentItemData = TridentManager.getTridentItem(item);
+    projectile.setDynamicProperty("item", JSON.stringify(tridentItemData));
+    projectile.setDynamicProperty(DURABILITY_DAMAGE_PROPERTY, tridentItemData.durabilityDamage ?? 0);
+    projectile.addTag(CUSTOM_TRIDENT_ENTITY_TAG);
     
     if (source.getGameMode() != GameMode.creative)
         mainhand.setItem();
@@ -104,11 +114,11 @@ world.afterEvents.projectileHitEntity.subscribe((data) => {
     if (!projectile || !projectile.isValid())
         return;
 
-    let itemData = projectile.getDynamicProperty("item");
-    if (!itemData)
+    const itemProperty = projectile.getDynamicProperty("item");
+    if (!itemProperty)
         return;
 
-    itemData = JSON.parse(itemData);
+    const itemData = JSON.parse(itemProperty);
 
     const entity = data.getEntityHit()?.entity;
     const entityLoc = entity?.location;
@@ -175,8 +185,9 @@ world.afterEvents.projectileHitEntity.subscribe((data) => {
         if (!TridentManager.reduceDurability(itemData))
             return;
 
-        itemData.durabilityDamage += 1;
-        projectile.setDynamicProperty("item", JSON.stringify(itemData));
+        const durabilityDamage = (projectile.getDynamicProperty(DURABILITY_DAMAGE_PROPERTY) ?? itemData.durabilityDamage ?? 0) + 1;
+        projectile.setDynamicProperty(DURABILITY_DAMAGE_PROPERTY, durabilityDamage);
+        itemData.durabilityDamage = durabilityDamage;
         if (!itemData.enchantments)
             return;
 
@@ -195,46 +206,57 @@ system.runInterval(() => {
             const player = players[i];
             if (!player || !player.isValid())
                 continue;
-    
-            const { x, y, z } = player.location;
-            const tridents = player.dimension.getEntities({ location: { x: x, y: y + 1, z: z }, maxDistance: 2, excludeTypes: ["minecraft:player", "minecraft:item", "minecraft:zombie", "minecraft:skeleton", "minecraft:chicken"] });
+
             const inv = player.getComponent(EntityInventoryComponent.componentId);
             if (!inv.container || inv.container.emptySlotsCount == 0)
                 continue;
-    
+
+
+            const { x, y, z } = player.location;
+            const tridents = player.dimension.getEntities({ location: { x: x, y: y + 1, z: z }, maxDistance: 2, tags: [CUSTOM_TRIDENT_ENTITY_TAG] });
+
             const container = inv.container;
             for (let i = 0; i < tridents.length; i++) {
                 if (!tridents[i] || !tridents[i].isValid())
                     continue;
-    
+
+                const tridentEntity = tridents[i];
+                if (!KNOWN_TRIDENT_PROJECTILE_IDS.has(tridentEntity.typeId))
+                    continue;
+
                 if (container.emptySlotsCount <= 0)
                     continue;
-    
-                const found = CustomTridents.find((f) => f.projectile?.entityID == tridents[i].typeId);
-                if (!found)
+
+                const cooldownUntil = tridentEntity.getDynamicProperty(PICKUP_COOLDOWN_PROPERTY) ?? 0;
+                if (cooldownUntil > system.currentTick)
                     continue;
-    
-                const tridentEntity = tridents[i];
+
                 if (!TridentManager.canPickUp(tridentEntity))
+                    {
+                        tridentEntity.setDynamicProperty(PICKUP_COOLDOWN_PROPERTY, system.currentTick + PICKUP_COOLDOWN_TICKS);
                     continue;
-    
+                }
+
                 const ownerID = tridentEntity.getDynamicProperty("ownerID");
                 if (!ownerID)
                     continue;
-    
+
                 if (ownerID != player.id)
                     continue;
-    
-                const itemData = tridentEntity.getDynamicProperty("item");
-                if (!itemData)
+
+                const itemProperty = tridentEntity.getDynamicProperty("item");
+                if (!itemProperty)
                     continue;
-    
+
+                const itemData = JSON.parse(itemProperty);
+                itemData.durabilityDamage = tridentEntity.getDynamicProperty(DURABILITY_DAMAGE_PROPERTY) ?? itemData.durabilityDamage ?? 0;
+
                 const gameMode = player.getGameMode();
                 if (gameMode != GameMode.creative && gameMode != GameMode.spectator) {
-                    const item = TridentManager.getItem(JSON.parse(itemData));
+                    const item = TridentManager.getItem(itemData);
                     container.addItem(item);
                 }
-    
+
                 player.dimension.playSound("random.pop", tridentEntity.location, { pitch: 1 + Math.random(), volume: 0.5 });
                 tridentEntity.remove();
             }
