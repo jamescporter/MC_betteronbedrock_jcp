@@ -14,6 +14,13 @@
 						"despawn_dummy"
 					]
 				}
+			},
+			"minecraft:entity_spawned": {
+				"queue_command": {
+					"command": [
+						"tag @s add bob:seeker_dummy_active"
+					]
+				}
 			}
 		},
 		"component_groups": {
@@ -37,7 +44,7 @@
 			"minecraft:type_family": {
 				"family": [
 					"player_dummy",
-                    "wawla"
+					"wawla"
 				]
 			},
 			"minecraft:movement": {
