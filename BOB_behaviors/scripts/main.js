@@ -59,6 +59,50 @@ let slowPlayerCursor = 0;
 let globalTick = 0;
 
 const playerStateCache = new Map();
+const proximityCache = new Map();
+let proximityCacheTick = -1;
+
+function normalizeList(values) {
+    if (!values?.length)
+        return "";
+
+    return values.join(",");
+}
+
+function getProximityCacheKey(player, queryOptions) {
+    return [
+        player.id,
+        queryOptions.maxDistance ?? "",
+        queryOptions.closest ?? "",
+        queryOptions.farthest ?? "",
+        queryOptions.type ?? "",
+        normalizeList(queryOptions.tags),
+        normalizeList(queryOptions.excludeTags),
+        normalizeList(queryOptions.families),
+        normalizeList(queryOptions.excludeFamilies)
+    ].join("|");
+}
+
+export function getEntitiesNearPlayerCached(player, queryOptions) {
+    const currentTick = system.currentTick;
+    if (proximityCacheTick !== currentTick) {
+        proximityCache.clear();
+        proximityCacheTick = currentTick;
+    }
+
+    const cacheKey = getProximityCacheKey(player, queryOptions);
+    const cached = proximityCache.get(cacheKey);
+    if (cached)
+        return cached;
+
+    const entities = player.dimension.getEntities({
+        ...queryOptions,
+        location: player.location
+    });
+
+    proximityCache.set(cacheKey, entities);
+    return entities;
+}
 
 /** @param { import("@minecraft/server").Player } player */
 function getEquipmentSignature(player) {

@@ -1,4 +1,5 @@
 import { world, system } from "@minecraft/server";
+import { getEntitiesNearPlayerCached } from "../../main.js";
 
 const INFERIOR_SCAN_RADIUS = 18;
 const INFERIOR_SCAN_EVERY_TICKS = 2;
@@ -47,10 +48,9 @@ system.runInterval(() => {
 
         context.nextScanTick = schedulerTick + INFERIOR_SCAN_EVERY_TICKS;
 
-        const inferior = player.dimension.getEntities({
+        const inferior = getEntitiesNearPlayerCached(player, {
             type: "better_on_bedrock:inferior",
             tags: ["bob:inferior_active"],
-            location: player.location,
             maxDistance: INFERIOR_SCAN_RADIUS,
             closest: 1
         })[0];

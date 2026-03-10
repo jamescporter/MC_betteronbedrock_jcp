@@ -1,4 +1,5 @@
 import { world, system } from "@minecraft/server";
+import { getEntitiesNearPlayerCached } from "../../main.js";
 
 const SEEKER_SCAN_RADIUS = 48;
 const LAUNCHER_SCAN_RADIUS = 8;
@@ -59,10 +60,9 @@ system.runInterval(() => {
         if (shouldCheckLauncher) {
             context.nextLauncherTick = schedulerTick + LAUNCHER_CHECK_EVERY_TICKS;
 
-            const launcher = player.dimension.getEntities({
+            const launcher = getEntitiesNearPlayerCached(player, {
                 type: "better_on_bedrock:seeker_launcher",
                 tags: ["bob:seeker_launcher_active"],
-                location: player.location,
                 maxDistance: LAUNCHER_SCAN_RADIUS,
                 closest: 1
             })[0];
@@ -83,10 +83,9 @@ system.runInterval(() => {
         if (shouldCheckDummy) {
             context.nextDummyTick = schedulerTick + DUMMY_FOLLOW_EVERY_TICKS;
 
-            const dummy = player.dimension.getEntities({
+            const dummy = getEntitiesNearPlayerCached(player, {
                 type: "better_on_bedrock:player_dummy_seeker",
                 tags: ["bob:seeker_dummy_active"],
-                location: player.location,
                 maxDistance: DUMMY_SCAN_RADIUS,
                 closest: 1
             })[0];
@@ -105,10 +104,9 @@ system.runInterval(() => {
         if (shouldCheckTeleport) {
             context.nextTeleportTick = schedulerTick + SEEKER_TELEPORT_EVERY_TICKS;
 
-            const seeker = player.dimension.getEntities({
+            const seeker = getEntitiesNearPlayerCached(player, {
                 type: "better_on_bedrock:seeker",
                 tags: ["bob:seeker_active"],
-                location: player.location,
                 maxDistance: SEEKER_SCAN_RADIUS,
                 closest: 1
             })[0];
