@@ -70,11 +70,12 @@ function shouldProcess(player, state) {
 
 function cachePositionAndDimension(player, state) {
     state.dimensionId = player.dimension.id;
-    state.position = {
-        x: player.location.x,
-        y: player.location.y,
-        z: player.location.z
-    };
+    if (!state.position)
+        state.position = { x: 0, y: 0, z: 0 };
+
+    state.position.x = player.location.x;
+    state.position.y = player.location.y;
+    state.position.z = player.location.z;
     state.forceUpdate = false;
 }
 
@@ -82,7 +83,9 @@ function removeFogIfActive(player, state, force = false) {
     if (!state.fogKey && !force)
         return;
 
-    player.runCommand("fog @s remove bob:end_fog");
+    if (state.fogKey || force)
+        player.runCommand("fog @s remove bob:end_fog");
+
     state.fogKey = "";
 }
 

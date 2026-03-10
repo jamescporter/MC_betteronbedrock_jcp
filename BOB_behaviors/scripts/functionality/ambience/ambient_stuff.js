@@ -104,25 +104,45 @@ function removeTrackedAmbience(player) {
     state.ambienceEntityId = undefined;
 }
 
-function hasValidPlayerOwnerTag(entity) {
+function getEntityTagsCached(entity, tagCache) {
+    const cachedTags = tagCache.get(entity.id);
+    if (cachedTags)
+        return cachedTags;
+
     const tags = entity.getTags();
+    tagCache.set(entity.id, tags);
+    return tags;
+}
+
+function hasValidPlayerOwnerTag(entity, ownerTagValidityByTag, tagCache) {
+    const tags = getEntityTagsCached(entity, tagCache);
     for (let i = 0; i < tags.length; i++) {
         const tag = tags[i];
         if (!ENTITY_ID_TAG_PATTERN.test(tag))
             continue;
 
+        const cachedOwnerValidity = ownerTagValidityByTag.get(tag);
+        if (cachedOwnerValidity === true)
+            return true;
+
+        if (cachedOwnerValidity === false)
+            continue;
+
         try {
             const owner = world.getEntity(tag);
-            if (owner && owner.typeId === "minecraft:player")
+            const isValidPlayerOwner = !!owner && owner.typeId === "minecraft:player";
+            ownerTagValidityByTag.set(tag, isValidPlayerOwner);
+            if (isValidPlayerOwner)
                 return true;
         } catch {
+            ownerTagValidityByTag.set(tag, false);
         }
     }
 
     return false;
 }
 
-function cleanupDuplicateAmbienceEntities(player, keepEntityId) {
+function cleanupDuplicateAmbienceEntities(player, keepEntityId, cycleCache) {
     const ambienceEntities = player.dimension.getEntities({
         type: "better_on_bedrock:ambiententity",
         location: player.location,
@@ -131,12 +151,12 @@ function cleanupDuplicateAmbienceEntities(player, keepEntityId) {
 
     for (let j = 0; j < ambienceEntities.length; j++) {
         const entity = ambienceEntities[j];
-        if (!hasValidPlayerOwnerTag(entity)) {
+        if (!hasValidPlayerOwnerTag(entity, cycleCache.ownerTagValidityByTag, cycleCache.entityTagsById)) {
             entity.remove();
             continue;
         }
 
-        if (!entity.getTags().includes(player.id))
+        if (!getEntityTagsCached(entity, cycleCache.entityTagsById).includes(player.id))
             continue;
 
         if (entity.id === keepEntityId)
@@ -146,7 +166,7 @@ function cleanupDuplicateAmbienceEntities(player, keepEntityId) {
     }
 }
 
-function ensurePlayerAmbienceEntity(player, state) {
+function ensurePlayerAmbienceEntity(player, state, cycleCache) {
     let entity = getEntityById(state.ambienceEntityId);
 
     if (!entity || entity.dimension.id !== player.dimension.id) {
@@ -158,7 +178,7 @@ function ensurePlayerAmbienceEntity(player, state) {
 
         for (let j = 0; j < ambienceEntities.length; j++) {
             const candidate = ambienceEntities[j];
-            if (!candidate.getTags().includes(player.id))
+            if (!getEntityTagsCached(candidate, cycleCache.entityTagsById).includes(player.id))
                 continue;
 
             entity = candidate;
@@ -180,7 +200,7 @@ function ensurePlayerAmbienceEntity(player, state) {
         state.ambienceEntityId = entity.id;
     }
 
-    cleanupDuplicateAmbienceEntities(player, entity.id);
+    cleanupDuplicateAmbienceEntities(player, entity.id, cycleCache);
 
     return entity;
 }
@@ -221,7 +241,10 @@ function getMusicStateAndApply(player, playerAmbienceEntity) {
     return "none";
 }
 
-function applyMusicTransition(player, playerAmbienceEntity, musicState) {
+function applyMusicTransition(player, playerAmbienceEntity, lastMusicState, musicState) {
+    if (lastMusicState === musicState)
+        return;
+
     if (musicState === "underground") {
         if (playerAmbienceEntity)
             playerAmbienceEntity.triggerEvent("despawn");
@@ -232,7 +255,8 @@ function applyMusicTransition(player, playerAmbienceEntity, musicState) {
         if (playerAmbienceEntity)
             playerAmbienceEntity.triggerEvent("despawn");
 
-        player.addTag("night");
+        if (!player.hasTag("night"))
+            player.addTag("night");
         player.playMusic("ambient.night", {
             loop: true,
             fade: 1.2,
@@ -302,11 +326,12 @@ function shouldUpdateForMovement(state, player) {
 
 function updatePlayerTrackingState(state, player, musicState) {
     state.lastDimensionId = player.dimension.id;
-    state.lastPosition = {
-        x: player.location.x,
-        y: player.location.y,
-        z: player.location.z
-    };
+    if (!state.lastPosition)
+        state.lastPosition = { x: 0, y: 0, z: 0 };
+
+    state.lastPosition.x = player.location.x;
+    state.lastPosition.y = player.location.y;
+    state.lastPosition.z = player.location.z;
     state.lastMusicState = musicState;
     state.forceUpdate = false;
 }
@@ -362,7 +387,12 @@ export function ambience(player) {
             return;
         }
         case "minecraft:overworld": {
-            playerAmbienceEntity = ensurePlayerAmbienceEntity(player, state);
+            const cycleCache = {
+                entityTagsById: new Map(),
+                ownerTagValidityByTag: new Map()
+            };
+
+            playerAmbienceEntity = ensurePlayerAmbienceEntity(player, state, cycleCache);
 
             if (playerAmbienceEntity) {
                 const head = player.getHeadLocation();
@@ -377,7 +407,7 @@ export function ambience(player) {
 
             const musicState = getMusicStateAndApply(player, playerAmbienceEntity);
             if (musicState !== state.lastMusicState)
-                applyMusicTransition(player, playerAmbienceEntity, musicState);
+                applyMusicTransition(player, playerAmbienceEntity, state.lastMusicState, musicState);
 
             updatePlayerTrackingState(state, player, musicState);
             return;
