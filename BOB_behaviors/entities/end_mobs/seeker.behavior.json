@@ -9,6 +9,13 @@
 			"is_experimental": false
 		},
 		"events": {
+			"minecraft:entity_spawned": {
+				"queue_command": {
+					"command": [
+						"tag @s add bob:seeker_active"
+					]
+				}
+			},
 			"passive": {
 				"remove": {
 					"component_groups": [

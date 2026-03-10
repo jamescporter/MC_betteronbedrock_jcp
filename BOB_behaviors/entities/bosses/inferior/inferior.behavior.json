@@ -315,6 +315,11 @@
 					"component_groups": [
 						"mode_switcher"
 					]
+				},
+				"queue_command": {
+					"command": [
+						"tag @s add bob:inferior_active"
+					]
 				}
 			},
 			"switch_to_melee": {
@@ -471,7 +476,7 @@
 					]
 				},
 				"queue_command": {
-					"command":[
+					"command": [
 						"particle pog:inferior_aura_radius ~ ~ ~"
 					]
 				},
