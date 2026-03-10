@@ -1,4 +1,4 @@
-import { world, system, BlockTypes, EntityInventoryComponent, ItemStack, TicksPerSecond } from "@minecraft/server";
+import { world, system, BlockTypes, EntityEquippableComponent, EntityInventoryComponent, EquipmentSlot, ItemStack } from "@minecraft/server";
 export const blocks = BlockTypes.getAll().map((block) => block.id);
 
 import { wawla } from "./functionality/wawla.js";
@@ -49,12 +49,59 @@ function vectorLength(vector) {
     return Math.sqrt(x + y + z);
 };
 
-// Main interval
+const FAST_PLAYER_DIVISOR = 2;
+const SLOW_PLAYER_DIVISOR = 2;
+const SLOW_INTERVAL_TICKS = 20;
+const FORCE_SLOW_RESCAN_TICKS = 120;
+
+let fastPlayerCursor = 0;
+let slowPlayerCursor = 0;
+let globalTick = 0;
+
+const playerStateCache = new Map();
+
+/** @param { import("@minecraft/server").Player } player */
+function getEquipmentSignature(player) {
+    const equipment = player.getComponent(EntityEquippableComponent.componentId);
+    if (!equipment)
+        return "none";
+
+    return [
+        equipment.getEquipment(EquipmentSlot.Head)?.typeId ?? "",
+        equipment.getEquipment(EquipmentSlot.Chest)?.typeId ?? "",
+        equipment.getEquipment(EquipmentSlot.Legs)?.typeId ?? "",
+        equipment.getEquipment(EquipmentSlot.Feet)?.typeId ?? "",
+        equipment.getEquipment(EquipmentSlot.Mainhand)?.typeId ?? "",
+        equipment.getEquipment(EquipmentSlot.Offhand)?.typeId ?? ""
+    ].join("|");
+};
+
+function getPlayerSlice(players, cursor, divisor) {
+    if (players.length === 0)
+        return { players: [], cursor: 0 };
+
+    const sliceSize = Math.max(1, Math.ceil(players.length / divisor));
+    const slice = [];
+    for (let i = 0; i < sliceSize; i++) {
+        const index = (cursor + i) % players.length;
+        slice.push(players[index]);
+    };
+
+    return {
+        players: slice,
+        cursor: (cursor + sliceSize) % players.length
+    };
+};
+
+// High cadence checks (combat and movement)
 system.runInterval(() => {
     system.runJob(function *() {
         const players = world.getAllPlayers();
-        for (let i = 0; i < players.length; i++) {
-            const player = players[i];
+        const playerSlice = getPlayerSlice(players, fastPlayerCursor, FAST_PLAYER_DIVISOR);
+        fastPlayerCursor = playerSlice.cursor;
+
+        for (let i = 0; i < playerSlice.players.length; i++) {
+            const player = playerSlice.players[i];
             if (!player?.isValid())
                 continue;
 
@@ -77,26 +124,37 @@ system.runInterval(() => {
                 container.addItem(new ItemStack("better_on_bedrock:lost_journal"));
             };
 
-            yield ghostNecklace(player);
             yield voidTotem(player);
             yield voidBoots(player);
 
-            
-            // Boss attacks
-            
-            //yield poggy(player);
+            if (player.hasTag("bob:disable_combat_checks"))
+                continue;
+
+            // Boss attacks (high cadence only)
             yield seeker(player);
             yield sootEye(player);
+
+            if (player.hasTag("toolTip"))
+                yield wawla(player);
         };
     }());
 }, 2);
 
-let tick = 0;
+// Low cadence checks (inventory and ambient)
 system.runInterval(() => {
     system.runJob(function* () {
         const players = world.getAllPlayers();
-        for (let i = 0; i < players.length; i++) {
-            const player = players[i];
+        const activeIds = new Set(players.map((player) => player.id));
+        for (const playerId of playerStateCache.keys()) {
+            if (!activeIds.has(playerId))
+                playerStateCache.delete(playerId);
+        };
+
+        const playerSlice = getPlayerSlice(players, slowPlayerCursor, SLOW_PLAYER_DIVISOR);
+        slowPlayerCursor = playerSlice.cursor;
+
+        for (let i = 0; i < playerSlice.players.length; i++) {
+            const player = playerSlice.players[i];
             if (!player?.isValid())
                 continue;
 
@@ -106,24 +164,42 @@ system.runInterval(() => {
             else if (player.getDynamicProperty("tiersCompleted") == void 0) {
                 player.setDynamicProperty("tiersCompleted", 0);
             };
-            
-            if (player.hasTag("toolTip"))
-                yield wawla(player);
 
-            if (tick == TicksPerSecond) {
-                yield ambience(player);
-                yield inventoryLoop(player);
+            const state = playerStateCache.get(player.id) ?? {
+                equipmentSignature: "",
+                lastSlowScanTick: -FORCE_SLOW_RESCAN_TICKS,
+                hasFixedGhostNecklace: false
             };
+
+            const equipmentSignature = getEquipmentSignature(player);
+            const hasRelevantTags = player.hasTag("pog:ambientSounds");
+            const shouldForceRescan = (globalTick - state.lastSlowScanTick) >= FORCE_SLOW_RESCAN_TICKS;
+            const isEquipmentUnchanged = state.equipmentSignature === equipmentSignature;
+
+            if (!shouldForceRescan && isEquipmentUnchanged && !hasRelevantTags && !state.hasFixedGhostNecklace)
+                continue;
+
+            if (player.hasTag("pog:ambientSounds"))
+                yield ambience(player);
+
+            state.hasFixedGhostNecklace = ghostNecklace(player);
+
+            if (!player.hasTag("bob:skip_inventory_scan"))
+                yield inventoryLoop(player);
+
+            state.equipmentSignature = equipmentSignature;
+            state.lastSlowScanTick = globalTick;
+            playerStateCache.set(player.id, state);
         };
     }());
-    
-    if (tick == TicksPerSecond) {
-        tick = 0;
-    }
-    else tick++;
-});
+
+    globalTick += SLOW_INTERVAL_TICKS;
+}, SLOW_INTERVAL_TICKS);
 
 function inventoryLoop(player) {
+    if (!player.hasTag('joined3'))
+        return;
+
     const inventory = player.getComponent("inventory").container;
     for (let slot = 0; slot < inventory.size; slot++) {
         const itemStack = inventory.getItem(slot);

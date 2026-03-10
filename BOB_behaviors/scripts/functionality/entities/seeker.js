@@ -5,7 +5,10 @@ import { getClosestEntityFromViewDirection } from "../util";
 export function seeker(player) {
     if (!player?.isValid())
         return;
-    
+
+    if (player.dimension.id !== "minecraft:the_end")
+        return;
+
     const entity = player.dimension.getEntities({
         type: "better_on_bedrock:seeker",
         location: player.location,

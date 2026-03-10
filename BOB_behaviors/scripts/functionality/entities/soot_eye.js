@@ -5,7 +5,10 @@ import { getClosestEntityFromViewDirection } from "../util";
 export function sootEye(player) {
     if (!player?.isValid())
         return;
-    
+
+    if (player.dimension.id !== "minecraft:the_end")
+        return;
+
     const eye = player.dimension.getEntities({
         type: "better_on_bedrock:soot_eye",
         location: player.location,
@@ -20,15 +23,9 @@ export function sootEye(player) {
         };
     };
 
-    const eyeBeam = player.dimension.getEntities({
-        type: "better_on_bedrock:soot_eye",
-        location: player.location,
-        closest: 1
-    })[0];
-
-    if (eyeBeam !== undefined) {
-        const entityFromView = getClosestEntityFromViewDirection(eyeBeam, 32);
-        const variant = eyeBeam.getComponent(EntityVariantComponent.componentId)?.value;
+    if (eye !== undefined) {
+        const entityFromView = getClosestEntityFromViewDirection(eye, 32);
+        const variant = eye.getComponent(EntityVariantComponent.componentId)?.value;
         if (entityFromView?.id === player.id && variant == 1) {
             entityFromView.applyDamage(5);
             entityFromView.setOnFire(2);
