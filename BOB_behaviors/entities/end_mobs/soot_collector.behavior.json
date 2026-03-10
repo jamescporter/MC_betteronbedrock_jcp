@@ -19,15 +19,24 @@
 			"add_rider_and_heal": {
 				"queue_command": {
 					"command": [
-						"execute as @e[type=better_on_bedrock:soot_collector] run summon better_on_bedrock:soot_eye ~ ~5 ~",
-						"ride @e[type=better_on_bedrock:shield] start_riding @e[type=better_on_bedrock:soot_collector] teleport_rider"
+						"summon better_on_bedrock:soot_eye ~ ~5 ~",
+						"ride @e[type=better_on_bedrock:shield,c=1,r=8] start_riding @s teleport_rider"
 					]
 				}
 			},
 			"summon_eye_beam": {
 				"queue_command": {
 					"command": [
-						"execute as @e[type=better_on_bedrock:soot_collector] run summon better_on_bedrock:soot_eye_beam ~ ~5 ~"
+						"summon better_on_bedrock:soot_eye_beam ~ ~5 ~"
+					]
+				}
+			},
+			"cleanup_helpers": {
+				"queue_command": {
+					"command": [
+						"event entity @e[type=better_on_bedrock:soot_eye,r=64] despawn",
+						"event entity @e[type=better_on_bedrock:soot_eye_beam,r=64] despawn",
+						"event entity @e[type=better_on_bedrock:soot_yeet,r=64] despawn"
 					]
 				}
 			},
@@ -264,7 +273,7 @@
 					"value": 0
 				},
 				"minecraft:timer": {
-					"time": 0.1,
+					"time": 0.6,
 					"looping": true,
 					"time_down_event": {
 						"event": "again1",
@@ -283,7 +292,7 @@
 			},
 			"timer": {
 				"minecraft:timer": {
-					"time": 0.3,
+					"time": 1.2,
 					"looping": true,
 					"time_down_event": {
 						"event": "random_attack",
@@ -349,7 +358,7 @@
 					"must_see": true
 				},
 				"minecraft:timer": {
-					"time": 0.5,
+					"time": 1,
 					"looping": true,
 					"time_down_event": {
 						"event": "timer",
@@ -388,6 +397,10 @@
 			"keep_player_and_throw_blocks": {}
 		},
 		"components": {
+			"minecraft:on_death": {
+				"target": "self",
+				"event": "cleanup_helpers"
+			},
 			"minecraft:behavior.nearest_attackable_target": {
 				"priority": 2,
 				"entity_types": [

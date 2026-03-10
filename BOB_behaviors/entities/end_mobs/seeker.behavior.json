@@ -151,9 +151,15 @@
 				}
 			},
 			"entity_event": {
+				"trigger": {
+					"target": "self",
+					"event": "cleanup_helpers"
+				}
+			},
+			"cleanup_helpers": {
 				"queue_command": {
 					"command": [
-						"event entity @e[r=5] despawn"
+						"kill @e[type=better_on_bedrock:projectile,r=8,c=16]"
 					]
 				}
 			}
@@ -178,7 +184,7 @@
 					"must_see": true
 				},
 				"minecraft:timer": {
-					"time": 1,
+					"time": 1.8,
 					"looping": false,
 					"time_down_event": {
 						"event": "random",
@@ -334,7 +340,7 @@
 					"must_see": true
 				},
 				"minecraft:timer": {
-					"time": 0.3,
+					"time": 0.8,
 					"looping": false,
 					"time_down_event": {
 						"event": "timer",
