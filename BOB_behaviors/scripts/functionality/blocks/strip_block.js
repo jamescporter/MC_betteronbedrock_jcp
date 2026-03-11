@@ -58,16 +58,16 @@ world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
                 block.setPermutation(strippedPermutation);
                 player.playSound("fall.wood");
 
-                const currentDamage = durability?.damage;
+                if (durability) {
+                    const newDamage = durability.damage + 1;
 
-                if (durability && currentDamage < durability.maxDurability) {
-                    durability.damage++;
-                    equipment.setEquipment(EquipmentSlot.Mainhand, item);
-                }
-
-                if (durability && currentDamage >= durability.maxDurability) {
-                    player.playSound("random.break");
-                    equipment.setEquipment(EquipmentSlot.Mainhand, new ItemStack("minecraft:air", 1));
+                    if (newDamage >= durability.maxDurability) {
+                        player.playSound("random.break");
+                        equipment.setEquipment("Mainhand", new ItemStack("minecraft:air", 1));
+                    } else {
+                        durability.damage = newDamage;
+                        equipment.setEquipment("Mainhand", item);
+                    }
                 }
             });
         }
