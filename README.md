@@ -3,12 +3,10 @@
 This repository contains a **modified version** of the original **Better on Bedrock** add-on for Minecraft Bedrock Edition, based on **version 1.2.0**.
 
 ## Original project
-*Copyright © 2024-present Poggy MIT License.*
+**Copyright © 2024-present Poggy MIT License.**
 - Official site: https://poggy.org/
 - CurseForge page: https://www.curseforge.com/minecraft-bedrock/addons/better-on-bedrock
-
-### Modder
-This modified version is maintained by **James C. Porter**.
+- Modder: maintained/modified by *James C. Porter*.
 
 ### Repository structure
 - `BOB_behaviors/` — Behavior Pack
