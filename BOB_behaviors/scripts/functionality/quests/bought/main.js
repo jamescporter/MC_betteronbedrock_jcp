@@ -175,10 +175,24 @@ system.runInterval(() => {
 }, 20);
 
 world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
-	if (itemStack.typeId !== "better_on_bedrock:bought_quest" || !itemStack.getLore().length)
+	if (itemStack.typeId !== "better_on_bedrock:bought_quest")
         return;
-	
-    const data = JSON.parse(itemStack.getLore());
+
+    const lore = itemStack.getLore();
+    if (!lore.length)
+        return;
+
+    let data;
+    try {
+        data = JSON.parse(lore[0]);
+    } catch {
+        player.sendMessage([
+            { text: "§c[!] §r" },
+            { text: "Invalid quest data." },
+        ]);
+        return;
+    }
+
 	const quest = quests.find((q) => q.id == data.quest && q.rarity == data.rarity);
 	if (!quest)
         return;
