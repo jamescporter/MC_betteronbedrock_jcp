@@ -12,13 +12,22 @@ world.afterEvents.playerSpawn.subscribe(
 );
 
 export function loopQuests(player, object) {
+    const localContext = {
+        tierStates: new Map(),
+        secretState: undefined,
+    };
+
+    return loopQuestsWithContext(player, object, localContext, true);
+};
+
+export function loopQuestsWithContext(player, object, context, shouldFlush = false) {
     for (let i = 0; i < tiers.length; i++) {
         const tier = tiers[i];
-        const property = player.getDynamicProperty(tier.property);
-        if (!property)
+        const state = getTierState(player, context, tier.property);
+        if (!state)
             continue;
 
-        const savedQuests = JSON.parse(property);
+        const savedQuests = state.value;
         for (let j = 0; j < tier.quests.length; j++) {
             const quest = tier.quests[j];
             const savedQuest = savedQuests.find((q) => q[0] == j);
@@ -32,7 +41,7 @@ export function loopQuests(player, object) {
             const nextQuest = savedQuests.find((q) => q[0] == j + 1);
             if (nextQuest !== undefined)
                 nextQuest[1] = 1; // Unlocked
-            player.setDynamicProperty(tier.property, JSON.stringify(savedQuests));
+            state.dirty = true;
             
             if (quest.unlock.title !== undefined)
                 player.sendMessage(quest.unlock.title);
@@ -67,17 +76,29 @@ export function loopQuests(player, object) {
             };
         };
     };
+
+    if (shouldFlush)
+        flushQuestLoopContext(player, context);
 };
 
 export function loopSecretQuests(player, object) {
-    const property = player.getDynamicProperty(secret.property);
-    const savedQuests = JSON.parse(property || "[]");
+    const localContext = {
+        tierStates: new Map(),
+        secretState: undefined,
+    };
+
+    return loopSecretQuestsWithContext(player, object, localContext, true);
+};
+
+export function loopSecretQuestsWithContext(player, object, context, shouldFlush = false) {
+    const secretState = getSecretState(player, context);
+    const savedQuests = secretState.value;
     for (let j = 0; j < secret.quests.length; j++) {
         const quest = secret.quests[j];
         const savedQuest = savedQuests.find((q) => q[0] == j);
         if (savedQuest == undefined) {
             savedQuests.push([j, 0]);
-            player.setDynamicProperty(secret.property, JSON.stringify(savedQuests));
+            secretState.dirty = true;
             continue;
         };
 
@@ -89,14 +110,14 @@ export function loopSecretQuests(player, object) {
             player.playSound("normal_quest");
 
             savedQuest[1] = 1; // Unlocked
-            player.setDynamicProperty(secret.property, JSON.stringify(savedQuests));
+            secretState.dirty = true;
         };
 
         if (savedQuest[1] !== 2 || !quest.unlock.check(object))
             continue;
 
         savedQuest[1] = 3; // Completed
-        player.setDynamicProperty(secret.property, JSON.stringify(savedQuests));
+        secretState.dirty = true;
         
         if (quest.unlock.title !== undefined)
             player.sendMessage(quest.unlock.title);
@@ -115,6 +136,51 @@ export function loopSecretQuests(player, object) {
         if (j == secret.quests.length - 1 && secret.rewards !== undefined)
             giveRewards(player, secret.rewards);
     };
+
+    if (shouldFlush)
+        flushQuestLoopContext(player, context);
+};
+
+export function flushQuestLoopContext(player, context) {
+    for (const [property, state] of context.tierStates.entries()) {
+        if (!state.dirty)
+            continue;
+
+        player.setDynamicProperty(property, JSON.stringify(state.value));
+        state.dirty = false;
+    };
+
+    if (context.secretState?.dirty) {
+        player.setDynamicProperty(secret.property, JSON.stringify(context.secretState.value));
+        context.secretState.dirty = false;
+    };
+};
+
+function getTierState(player, context, property) {
+    if (context.tierStates.has(property))
+        return context.tierStates.get(property);
+
+    const rawProperty = player.getDynamicProperty(property);
+    if (!rawProperty)
+        return undefined;
+
+    const state = {
+        value: JSON.parse(rawProperty),
+        dirty: false,
+    };
+    context.tierStates.set(property, state);
+    return state;
+};
+
+function getSecretState(player, context) {
+    if (context.secretState)
+        return context.secretState;
+
+    context.secretState = {
+        value: JSON.parse(player.getDynamicProperty(secret.property) || "[]"),
+        dirty: false,
+    };
+    return context.secretState;
 };
 
 const ticks = (player) => {

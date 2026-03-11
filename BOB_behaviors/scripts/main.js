@@ -29,7 +29,7 @@ import "./functionality/enchanted/main.js";
 import { wall_Manager } from './custom_components/blocks/walls/wall_Manager.js'
 import { ambience } from "./functionality/ambience/ambient_stuff.js";
 
-import { loopQuests, loopSecretQuests } from "./functionality/quests/behavior.js"
+import { flushQuestLoopContext, loopQuestsWithContext, loopSecretQuestsWithContext } from "./functionality/quests/behavior.js"
 import { loopGoals } from "./functionality/goals/goals.js";
 
 world.afterEvents.playerBreakBlock.subscribe(
@@ -212,7 +212,8 @@ system.runInterval(() => {
             const state = playerStateCache.get(player.id) ?? {
                 equipmentSignature: "",
                 lastSlowScanTick: -FORCE_SLOW_RESCAN_TICKS,
-                hasFixedGhostNecklace: false
+                hasFixedGhostNecklace: false,
+                slotSignatures: new Map(),
             };
 
             const equipmentSignature = getEquipmentSignature(player);
@@ -227,6 +228,9 @@ system.runInterval(() => {
                 yield ambience(player);
 
             state.hasFixedGhostNecklace = ghostNecklace(player);
+
+            if (shouldForceRescan || !isEquipmentUnchanged)
+                state.slotSignatures.clear();
 
             if (!player.hasTag("bob:skip_inventory_scan"))
                 yield inventoryLoop(player);
@@ -245,16 +249,41 @@ function inventoryLoop(player) {
         return;
 
     const inventory = player.getComponent("inventory").container;
+    const state = playerStateCache.get(player.id);
+    if (!state)
+        return;
+
+    const questLoopContext = {
+        tierStates: new Map(),
+        secretState: undefined,
+    };
+
     for (let slot = 0; slot < inventory.size; slot++) {
         const itemStack = inventory.getItem(slot);
-        if (!itemStack)
+        if (!itemStack) {
+            state.slotSignatures.delete(slot);
+            continue;
+        }
+
+        const slotSignature = getSlotSignature(itemStack);
+        if (state.slotSignatures.get(slot) === slotSignature)
             continue;
 
-        loopQuests(player, itemStack);
-        loopSecretQuests(player, itemStack);
+        state.slotSignatures.set(slot, slotSignature);
+
+        loopQuestsWithContext(player, itemStack, questLoopContext);
+        loopSecretQuestsWithContext(player, itemStack, questLoopContext);
         loopGoals(player, itemStack);
-    };
+    }
+
+    flushQuestLoopContext(player, questLoopContext);
 };
+
+function getSlotSignature(itemStack) {
+    const lore = itemStack.getLore();
+    const loreHash = lore.length ? lore.join("\u001f") : "";
+    return `${itemStack.typeId}|${loreHash}|${itemStack.amount}`;
+}
 
 // Custom Components
 world.beforeEvents.worldInitialize.subscribe(
