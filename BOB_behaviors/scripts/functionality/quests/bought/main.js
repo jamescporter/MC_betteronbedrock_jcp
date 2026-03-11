@@ -2,7 +2,7 @@ import { world, system, EquipmentSlot } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 
 import { mainScreen } from "../main.js";
-import { createDistribution, randomItem, getRewards } from "../util.js";
+import { createDistribution, randomItem, getRewards, readJsonProperty } from "../util.js";
 import { items, entities, dimensions, extras } from "./behavior.js";
 const rarities = {
 	0: "§8%bob.gui.quests.bought.rarity.common§r",
@@ -35,7 +35,7 @@ function getIcon(rarity) {
 
 /** @param { import("@minecraft/server").Player } player */
 export function boughtScreen(player, ui = -1) {
-    const unlockedQuests = JSON.parse(player.getDynamicProperty("unlockedQuests"));
+    const unlockedQuests = readJsonProperty(player, "unlockedQuests", []).value;
 	const form = new ActionFormData();
 	form.title("§q%bob.gui.quests.bought.title§r");
 
@@ -147,9 +147,7 @@ system.runInterval(() => {
         const players = world.getAllPlayers();
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
-            if (player.getDynamicProperty("unlockedQuests") == undefined) {
-                player.setDynamicProperty("unlockedQuests", JSON.stringify([]));
-            };
+            readJsonProperty(player, "unlockedQuests", []);
 
             const inventory = player.getComponent("inventory").container;
             for (let i = 0; i < inventory.size; i++) {
@@ -197,7 +195,15 @@ world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
 	if (!quest)
         return;
 
-	const unlockedQuests = JSON.parse(player.getDynamicProperty("unlockedQuests"));
+	const unlockedQuestsState = readJsonProperty(player, "unlockedQuests", []);
+	if (unlockedQuestsState.wasCorrupt) {
+		player.sendMessage([
+            { text: "§c[!] §r" },
+            { text: "Quest progress was reset due to invalid data." },
+        ]);
+		return;
+	};
+	const unlockedQuests = unlockedQuestsState.value;
 	const isUnlocked = unlockedQuests.find((q) => q[0] == quest.id && q[1] == quest.rarity) !== undefined;
 
 	if (isUnlocked) {

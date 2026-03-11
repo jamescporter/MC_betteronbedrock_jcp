@@ -1,5 +1,6 @@
 import { world, Player } from "@minecraft/server";
-import { bounties } from "./bounties.js";
+import { bounties, defaultBounties } from "./bounties.js";
+import { readJsonProperty } from "../util.js";
 
 world.afterEvents.entityDie.subscribe(
     ({ deadEntity, damageSource: { damagingEntity } }) => {
@@ -12,7 +13,11 @@ world.afterEvents.entityDie.subscribe(
         );
         
         if (bountyEntity !== undefined) {
-            const savedBounties = JSON?.parse(damagingEntity?.getDynamicProperty("bounties") ?? "[]");
+            const savedBountiesState = readJsonProperty(damagingEntity, "bounties", defaultBounties);
+            if (savedBountiesState.wasCorrupt)
+                return;
+
+            const savedBounties = savedBountiesState.value;
             const savedBounty = savedBounties.find((q) => q[0] == bountyEntity.id);
             if (!savedBounty)
                 return;
