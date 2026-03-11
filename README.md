@@ -1,8 +1,9 @@
-# Better on Bedrock (Modified) — v1.2.0
+# Better on Bedrock (Modified) - Based on v1.2.0
 
 This repository contains a **modified version** of the original **Better on Bedrock** add-on for Minecraft Bedrock Edition, based on **version 1.2.0**.
 
 ## Original project
+*Copyright © 2024-present Poggy MIT License.*
 - Official site: https://poggy.org/
 - CurseForge page: https://www.curseforge.com/minecraft-bedrock/addons/better-on-bedrock
 
@@ -17,7 +18,7 @@ Both packs are required for proper gameplay.
 
 ## Version and compatibility
 From the manifests in this repo:
-- Add-on version: `1.2.0`
+- Add-on version: `1.2.0-0.9`
 - Minimum Bedrock engine version: `1.21.110`
 
 ## Installation (manual)
@@ -31,11 +32,11 @@ From the manifests in this repo:
    - Resource Packs: **Better on Bedrock - Resource Pack**
 5. Enter the world.
 
-## Attribution & License
-Released under the MIT License.
-
-Copyright © 2024-present Poggy
 
 ## Notes
-- This repo is a custom/modified distribution and may differ from the upstream release.
+- This repo is a custom/modified distribution and does differ from the upstream release.
 - Please keep attribution to the original author when redistributing forks or edits.
+- This has basically been vibe-coded as an experiment. I've been going over codex changes with multiple iterations to catch introduced bugs/hallucinations and cross-checking.
+- Currently untested.
+
+  
