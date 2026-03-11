@@ -578,12 +578,19 @@ const bountyPage = (player) => {
         buttons.push(quest);
     };
 
+    const backButtonIndex = buttons.length;
     form.button("§c< %gui.goBack§r");
     form.show(player).then(
         (response) => {
             if (response.canceled) return;
 
-            if (response.selection === buttons.length) {
+            if (response.selection == undefined) return;
+            if (typeof response.selection !== "number") return;
+            if (!Number.isInteger(response.selection)) return;
+            if (response.selection < 0) return;
+            if (response.selection > backButtonIndex) return;
+
+            if (response.selection === backButtonIndex) {
                 bountiesScreen(player);
                 return;
             };
