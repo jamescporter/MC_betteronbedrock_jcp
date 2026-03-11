@@ -37,15 +37,13 @@ From the manifests in this repo:
 - This has basically been vibe-coded as an experiment. I've been going over codex changes with multiple iterations to catch introduced bugs/hallucinations and cross-checking.
 - Currently untested.
 
-## Conceptual overview of changes since the initial commit
+## Overview of changes in this mod:
 
-Since the baseline Better on Bedrock commit, this fork has mainly focused on reliability and performance rather than large gameplay redesigns.
+This fork mainly focuses on reliability and performance.
 
 - **Performance and scalability:** per-tick and high-frequency scripts were refactored to reduce repeated work, improve caching, and lower runtime overhead.
-- **Bug fixes and hardening:** a broad pass of defensive fixes addressed regressions, malformed data handling, null/unsafe state access, duplicate triggers, and cleanup edge cases.
-- **Item/combat system stability:** backpacks, staffs, spear/trident logic, strip-block interactions, and related item systems were made more robust while preserving intended gameplay behaviour.
-- **Quest flow resilience:** regular, bounty, and bought-quest paths were tightened with safer parsing/selection logic, better reconciliation, and duplicate-state normalisation.
+- **Bug fixes and hardening:** Lots of defensive fixes addressung malformed data handling, null/unsafe state access, duplicate triggers, and cleanup edge cases.
+- **Item/combat system stability:** backpacks, staffs, spear/trident logic, strip-block interactions, and related item systems were made more robust while preserving existing functionality.
+- **Quest flow:** regular, bounty, and bought-quest paths were tightened with safer parsing/selection logic, better reconciliation, and duplicate-state normalisation.
 - **Entity and ambience updates:** Seeker/Inferior and supporting end-mob logic were adjusted, alongside ambient and fog behaviour refinements for more consistent world state transitions.
-- **Gameplay balancing and maintenance:** trader values received light balance tuning, and documentation/attribution metadata was cleaned up.
-
-Overall, the project has moved towards a more production-ready implementation of Better on Bedrock: same core identity, but with better runtime behaviour and fewer failure points.
+- **Gameplay balancing and maintenance:** trader values received light balance tuning so he's not as OP.
