@@ -1138,17 +1138,25 @@ function openTier(player, isSecret, tierId) {
     const tier = isSecret ? secret : tiers[tierId];
     const fallbackQuests = tier.quests.map((q, index) => ([index, q.default ?? 0]));
     let savedQuests = readJsonProperty(player, tier.property, fallbackQuests).value;
+    const questStatuses = new Map();
     for (const savedQuest of savedQuests) {
-        if (!tier.quests.find((q, index) => index == savedQuest[0])) {
-            savedQuests = savedQuests.filter((q, index) => index != savedQuest[0]);
+        const questIndex = savedQuest?.[0];
+        const questStatus = savedQuest?.[1];
+        if (typeof questIndex != "number" || !tier.quests[questIndex])
+            continue;
+
+        const previousStatus = questStatuses.get(questIndex);
+        if (previousStatus == undefined || questStatus > previousStatus) {
+            questStatuses.set(questIndex, questStatus);
         };
     };
 
+    savedQuests = Array.from(questStatuses, ([questIndex, questStatus]) => ([questIndex, questStatus]));
+
     for (let i = 0; i < tier.quests.length; i++) {
         const quest = tier.quests[i];
-        const questExists = savedQuests.find((q, index) => index == i) !== undefined;
-        if (!questExists) {
-            savedQuests[i] = [i, quest.default ?? 0];
+        if (!questStatuses.has(i)) {
+            savedQuests.push([i, quest.default ?? 0]);
         };
     };
 
@@ -1163,7 +1171,7 @@ function openTier(player, isSecret, tierId) {
     const visibleQuestIndexes = [];
     for (let i = 0; i < tier.quests.length; i++) {
         const quest = tier.quests[i];
-        const savedQuest = savedQuests.find((q, index) => index == i);
+        const savedQuest = savedQuests.find((q) => q[0] == i);
         if (!savedQuest)
             continue;
 
@@ -1199,7 +1207,7 @@ function openTier(player, isSecret, tierId) {
             if (selectedQuestIndex == undefined)
                 return;
 
-            const savedQuest = savedQuests.find((q, index) => index == selectedQuestIndex);
+            const savedQuest = savedQuests.find((q) => q[0] == selectedQuestIndex);
             if (!savedQuest)
                 return;
 
@@ -1275,7 +1283,10 @@ const functions = {
             (response) => {
                 switch (response?.selection) {
                     case 0: {
-                        const savedQuest = savedQuests.find((q, index) => index == questId);
+                        const savedQuest = savedQuests.find((q) => q[0] == questId);
+                        if (!savedQuest)
+                            return;
+
                         savedQuest[1] = 2; // Busy
                         player.setDynamicProperty(tier.property, JSON.stringify(savedQuests));
 
@@ -1308,7 +1319,10 @@ const functions = {
             (response) => {
                 switch (response?.selection) {
                     case 0: {
-                        const savedQuest = savedQuests.find((q, index) => index == questId);
+                        const savedQuest = savedQuests.find((q) => q[0] == questId);
+                        if (!savedQuest)
+                            return;
+
                         savedQuest[1] = 4; // Claimed
                         player.setDynamicProperty(tier.property, JSON.stringify(savedQuests));
 
@@ -1344,7 +1358,7 @@ export function regularScreen(player) {
         let savedQuests = readJsonProperty(player, tier.property, tier.quests.map((q, index) => ([index, q.default ?? 0]))).value;
         for (let j = 0; j < tier.quests.length; j++) {
             const quest = tier.quests[j];
-            const savedQuest = savedQuests.find((q, index) => index == j);
+            const savedQuest = savedQuests.find((q) => q[0] == j);
             if (savedQuest == undefined)
                 continue;
 
@@ -1378,7 +1392,7 @@ export function regularScreen(player) {
                             let savedQuests = readJsonProperty(player, tier.property, tier.quests.map((q, index) => ([index, q.default ?? 0]))).value;
                             for (let j = 0; j < tier.quests.length; j++) {
                                 const quest = tier.quests[j];
-                                const savedQuest = savedQuests.find((q, index) => index == j);
+                                const savedQuest = savedQuests.find((q) => q[0] == j);
                                 if (savedQuest == undefined)
                                     continue;
 
