@@ -2,7 +2,7 @@ import { ItemStack, Entity } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 
 import { mainScreen } from "../main";
-import { getFormattedStatus, getRewards, giveRewards } from "../util.js";
+import { getFormattedStatus, getRewards, giveRewards, readJsonProperty } from "../util.js";
 
 import { logs } from "../../enchantments/treeCapitator.js";
 
@@ -1136,15 +1136,8 @@ export const secret = {
 
 function openTier(player, isSecret, tierId) {
     const tier = isSecret ? secret : tiers[tierId];
-    if (player.getDynamicProperty(tier.property) == undefined) {
-        const quests = tier.quests.map((q, index) => ([index, q.default ?? 0]));
-        player.setDynamicProperty(
-            tier.property,
-            JSON.stringify(quests),
-        );
-    };
-
-    let savedQuests = JSON.parse(player.getDynamicProperty(tier.property));
+    const fallbackQuests = tier.quests.map((q, index) => ([index, q.default ?? 0]));
+    let savedQuests = readJsonProperty(player, tier.property, fallbackQuests).value;
     for (const savedQuest of savedQuests) {
         if (!tier.quests.find((q, index) => index == savedQuest[0])) {
             savedQuests = savedQuests.filter((q, index) => index != savedQuest[0]);
@@ -1167,38 +1160,55 @@ function openTier(player, isSecret, tierId) {
     if (!isSecret)
         form.body({ translate: "bob.gui.quests.tier" });
 
-    let questsCount = 0;
+    const visibleQuestIndexes = [];
     for (let i = 0; i < tier.quests.length; i++) {
         const quest = tier.quests[i];
         const savedQuest = savedQuests.find((q, index) => index == i);
+        if (!savedQuest)
+            continue;
+
         if (isSecret && savedQuest[1] == 0)
             continue;
 
-        questsCount++;
+        visibleQuestIndexes.push(i);
 
         const questStatus = getFormattedStatus(savedQuest[1]);
         form.button(quest.name.concat(" - ", questStatus), quest.icon);
     };
 
-    if (questsCount == 0) {
+    if (visibleQuestIndexes.length == 0) {
         form.body({ translate: "bob.gui.nothing" });
     };
 
+    const backButtonIndex = visibleQuestIndexes.length;
     form.button("§c< %gui.goBack§r");
     form.show(player).then(
         (response) => {
             if (response.canceled)
                 return;
 
-            if (response.selection == tier.quests.length) {
+            if (response.selection == backButtonIndex) {
                 regularScreen(player);
                 return;
             };
 
-            const savedQuest = savedQuests.find((q, index) => index == response.selection);
+            if (response.selection == undefined || response.selection < 0 || response.selection >= visibleQuestIndexes.length)
+                return;
+
+            const selectedQuestIndex = visibleQuestIndexes[response.selection];
+            if (selectedQuestIndex == undefined)
+                return;
+
+            const savedQuest = savedQuests.find((q, index) => index == selectedQuestIndex);
+            if (!savedQuest)
+                return;
+
             switch (savedQuest[1]) {
                 case 0: {
-                    const previousQuest = tier.quests[response.selection - 1];
+                    const previousQuest = tier.quests[selectedQuestIndex - 1];
+                    if (!previousQuest)
+                        return;
+
                     player.sendMessage([
                         { text: "§c[!] §r" },
                         {
@@ -1209,15 +1219,15 @@ function openTier(player, isSecret, tierId) {
                     break;
                 };
                 case 1: {
-                    functions.start(player, isSecret, response.selection, tierId);
+                    functions.start(player, isSecret, selectedQuestIndex, tierId);
                     break;
                 };
                 case 2: {
-                    functions.about(player, isSecret, response.selection, tierId);
+                    functions.about(player, isSecret, selectedQuestIndex, tierId);
                     break;
                 };
                 case 3: {
-                    functions.claim(player, isSecret, response.selection, tierId);
+                    functions.claim(player, isSecret, selectedQuestIndex, tierId);
                     break;
                 };
                 case 4: {
@@ -1250,7 +1260,7 @@ const functions = {
     start: (player, isSecret, questId, tierId) => {
         const tier = isSecret ? secret : tiers[tierId];
         const quest = tier.quests[questId];
-        const savedQuests = JSON.parse(player.getDynamicProperty(tier.property));
+        const savedQuests = readJsonProperty(player, tier.property, tier.quests.map((q, index) => ([index, q.default ?? 0]))).value;
 
         const form = new ActionFormData();
         form.title(quest.name);
@@ -1283,7 +1293,7 @@ const functions = {
     claim: (player, isSecret, questId, tierId) => {
         const tier = isSecret ? secret : tiers[tierId];
         const quest = tier.quests[questId];
-        const savedQuests = JSON.parse(player.getDynamicProperty(tier.property));
+        const savedQuests = readJsonProperty(player, tier.property, tier.quests.map((q, index) => ([index, q.default ?? 0]))).value;
 
         const form = new ActionFormData();
         form.title(quest.name);
@@ -1331,7 +1341,7 @@ export function regularScreen(player) {
     let shouldClaimAll = false;
     for (let i = 0; i < tiers.length; i++) {
         const tier = tiers[i];
-        let savedQuests = JSON.parse(player.getDynamicProperty(tier.property) ?? "[]");
+        let savedQuests = readJsonProperty(player, tier.property, tier.quests.map((q, index) => ([index, q.default ?? 0]))).value;
         for (let j = 0; j < tier.quests.length; j++) {
             const quest = tier.quests[j];
             const savedQuest = savedQuests.find((q, index) => index == j);
@@ -1346,7 +1356,7 @@ export function regularScreen(player) {
     };
     
 
-    const secretQuests = JSON.parse(player.getDynamicProperty(secret.property) ?? "[]");
+    const secretQuests = readJsonProperty(player, secret.property, secret.quests.map((q, index) => ([index, q.default ?? 0]))).value;
     const hasSecretQuests = secretQuests.some((q) => q[1] !== 0);
     if (hasSecretQuests)
         form.button(secret.name, secret.icon);
@@ -1365,7 +1375,7 @@ export function regularScreen(player) {
                     case (hasSecretQuests ? tiers.length + 1 : tiers.length): {
                         for (let i = 0; i < tiers.length; i++) {
                             const tier = tiers[i];
-                            let savedQuests = JSON.parse(player.getDynamicProperty(tier.property) ?? "[]");
+                            let savedQuests = readJsonProperty(player, tier.property, tier.quests.map((q, index) => ([index, q.default ?? 0]))).value;
                             for (let j = 0; j < tier.quests.length; j++) {
                                 const quest = tier.quests[j];
                                 const savedQuest = savedQuests.find((q, index) => index == j);

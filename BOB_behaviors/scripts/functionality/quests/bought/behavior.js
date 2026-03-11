@@ -1,5 +1,5 @@
 import { world, system, Player, EntityInventoryComponent } from "@minecraft/server";
-import { giveRewards } from "../util";
+import { giveRewards, readJsonProperty } from "../util";
 
 export const items = {
     "better_on_bedrock:vein_miner_book": {
@@ -256,7 +256,11 @@ world.afterEvents.entityDie.subscribe(
 
         const quest = entities[deadEntity.typeId];
         const player = damageSource.damagingEntity;
-        const unlockedQuests = JSON.parse(player.getDynamicProperty("unlockedQuests"));
+        const unlockedQuestsState = readJsonProperty(player, "unlockedQuests", []);
+        if (unlockedQuestsState.wasCorrupt)
+            return;
+
+        const unlockedQuests = unlockedQuestsState.value;
         const q = unlockedQuests.find((q) => q[0] == quest.id);
         const isUnlocked = q !== undefined;
         if (!isUnlocked || q[2] == 1)
@@ -357,7 +361,7 @@ system.runInterval(() => {
                 if (quest == undefined)
                     continue;
 
-                const unlockedQuests = JSON.parse(player.getDynamicProperty("unlockedQuests") ?? "[]");
+                const unlockedQuests = readJsonProperty(player, "unlockedQuests", []).value;
                 let q = unlockedQuests.find((q) => q[0] == quest.id);
                 const isUnlocked = q !== undefined;
                 if (!isUnlocked || q[2] == 1 || quest.requiredAmount > itemStack.amount)
@@ -387,7 +391,11 @@ world.afterEvents.playerDimensionChange.subscribe(
             return;
 
         const quest = dimensions[toDimension.id];
-        const unlockedQuests = JSON.parse(player.getDynamicProperty("unlockedQuests"));
+        const unlockedQuestsState = readJsonProperty(player, "unlockedQuests", []);
+        if (unlockedQuestsState.wasCorrupt)
+            return;
+
+        const unlockedQuests = unlockedQuestsState.value;
         const q = unlockedQuests.find((q) => q[0] == quest.id);
         const isUnlocked = q !== undefined;
         if (!isUnlocked || q[2] == 1)

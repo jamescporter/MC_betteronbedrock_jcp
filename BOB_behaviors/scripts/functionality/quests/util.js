@@ -68,3 +68,57 @@ export function giveRewards(player, rewards) {
         };
     };
 };
+
+const cloneJsonValue = (value) => JSON.parse(JSON.stringify(value));
+
+/**
+ * @param {import("@minecraft/server").Player} player
+ * @param {string} key
+ * @param {any[] | object} fallback
+ * @param {{ initialize?: boolean, resetOnError?: boolean }} [options]
+ */
+export function readJsonProperty(player, key, fallback, options = {}) {
+    const { initialize = true, resetOnError = true } = options;
+
+    const getFallbackString = () => JSON.stringify(fallback);
+    const getFallbackValue = () => cloneJsonValue(fallback);
+
+    const raw = player.getDynamicProperty(key);
+    if (raw == undefined) {
+        if (initialize)
+            player.setDynamicProperty(key, getFallbackString());
+
+        return {
+            value: getFallbackValue(),
+            wasCorrupt: false,
+            wasMissing: true,
+        };
+    };
+
+    try {
+        const parsed = JSON.parse(raw);
+        const expectsArray = Array.isArray(fallback);
+        const validType = expectsArray
+            ? Array.isArray(parsed)
+            : parsed !== null && typeof parsed === "object" && !Array.isArray(parsed);
+        if (!validType)
+            throw new Error("Dynamic property type mismatch");
+
+        return {
+            value: parsed,
+            wasCorrupt: false,
+            wasMissing: false,
+        };
+    }
+    catch (error) {
+        if (resetOnError)
+            player.setDynamicProperty(key, getFallbackString());
+
+        console.warn(`[quests] Failed to parse dynamic property '${key}': ${error}`);
+        return {
+            value: getFallbackValue(),
+            wasCorrupt: true,
+            wasMissing: false,
+        };
+    };
+};

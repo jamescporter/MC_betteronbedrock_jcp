@@ -1,13 +1,28 @@
 import { world, system, Player, TicksPerSecond } from "@minecraft/server";
 
 import { tiers, secret } from "./regular/main.js";
-import { giveRewards } from "./util.js";
+import { giveRewards, readJsonProperty } from "./util.js";
+
+const tierFallbackByProperty = new Map(
+    tiers.map((tier) => [
+        tier.property,
+        tier.quests.map((q, index) => ([index, q.default ?? 0])),
+    ]),
+);
+const secretFallback = secret.quests.map((q, index) => ([index, q.default ?? 0]));
 
 world.afterEvents.playerSpawn.subscribe(
     ({ player }) => {
         if (player.getDynamicProperty("tiersCompleted") == undefined) {
             player.setDynamicProperty("tiersCompleted", 0)
         };
+
+        for (const tier of tiers) {
+            const fallbackQuests = tierFallbackByProperty.get(tier.property) ?? [];
+            readJsonProperty(player, tier.property, fallbackQuests);
+        };
+
+        readJsonProperty(player, secret.property, secretFallback);
     },
 );
 
@@ -160,12 +175,9 @@ function getTierState(player, context, property) {
     if (context.tierStates.has(property))
         return context.tierStates.get(property);
 
-    const rawProperty = player.getDynamicProperty(property);
-    if (!rawProperty)
-        return undefined;
-
+    const fallbackQuests = tierFallbackByProperty.get(property) ?? [];
     const state = {
-        value: JSON.parse(rawProperty),
+        value: readJsonProperty(player, property, fallbackQuests).value,
         dirty: false,
     };
     context.tierStates.set(property, state);
@@ -177,7 +189,7 @@ function getSecretState(player, context) {
         return context.secretState;
 
     context.secretState = {
-        value: JSON.parse(player.getDynamicProperty(secret.property) || "[]"),
+        value: readJsonProperty(player, secret.property, secretFallback).value,
         dirty: false,
     };
     return context.secretState;

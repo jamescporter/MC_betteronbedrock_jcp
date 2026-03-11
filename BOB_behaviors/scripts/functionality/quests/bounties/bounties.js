@@ -1,6 +1,6 @@
 import { ActionFormData } from "@minecraft/server-ui";
 
-import { getRewards, giveRewards } from "../util.js";
+import { getRewards, giveRewards, readJsonProperty } from "../util.js";
 const getFormattedStatus = (status) => {
     if (status == 0) return "§8%bob.gui.bounty.status.open§r";
     else if (status == 1) return "§6%bob.gui.bounty.status.inProgress§r";
@@ -9,7 +9,7 @@ const getFormattedStatus = (status) => {
     else if (status == 4) return "§c%bob.gui.bounty.status.locked§r";
 };
 
-const defaultBounties = [
+export const defaultBounties = [
     [ 0, 0, 0 ], // Cow
     [ 1, 0, 4 ], // Zombie
     [ 2, 0, 4 ], // Pig
@@ -398,7 +398,7 @@ export const bounties = [
 
 const functions = {
     about: (player, bounty) => {
-        let savedBounties = JSON.parse(player.getDynamicProperty("bounties") ?? "[]");
+        let savedBounties = readJsonProperty(player, "bounties", defaultBounties).value;
         const quest = savedBounties.find((b) => b[0] == bounty.id);
 
         const form = new ActionFormData();
@@ -415,7 +415,7 @@ const functions = {
         form.show(player).then(() => bountyPage(player));
     },
     start: (player, bounty) => {
-        const savedBounties = JSON.parse(player.getDynamicProperty("bounties"));
+        const savedBounties = readJsonProperty(player, "bounties", defaultBounties).value;
         const form = new ActionFormData();
         form.title(bounty.name);
         form.body({ rawtext: [
@@ -455,7 +455,7 @@ const functions = {
         );
     },
     claim: (player, bounty) => {
-        const savedBounties = JSON.parse(player.getDynamicProperty("bounties"));
+        const savedBounties = readJsonProperty(player, "bounties", defaultBounties).value;
         const form = new ActionFormData();
         form.title(bounty.name);
         form.body({ rawtext: [
@@ -492,7 +492,7 @@ const functions = {
 };
 
 const bountyPage = (player) => {
-    let savedBounties = JSON.parse(player.getDynamicProperty("bounties") ?? "[]");
+    let savedBounties = readJsonProperty(player, "bounties", defaultBounties).value;
     for (const savedBounty of savedBounties) {
         if (!bounties.find((q) => q.id == savedBounty[0])) {
             savedBounties = savedBounties.filter((q) => q[0] != savedBounty[0]);
@@ -565,9 +565,7 @@ const bountyPage = (player) => {
 };
 
 export function bountiesScreen(player) {
-    if (!player.getDynamicProperty("bounties")) {
-        player.setDynamicProperty("bounties", JSON.stringify(defaultBounties));
-    };
+    readJsonProperty(player, "bounties", defaultBounties);
 
     new ActionFormData()
     .title({ translate: "bob.gui.bounty.title" })
@@ -582,7 +580,7 @@ export function bountiesScreen(player) {
             switch (response.selection) {
                 case 0: bountyPage(player); break;
                 case 1: {
-                    let savedBounties = JSON.parse(player.getDynamicProperty("bounties") ?? "[]");
+                    let savedBounties = readJsonProperty(player, "bounties", defaultBounties).value;
                     const unclaimedBounties = savedBounties.filter((b) => b[2] == 2);
                     if (unclaimedBounties.length === 0) {
                         player.sendMessage([
