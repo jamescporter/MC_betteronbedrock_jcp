@@ -15,6 +15,39 @@ Player.prototype.aimingEntity = null;
 Player.prototype.useSlots = [];
 Player.prototype.staffUses = 0;
 Player.prototype.isUsingStaff = false;
+function getActiveStaffIntervals(player) {
+    if (!(player.activeStaffIntervals instanceof Map))
+        player.activeStaffIntervals = new Map();
+
+    return player.activeStaffIntervals;
+};
+
+function runManagedStaffInterval(player, key, callback) {
+    const activeStaffIntervals = getActiveStaffIntervals(player);
+    if (activeStaffIntervals.has(key))
+        return;
+
+    const run = system.runInterval(() => callback(run));
+    activeStaffIntervals.set(key, run);
+};
+
+function clearManagedStaffInterval(player, key, run) {
+    const activeStaffIntervals = getActiveStaffIntervals(player);
+    const activeRun = activeStaffIntervals.get(key);
+    if (activeRun !== run)
+        return;
+
+    system.clearRun(run);
+    activeStaffIntervals.delete(key);
+};
+
+function clearAllStaffIntervals(player) {
+    const activeStaffIntervals = getActiveStaffIntervals(player);
+    for (const run of activeStaffIntervals.values())
+        system.clearRun(run);
+
+    activeStaffIntervals.clear();
+};
 
 /**
  * @param { import("@minecraft/server").Player } player
@@ -22,28 +55,30 @@ Player.prototype.isUsingStaff = false;
  * @param { function } effect
  * @param { function } shouldStop
  */
-function staffEffect(player, particle, effect, shouldStop) {
+function staffEffect(player, key, particle, effect, shouldStop) {
     player.isUsingStaff = true;
             
     let ticks = 0;
-    const run = system.runInterval(() => {
+    runManagedStaffInterval(player, key, (run) => {
         if (shouldStop()) {
-            system.clearRun(run);
+            clearManagedStaffInterval(player, key, run);
             return;
         };
 
         system.runJob(function* () {
             const map = new MolangVariableMap();
+            const headLocation = player.getHeadLocation();
             
             const rotation = player.getRotation();
             map.setFloat("rotation_x", rotation.x);
             map.setFloat("rotation_y", rotation.y);
 
-            player.dimension.spawnParticle(particle, player.getHeadLocation(), map);
+            player.dimension.spawnParticle(particle, headLocation, map);
             yield;
 
             if (ticks % 20 == 0) {
-                effect();
+                const viewDirection = player.getViewDirection();
+                effect({ headLocation, viewDirection });
                 player.staffUses++;
             };
 
@@ -53,13 +88,13 @@ function staffEffect(player, particle, effect, shouldStop) {
     });
 };
 
-function staffSoundEffect(player, sound, shouldStop) {
+function staffSoundEffect(player, key, sound, shouldStop) {
     player.isUsingStaff = true;
             
     let ticks = 0;
-    const run = system.runInterval(() => {
+    runManagedStaffInterval(player, key, (run) => {
         if (shouldStop()) {
-            system.clearRun(run);
+            clearManagedStaffInterval(player, key, run);
             return;
         };
 
@@ -76,33 +111,28 @@ function staffSoundEffect(player, sound, shouldStop) {
 };
 
 /** @param { import("@minecraft/server").Player } player */
-function getEntities(player) {
-    const headLocation = player.getHeadLocation();
-    const viewDirection = player.getViewDirection();
+function getEntities(player, headLocation = player.getHeadLocation(), viewDirection = player.getViewDirection()) {
     const options = {
         maxDistance: 10,
     };
 
-    return [
-        ...player.dimension.getEntitiesFromRay({
+    const uniqueEntities = new Map();
+
+    const addEntitiesFromRay = (direction) => {
+        for (const { entity } of player.dimension.getEntitiesFromRay({
             x: headLocation.x + viewDirection.x,
             y: headLocation.y + viewDirection.y,
             z: headLocation.z + viewDirection.z,
-        }, { x: viewDirection.x - 0.025, y: viewDirection.y, z: viewDirection.z + 0.025 }, options)
-        .map(({ entity }) => entity),
-        ...player.dimension.getEntitiesFromRay({
-            x: headLocation.x + viewDirection.x,
-            y: headLocation.y + viewDirection.y,
-            z: headLocation.z + viewDirection.z,
-        }, viewDirection, options)
-        .map(({ entity }) => entity),
-        ...player.dimension.getEntitiesFromRay({
-            x: headLocation.x + viewDirection.x,
-            y: headLocation.y + viewDirection.y,
-            z: headLocation.z + viewDirection.z,
-        }, { x: viewDirection.x + 0.025, y: viewDirection.y, z: viewDirection.z - 0.025 }, options)
-        .map(({ entity }) => entity),
-    ];
+        }, direction, options)) {
+            uniqueEntities.set(entity.id, entity);
+        };
+    };
+
+    addEntitiesFromRay({ x: viewDirection.x - 0.025, y: viewDirection.y, z: viewDirection.z + 0.025 });
+    addEntitiesFromRay(viewDirection);
+    addEntitiesFromRay({ x: viewDirection.x + 0.025, y: viewDirection.y, z: viewDirection.z - 0.025 });
+
+    return [ ...uniqueEntities.values() ];
 };
 
 /**
@@ -140,8 +170,8 @@ export function staffs(itemStack, player) {
             if (player.isSneaking)
                 return;
 
-            staffEffect(player, "pog:staff_beam", () => {
-                const entities = getEntities(player);
+            staffEffect(player, "better_on_bedrock:staff:effect", "pog:staff_beam", ({ headLocation, viewDirection }) => {
+                const entities = getEntities(player, headLocation, viewDirection);
                 for (const entity of entities) {
                     entity.addEffect("levitation", 2.5 * TicksPerSecond, {
                         amplifier: 2,
@@ -149,10 +179,13 @@ export function staffs(itemStack, player) {
                     });
                 };
             }, shouldStop);
-            staffSoundEffect(player, "staff.basic.use", shouldStop);
+            staffSoundEffect(player, "better_on_bedrock:staff:sound", "staff.basic.use", shouldStop);
             break;
         };
         case "better_on_bedrock:ice_staff": {
+            if (getActiveStaffIntervals(player).has("better_on_bedrock:ice_staff:effect"))
+                return;
+
             player.isUsingStaff = true;
             if (shouldStop())
                 return;
@@ -170,9 +203,9 @@ export function staffs(itemStack, player) {
             entity.addTag("staff_entity");
             entity.addTag(player.id);
             
-            const run = system.runInterval(() => {
+            runManagedStaffInterval(player, "better_on_bedrock:ice_staff:effect", (run) => {
                 if (shouldStop()) {
-                    system.clearRun(run);
+                    clearManagedStaffInterval(player, "better_on_bedrock:ice_staff:effect", run);
                     return;
                 };
 
@@ -239,14 +272,14 @@ export function staffs(itemStack, player) {
                 return;
             player.dimension.playSound("staff.fire.use", player.getHeadLocation());
             
-            staffEffect(player, "pog:flame_beam", () => {
-                const entities = getEntities(player);
+            staffEffect(player, "better_on_bedrock:flame_staff:effect", "pog:flame_beam", ({ headLocation, viewDirection }) => {
+                const entities = getEntities(player, headLocation, viewDirection);
 
                 for (const entity of entities) {
                     entity.setOnFire(2.5, true);
                 };
             }, shouldStop);
-            staffSoundEffect(player, "staff.fire.breath", shouldStop);
+            staffSoundEffect(player, "better_on_bedrock:flame_staff:sound", "staff.fire.breath", shouldStop);
             break;
         };
     };
@@ -339,6 +372,7 @@ export function releaseStaffs(itemStack, player) {
         return;
 
     player.isUsingStaff = false;
+    clearAllStaffIntervals(player);
 
     switch (itemStack.typeId) {
         case "better_on_bedrock:ice_staff": {
