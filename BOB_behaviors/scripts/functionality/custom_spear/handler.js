@@ -14,7 +14,14 @@ const parseProjectileItemData = (projectileEntity) => {
     if (!itemProperty)
         return;
 
-    return JSON.parse(itemProperty);
+    try {
+        return JSON.parse(itemProperty);
+    }
+    catch {
+        console.warn(`[custom_spear] Invalid projectile item data for ${projectileEntity.typeId} (${projectileEntity.id}).`);
+        projectileEntity.setDynamicProperty("item", undefined);
+        return;
+    }
 };
 
 world.afterEvents.itemReleaseUse.subscribe((data) => {
