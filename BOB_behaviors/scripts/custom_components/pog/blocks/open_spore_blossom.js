@@ -1,8 +1,23 @@
 import { world } from "@minecraft/server";
+
 function isNight() {
     const time = world.getTimeOfDay();
     return time >= 13000 && time < 24000;
 };
+
+function hasNearbyPaleBlossomEye(dimension, blockLocation) {
+    const eyeEntities = dimension.getEntities({
+        type: "better_on_bedrock:pale_blossom_eye",
+        location: {
+            x: blockLocation.x + 0.5,
+            y: blockLocation.y,
+            z: blockLocation.z + 0.5
+        },
+        maxDistance: 0.75
+    });
+
+    return eyeEntities.length > 0;
+}
 
 /** @type { import("@minecraft/server").BlockCustomComponent } */
 export const events = {
@@ -12,9 +27,9 @@ export const events = {
 
         const isOpen = block.permutation.getState("pog:is_on") == true;
         if (isNight()) {
-            if (!isOpen) {
+            if (!isOpen && !hasNearbyPaleBlossomEye(dimension, block.location)) {
                 const { x, y, z } = block.location;
-                const entity = block.dimension.spawnEntity("better_on_bedrock:pale_blossom_eye", { x: x + 0.5, y, z: z + 0.5 });
+                block.dimension.spawnEntity("better_on_bedrock:pale_blossom_eye", { x: x + 0.5, y, z: z + 0.5 });
             };
 
             block.setPermutation(block.permutation.withState("pog:is_on", true));
@@ -23,18 +38,7 @@ export const events = {
             block.setPermutation(block.permutation.withState("pog:is_on", false));
         };
     },
-    onPlace: ({block, dimension}) => {
-        if (isNight()) {
-            const { x, y, z } = block.location;
-            const entity = block.dimension.spawnEntity("better_on_bedrock:pale_blossom_eye", { x: x + 0.5, y, z: z + 0.5 });
-            block.setPermutation(block.permutation.withState("pog:is_on", true));
-        };
-    },
-    onRandomTick: ({block, dimension}) => {
-        if (isNight()) {
-            const { x, y, z } = block.location;
-            const entity = block.dimension.spawnEntity("better_on_bedrock:pale_blossom_eye", { x: x + 0.5, y, z: z + 0.5 });
-            block.setPermutation(block.permutation.withState("pog:is_on", true));
-        };
+    onPlace: ({ block }) => {
+        block.setPermutation(block.permutation.withState("pog:is_on", false));
     }
 };
