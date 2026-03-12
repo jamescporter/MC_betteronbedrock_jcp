@@ -101,7 +101,8 @@
           "broadcast_anger_on_being_attacked": true,
           "broadcast_range": 16,
           "broadcast_targets": [
-            "piglin" // we want to broadcast to both normal piglins and piglin_brute
+            "piglin",
+            "piglin_brute"
           ],
           "calm_event": {
             "event": "become_calm_event",

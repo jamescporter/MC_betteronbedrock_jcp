@@ -49,3 +49,4 @@ This fork mainly focuses on reliability and performance.
 - **Gameplay balancing and maintenance:** trader values received light balance tuning so he's not as OP.
 - **Nether combat feel update:** Fire Wisps now have a ~33% larger custom hitbox and a slight scale increase, making them less frustrating to hit without changing their core behaviour.
 - **Nether mob AI priority fix:** Bassalt Crobbers now prioritise targeting and attack goals above idle wandering to improve combat responsiveness.
+- **JSON validity hotfix (Piglin behaviour):** Fixed an invalid inline comment in `BOB_behaviors/entities/nether_mobs/piglin.json` that broke JSON parsing, and completed `broadcast_targets` with both `"piglin"` and `"piglin_brute"` as originally intended.
