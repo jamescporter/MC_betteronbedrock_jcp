@@ -48,3 +48,4 @@ This fork mainly focuses on reliability and performance.
 - **Entity and ambience updates:** Seeker/Inferior and supporting end-mob logic were adjusted, alongside ambient and fog behaviour refinements for more consistent world state transitions.
 - **Gameplay balancing and maintenance:** trader values received light balance tuning so he's not as OP.
 - **Nether combat feel update:** Fire Wisps now have a ~33% larger custom hitbox and a slight scale increase, making them less frustrating to hit without changing their core behaviour.
+- **Nether mob AI priority fix:** Bassalt Crobbers now prioritise targeting and attack goals above idle wandering to improve combat responsiveness.

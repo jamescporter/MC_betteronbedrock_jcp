@@ -56,7 +56,7 @@
 				"speed_multiplier": 1,
 				"require_complete_path": true,
 				"cooldown_time": 0.0,
-				"priority": 3
+				"priority": 2
 			},
 			"minecraft:attack": {
 				"damage": 4
@@ -68,7 +68,7 @@
 				"cooldown_time": 0
 			},
 			"minecraft:behavior.nearest_attackable_target": {
-				"priority": 3,
+				"priority": 1,
 				"entity_types":{
 					"filters": {
 						"test": "is_family",
@@ -83,7 +83,7 @@
 				"avoid_water": true
 			},
 			"minecraft:behavior.random_stroll": {
-				"priority": 3,
+				"priority": 6,
 				"speed_multiplier": 0.8
 			}
 		}
