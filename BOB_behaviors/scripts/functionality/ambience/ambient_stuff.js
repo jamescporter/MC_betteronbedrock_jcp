@@ -205,6 +205,28 @@ function ensurePlayerAmbienceEntity(player, state, cycleCache) {
     return entity;
 }
 
+function tryTeleportAmbienceEntity(playerAmbienceEntity, player, state) {
+    if (!playerAmbienceEntity)
+        return undefined;
+
+    const head = player.getHeadLocation();
+    const view = player.getViewDirection();
+
+    try {
+        playerAmbienceEntity.teleport({
+            x: head.x - view.x * 0.5,
+            y: head.y - view.y * 0.5,
+            z: head.z - view.z * 0.5
+        });
+    } catch {
+        state.ambienceEntityId = undefined;
+        state.forceUpdate = true;
+        return undefined;
+    }
+
+    return playerAmbienceEntity;
+}
+
 function getMusicStateAndApply(player, playerAmbienceEntity) {
     if (player.location.y <= 60) {
         player.removeTag("night");
@@ -392,24 +414,20 @@ export function ambience(player) {
                 ownerTagValidityByTag: new Map()
             };
 
-            playerAmbienceEntity = ensurePlayerAmbienceEntity(player, state, cycleCache);
+            try {
+                playerAmbienceEntity = ensurePlayerAmbienceEntity(player, state, cycleCache);
 
-            if (playerAmbienceEntity) {
-                const head = player.getHeadLocation();
-                const view = player.getViewDirection();
+                playerAmbienceEntity = tryTeleportAmbienceEntity(playerAmbienceEntity, player, state);
 
-                playerAmbienceEntity.teleport({
-                    x: head.x - view.x * 0.5,
-                    y: head.y - view.y * 0.5,
-                    z: head.z - view.z * 0.5
-                });
+                const musicState = getMusicStateAndApply(player, playerAmbienceEntity);
+                if (musicState !== state.lastMusicState)
+                    applyMusicTransition(player, playerAmbienceEntity, state.lastMusicState, musicState);
+
+                updatePlayerTrackingState(state, player, musicState);
+            } catch {
+                state.ambienceEntityId = undefined;
+                state.forceUpdate = true;
             }
-
-            const musicState = getMusicStateAndApply(player, playerAmbienceEntity);
-            if (musicState !== state.lastMusicState)
-                applyMusicTransition(player, playerAmbienceEntity, state.lastMusicState, musicState);
-
-            updatePlayerTrackingState(state, player, musicState);
             return;
         }
     }
