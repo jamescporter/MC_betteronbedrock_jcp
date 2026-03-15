@@ -47,8 +47,12 @@ export const events = {
         else {
             source.dimension.runCommand(`setblock ${x} ${y} ${z} air [] destroy`);
             block.dimension.playSound("block.composter.fill_success", block.location);
-            block.dimension.getEntities({ type: "minecraft:item", name: "composter" })
-            .forEach((entity) => entity.kill());
+            block.dimension.getEntities({
+                type: "minecraft:item",
+                name: "composter",
+                location: block.location,
+                maxDistance: 2
+            }).forEach((entity) => entity.kill());
         };
     },
 };
