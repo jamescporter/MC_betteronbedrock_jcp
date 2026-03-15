@@ -98,8 +98,15 @@ function removeTrackedAmbience(player) {
         return;
 
     const entity = getEntityById(state.ambienceEntityId);
-    if (entity)
-        system.run(() => entity.remove());
+    if (entity) {
+        system.run(() => {
+            try {
+                entity.remove();
+            } catch {
+                // Entity can become invalid before this deferred removal executes.
+            }
+        });
+    }
 
     state.ambienceEntityId = undefined;
 }
