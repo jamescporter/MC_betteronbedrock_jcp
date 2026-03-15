@@ -120,6 +120,17 @@ function getEquipmentSignature(player) {
     ].join("|");
 };
 
+function safeHasTag(player, tag) {
+    if (!player?.isValid())
+        return false;
+
+    try {
+        return player.hasTag(tag);
+    } catch {
+        return false;
+    }
+};
+
 function getPlayerSlice(players, cursor, divisor) {
     if (players.length === 0)
         return { players: [], cursor: 0 };
@@ -152,7 +163,7 @@ system.runInterval(() => {
             // First time moving
             const velocityVector = player.getVelocity();
             const velocity = vectorLength({ x: velocityVector.x, y: 0, z: velocityVector.z });
-            if (velocity > 0 && !player.hasTag("introMove")) {
+            if (velocity > 0 && !safeHasTag(player, "introMove")) {
                 player.addTag("introMove");
 
                 player.sendMessage([
@@ -171,14 +182,14 @@ system.runInterval(() => {
             yield voidTotem(player);
             yield voidBoots(player);
 
-            if (player.hasTag("bob:disable_combat_checks"))
+            if (safeHasTag(player, "bob:disable_combat_checks"))
                 continue;
 
             // Boss attacks (high cadence only)
             yield seeker(player);
             yield sootEye(player);
 
-            if (player.hasTag("toolTip"))
+            if (safeHasTag(player, "toolTip"))
                 yield wawla(player);
         };
     }());
@@ -202,7 +213,7 @@ system.runInterval(() => {
             if (!player?.isValid())
                 continue;
 
-            if (!player.hasTag('joined3')) {
+            if (!safeHasTag(player, 'joined3')) {
                 player.addTag('joined3')
             }
             else if (player.getDynamicProperty("tiersCompleted") == void 0) {
@@ -217,14 +228,14 @@ system.runInterval(() => {
             };
 
             const equipmentSignature = getEquipmentSignature(player);
-            const hasRelevantTags = player.hasTag("pog:ambientSounds");
+            const hasRelevantTags = safeHasTag(player, "pog:ambientSounds");
             const shouldForceRescan = (globalTick - state.lastSlowScanTick) >= FORCE_SLOW_RESCAN_TICKS;
             const isEquipmentUnchanged = state.equipmentSignature === equipmentSignature;
 
             if (!shouldForceRescan && isEquipmentUnchanged && !hasRelevantTags && !state.hasFixedGhostNecklace)
                 continue;
 
-            if (player.hasTag("pog:ambientSounds"))
+            if (safeHasTag(player, "pog:ambientSounds"))
                 yield ambience(player);
 
             state.hasFixedGhostNecklace = ghostNecklace(player);
@@ -232,7 +243,7 @@ system.runInterval(() => {
             if (shouldForceRescan || !isEquipmentUnchanged)
                 state.slotSignatures.clear();
 
-            if (!player.hasTag("bob:skip_inventory_scan"))
+            if (!safeHasTag(player, "bob:skip_inventory_scan"))
                 yield inventoryLoop(player);
 
             state.equipmentSignature = equipmentSignature;
@@ -245,7 +256,7 @@ system.runInterval(() => {
 }, SLOW_INTERVAL_TICKS);
 
 function inventoryLoop(player) {
-    if (!player.hasTag('joined3'))
+    if (!safeHasTag(player, 'joined3'))
         return;
 
     const inventory = player.getComponent("inventory").container;
