@@ -49,6 +49,16 @@ function portalNearbyMemoized(player) {
     portalNearbyCache.set(player.id, { tick: globalTick, result })
     return result
 }
+function safeHasTag(entity, tag) {
+    if (!entity?.isValid()) return false
+
+    try {
+        return entity.hasTag(tag)
+    } catch {
+        return false
+    }
+}
+
 //function loads structure with backpack entity
 
 class structure_Manager {
@@ -469,7 +479,7 @@ function startBackpackTick(entity, player, backpackTag) {
 
         const equipment = player.getComponent(EntityEquippableComponent.componentId)
         const item = equipment.getEquipment(EquipmentSlot.Mainhand)
-        const holdingCurrentBackpack = item && backpackIDs.includes(item.typeId) && player.hasTag(backpackTag)
+        const holdingCurrentBackpack = item && backpackIDs.includes(item.typeId) && safeHasTag(player, backpackTag)
 
         if (!holdingCurrentBackpack || portalNearbyMemoized(player)) {
             queueSaveBackpack(entity, player.id, true)
@@ -489,6 +499,8 @@ function startBackpackTick(entity, player, backpackTag) {
  * @param {string} besidesTag
  */
 function removeAllIDTags(player, besidesTag) {
+    if (!player?.isValid()) return
+
     const allTags = player.getTags()
     for (const tag of allTags) {
         if (tag.startsWith("holdingbackpack.") && tag != besidesTag) player.removeTag(tag)
@@ -525,7 +537,7 @@ system.runInterval(() => {
                             id = random
                         }
                         const tag = "holdingbackpack." + id
-                        if (!player.hasTag(tag)) {
+                        if (!safeHasTag(player, tag)) {
                             flushPlayerBackpacks(player.id, true)
                             removeAllIDTags(player, tag)
                             player.addTag(tag)
@@ -543,26 +555,23 @@ system.runInterval(() => {
                         }
                     } else {
                         clearBackpackTick(player.id)
-                        if (!player.hasTag("!holding")) {
+                        if (!safeHasTag(player, "!holding")) {
                             removeAllIDTags(player, "")
                             flushPlayerBackpacks(player.id, true)
                             player.addTag("!holding")
                         }
                     }
-                } else for (const id of backpackIDs) {
+                } else {
                     clearBackpackTick(player.id)
-                    if (!player.hasTag("!holding")) {
+                    if (!safeHasTag(player, "!holding")) {
                         removeAllIDTags(player, "")
                         flushPlayerBackpacks(player.id, true)
                         player.addTag("!holding")
                     }
                 }
-            } else if (!player.hasTag("!holding")) {
+            } else if (!safeHasTag(player, "!holding")) {
                 clearBackpackTick(player.id)
                 removeAllIDTags(player, "")
-                for (const id of backpackIDs) {
-                    removeAllIDTags(player)
-                }
                 flushPlayerBackpacks(player.id, true)
                 player.addTag("!holding")
             }
@@ -571,7 +580,8 @@ system.runInterval(() => {
 }, 5)
 world.afterEvents.playerJoin.subscribe((data) => {
     const player = world.getEntity(data.playerId)
-    removeAllIDTags(player)
+    if (player)
+        removeAllIDTags(player, "")
     cachedPlayerState.delete(data.playerId)
     portalNearbyCache.delete(data.playerId)
     clearBackpackTick(data.playerId)
@@ -595,7 +605,7 @@ system.runInterval(() => {
                 if (id != undefined) trackActiveBackpackEntity(id, backpack.id)
                 const playerEntity = id != undefined ? world.getEntity(id) : undefined
                 if (id != undefined)
-                    if (playerEntity == undefined || !playerEntity.hasTag("holdingbackpack." + itemid))
+                    if (playerEntity == undefined || !safeHasTag(playerEntity, "holdingbackpack." + itemid))
                         queueSaveBackpack(backpack, id, true)
             }
         }
