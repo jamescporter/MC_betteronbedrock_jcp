@@ -168,21 +168,27 @@ function saveBackpack(entity) {
         transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)
         structure_Manager.save("backpack" + id + "_2", block2.location, block2.location, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
         emptyInventory(blockInv2)
-        block_Manager.setBlock(dim, block2.location, "air")
-        block2.setPermutation(lastBlock2)
+        system.runTimeout(() => {
+            block_Manager.setBlock(dim, block2.location, "air")
+            block2.setPermutation(lastBlock2)
+        }, 1)
     }
     transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)
     structure_Manager.save("backpack" + id, block.location, block.location, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
     emptyInventory(blockInv)
-    block_Manager.setBlock(dim, block.location, "air")
-    block.setPermutation(lastBlock)
+    system.runTimeout(() => {
+        block_Manager.setBlock(dim, block.location, "air")
+        block.setPermutation(lastBlock)
+    }, 1)
     entity.remove()
     return true
 }
 
 function closeBackpackEntityWithoutSave(entity) {
+    if (!entity?.isValid()) return
     const playerId = entity.getDynamicProperty("playerID")
     if (playerId != undefined) untrackActiveBackpackEntity(playerId, entity.id)
+    entity.teleport({ x: 0, y: -100, z: 0 })
     entity.remove()
 }
 
@@ -408,8 +414,10 @@ function loadBackpack(entityTypeID, player, item) {
             }
             transferInventory(blockInv2.container, entityInv.container, dim, block2.location, 0, 27, entityInv.container.size)
             emptyInventory(blockInv2)
-            block_Manager.setBlock(dim, block2.location, "air")
-            block2.setPermutation(lastBlock2)
+            system.runTimeout(() => {
+                block_Manager.setBlock(dim, block2.location, "air")
+                block2.setPermutation(lastBlock2)
+            }, 1)
         }
         const blockInv = dim.getBlock(block.location)?.getComponent(BlockInventoryComponent.componentId)
         if (!blockInv?.container) {
@@ -418,17 +426,17 @@ function loadBackpack(entityTypeID, player, item) {
         }
         transferInventory(blockInv.container, entityInv.container, dim, block.location, 0, 0, 27)
         emptyInventory(blockInv)
-        block_Manager.setBlock(dim, block.location, "air")
-        block.setPermutation(lastBlock)
+        system.runTimeout(() => {
+            block_Manager.setBlock(dim, block.location, "air")
+            block.setPermutation(lastBlock)
+        }, 1)
         backPack.setDynamicProperty("backpack_id", id)
         backPack.setDynamicProperty("playerID", player.id)
         backpackInventoryState.set(id, getBackpackSignature(backPack))
-        //console.warn(JSON.stringify(backPack))
         backPack.nameTag = backpackData[backPack.typeId].name
         backPack.setDynamicProperty("playerID", player.id)
         return backPack
     } catch {
-        //console.warn("block returned undefined")
         return undefined
     }
 }
@@ -467,7 +475,9 @@ function transferInventory(container1, container2, dimension, fromInvLocation, F
  */
 function emptyInventory(container) {
     for (let i = 0; i < container.size; i++) {
-        container.setItem(i, undefined)
+        if (container.getItem(i)) {
+            container.setItem(i, undefined)
+        }
     }
 }
 
@@ -545,58 +555,43 @@ function removeAllIDTags(player, besidesTag) {
 }
 
 system.runInterval(() => {
-    system.runJob(function* () {
-        for (const player of world.getAllPlayers()) {
-            const equipment = player.getComponent(EntityEquippableComponent.componentId)
-            let slot = equipment.getEquipmentSlot(EquipmentSlot.Mainhand)
-            /*if (player.isSneaking) {
-                const offhand = equipment.getEquipmentSlot(EquipmentSlot.Offhand);
-                const offhandItem = offhand.getItem();
-                if (offhandItem && backpackIDs.includes(offhandItem.typeId))
-                    slot = offhand;
-            };*/
-    
-            const item = slot.getItem()
-            const nearPortal = portalNearbyMemoized(player)
-            const stateKey = buildPlayerStateKey(player, item, nearPortal)
-            if (cachedPlayerState.get(player.id) == stateKey) continue
-            cachedPlayerState.set(player.id, stateKey)
+    for (const player of world.getAllPlayers()) {
+        const equipment = player.getComponent(EntityEquippableComponent.componentId)
+        let slot = equipment.getEquipmentSlot(EquipmentSlot.Mainhand)
 
-            if (item) {
-                if (backpackIDs.includes(item.typeId)) {
-                    if (nearPortal == false) {
-                        player.removeTag("!holding")
-                        let id = item.getDynamicProperty("backpack_id")
-                        if (id == undefined) {
-                            const random = generateRandomID(100)
-                            item.setDynamicProperty("backpack_id", random)
-                            slot.setItem(item)
-                            id = random
+        const item = slot.getItem()
+        const nearPortal = portalNearbyMemoized(player)
+        const stateKey = buildPlayerStateKey(player, item, nearPortal)
+        if (cachedPlayerState.get(player.id) == stateKey) continue
+        cachedPlayerState.set(player.id, stateKey)
+
+        if (item) {
+            if (backpackIDs.includes(item.typeId)) {
+                if (nearPortal == false) {
+                    player.removeTag("!holding")
+                    let id = item.getDynamicProperty("backpack_id")
+                    if (id == undefined) {
+                        const random = generateRandomID(100)
+                        item.setDynamicProperty("backpack_id", random)
+                        slot.setItem(item)
+                        id = random
+                    }
+                    const tag = "holdingbackpack." + id
+                    if (!safeHasTag(player, tag)) {
+                        flushPlayerBackpacks(player.id, true)
+                        removeAllIDTags(player, tag)
+                        player.addTag(tag)
+                        if (!canRunPlayerOperation(player.id)) {
+                            cachedPlayerState.delete(player.id)
+                            continue
                         }
-                        const tag = "holdingbackpack." + id
-                        if (!safeHasTag(player, tag)) {
-                            flushPlayerBackpacks(player.id, true)
-                            removeAllIDTags(player, tag)
-                            player.addTag(tag)
-                            if (!canRunPlayerOperation(player.id)) {
-                                cachedPlayerState.delete(player.id)
-                                continue
-                            }
-                            markPlayerOperation(player.id)
-                            const backpack = loadBackpack(item.typeId, player, item)
-                            if (!backpack) continue
-                            startBackpackTick(backpack, player, tag)
-                            trackActiveBackpackEntity(player.id, backpack.id)
-                            backpack.addTag(player.id)
-                            backpack.addTag("backpack")
-                        }
-                    } else {
-                        clearBackpackTick(player.id)
-                        if (!safeHasTag(player, "!holding")) {
-                            removeAllIDTags(player, "")
-                            flushPlayerBackpacks(player.id, true)
-                            player.addTag("!holding")
-                        }
+                        markPlayerOperation(player.id)
+                        const backpack = loadBackpack(item.typeId, player, item)
+                        if (!backpack) continue
+                        startBackpackTick(backpack, player, tag)
+                        trackActiveBackpackEntity(player.id, backpack.id)
+                        backpack.addTag(player.id)
+                        backpack.addTag("backpack")
                     }
                 } else {
                     clearBackpackTick(player.id)
@@ -606,14 +601,21 @@ system.runInterval(() => {
                         player.addTag("!holding")
                     }
                 }
-            } else if (!safeHasTag(player, "!holding")) {
+            } else {
                 clearBackpackTick(player.id)
-                removeAllIDTags(player, "")
-                flushPlayerBackpacks(player.id, true)
-                player.addTag("!holding")
+                if (!safeHasTag(player, "!holding")) {
+                    removeAllIDTags(player, "")
+                    flushPlayerBackpacks(player.id, true)
+                    player.addTag("!holding")
+                }
             }
+        } else if (!safeHasTag(player, "!holding")) {
+            clearBackpackTick(player.id)
+            removeAllIDTags(player, "")
+            flushPlayerBackpacks(player.id, true)
+            player.addTag("!holding")
         }
-    }());
+    }
 }, 5)
 world.afterEvents.playerJoin.subscribe((data) => {
     const player = world.getEntity(data.playerId)
@@ -633,18 +635,18 @@ world.afterEvents.playerLeave.subscribe((data) => {
 })
 
 system.runInterval(() => {
-    system.runJob(function* () {
-        for (const dim of dims) {
-            const backpacks = dim.getEntities({ tags: ["backpack"] })
-            for (const backpack of backpacks) {
-                const itemid = backpack.getDynamicProperty("backpack_id")
-                const id = backpack.getDynamicProperty("playerID")
-                if (id != undefined) trackActiveBackpackEntity(id, backpack.id)
-                const playerEntity = id != undefined ? world.getEntity(id) : undefined
-                if (id != undefined)
-                    if (playerEntity == undefined || !safeHasTag(playerEntity, "holdingbackpack." + itemid))
-                        queueSaveBackpack(backpack, id, true)
+    for (const dim of dims) {
+        const backpacks = dim.getEntities({ tags: ["backpack"] })
+        for (const backpack of backpacks) {
+            const itemid = backpack.getDynamicProperty("backpack_id")
+            const id = backpack.getDynamicProperty("playerID")
+            if (id != undefined) trackActiveBackpackEntity(id, backpack.id)
+            const playerEntity = id != undefined ? world.getEntity(id) : undefined
+            if (id != undefined) {
+                if (playerEntity == undefined || !safeHasTag(playerEntity, "holdingbackpack." + itemid)) {
+                    queueSaveBackpack(backpack, id, true)
+                }
             }
         }
-    }());
+    }
 }, 20)
