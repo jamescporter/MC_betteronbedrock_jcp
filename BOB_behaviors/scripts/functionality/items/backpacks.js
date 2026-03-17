@@ -12,6 +12,10 @@ const activeBackpackEntityIdsByPlayer = new Map()
 const backpackInventoryState = new Map()
 const portalNearbyCache = new Map()
 
+function warnBackpack(message) {
+    console.warn(`[BOB Backpacks] ${message}`)
+}
+
 system.runInterval(() => {
     globalTick++
 }, 1)
@@ -188,7 +192,24 @@ function closeBackpackEntityWithoutSave(entity) {
     if (!entity?.isValid()) return
     const playerId = entity.getDynamicProperty("playerID")
     if (playerId != undefined) untrackActiveBackpackEntity(playerId, entity.id)
+<<<<<<< HEAD
     entity.teleport({ x: 0, y: -100, z: 0 })
+=======
+    const backpackId = entity.getDynamicProperty("backpack_id")
+
+    // Never remove a backpack entity with items still inside it.
+    // Direct removal can spill inventory entities into the world and create apparent duplication
+    // against already-persisted structure data.
+    const entityInv = entity.getComponent(EntityInventoryComponent.componentId)
+    if (entityInv?.container) {
+        const signature = getInventorySignature(entityInv.container)
+        if (signature.includes(":")) {
+            warnBackpack(`Safely closing backpack entity ${entity.id} for player ${playerId ?? "unknown"} (${backpackId ?? "unknown backpack id"}) with inventory contents.`)
+        }
+        emptyInventory(entityInv.container)
+    }
+
+>>>>>>> 41c7712cb2d61ca8fad28e380efaf55a0ea1a32e
     entity.remove()
 }
 
@@ -240,6 +261,8 @@ function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTic
         const currentSignature = getBackpackSignature(entity)
         const previousSignature = backpackId != undefined ? backpackInventoryState.get(backpackId) : undefined
         if (backpackId != undefined && previousSignature == currentSignature) {
+            // Unchanged backpacks still need a safe close path; direct removal can drop items.
+            warnBackpack(`Closing unchanged backpack entity ${key} for player ${resolvedPlayerId} (${backpackId}).`)
             closeBackpackEntityWithoutSave(entity)
             return
         }
@@ -287,6 +310,23 @@ function untrackActiveBackpackEntity(playerId, entityId) {
     if (activeIds == undefined) return
     activeIds.delete(entityId)
     if (activeIds.size < 1) activeBackpackEntityIdsByPlayer.delete(playerId)
+}
+
+function flushDuplicateBackpacks(playerId, backpackId) {
+    if (playerId == undefined || backpackId == undefined) return
+    let duplicateCount = 0
+    for (const dim of dims) {
+        const backpacks = dim.getEntities({ tags: [playerId, "backpack"] })
+        for (const backpack of backpacks) {
+            if (!backpack?.isValid()) continue
+            if (backpack.getDynamicProperty("backpack_id") != backpackId) continue
+            duplicateCount++
+            queueSaveBackpack(backpack, playerId, true)
+        }
+    }
+    if (duplicateCount > 1) {
+        warnBackpack(`Detected ${duplicateCount} active backpack entities for player ${playerId} and backpack id ${backpackId}; queueing a forced save to collapse duplicates.`)
+    }
 }
 
 function flushPlayerBackpacks(playerId, immediate = false) {
@@ -379,12 +419,18 @@ function loadBackpack(entityTypeID, player, item) {
     try {
         let block2 = undefined
         const block = dim.getBlock({ x: player.location.x, y: 100, z: player.location.z })
-        if (!block) return undefined
+        if (!block) {
+            warnBackpack(`Failed to load backpack ${id} for player ${player.id}: staging block at y=100 was unavailable.`)
+            return undefined
+        }
         if (maxCount > 1) block2 = dim.getBlock({ x: player.location.x, y: 101, z: player.location.z })
         const lastBlock = block.permutation
         let lastBlock2 = undefined
         if (maxCount > 1) {
-            if (!block2) return undefined
+            if (!block2) {
+                warnBackpack(`Failed to load backpack ${id} for player ${player.id}: second staging block at y=101 was unavailable.`)
+                return undefined
+            }
             lastBlock2 = block2.permutation
             if (structure_Manager.load("backpack" + id + "_2", block2.location, dim).successCount < 1) {
                 block2.setPermutation(BlockPermutation.resolve("barrel"))
@@ -403,13 +449,15 @@ function loadBackpack(entityTypeID, player, item) {
         if (!backPack?.isValid()) return undefined
         const entityInv = backPack.getComponent(EntityInventoryComponent.componentId)
         if (!entityInv?.container) {
-            backPack.remove()
+            warnBackpack(`Spawned backpack entity without inventory component for player ${player.id} (${id}); closing entity.`)
+            closeBackpackEntityWithoutSave(backPack)
             return undefined
         }
         if (maxCount > 1) {
             const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
             if (!blockInv2?.container) {
-                backPack.remove()
+                warnBackpack(`Failed loading second backpack container for player ${player.id} (${id}); closing entity.`)
+                closeBackpackEntityWithoutSave(backPack)
                 return undefined
             }
             transferInventory(blockInv2.container, entityInv.container, dim, block2.location, 0, 27, entityInv.container.size)
@@ -421,7 +469,8 @@ function loadBackpack(entityTypeID, player, item) {
         }
         const blockInv = dim.getBlock(block.location)?.getComponent(BlockInventoryComponent.componentId)
         if (!blockInv?.container) {
-            backPack.remove()
+            warnBackpack(`Failed loading primary backpack container for player ${player.id} (${id}); closing entity.`)
+            closeBackpackEntityWithoutSave(backPack)
             return undefined
         }
         transferInventory(blockInv.container, entityInv.container, dim, block.location, 0, 0, 27)
@@ -437,6 +486,10 @@ function loadBackpack(entityTypeID, player, item) {
         backPack.setDynamicProperty("playerID", player.id)
         return backPack
     } catch {
+<<<<<<< HEAD
+=======
+        warnBackpack(`Unexpected error while loading backpack ${id} for player ${player.id}.`)
+>>>>>>> 41c7712cb2d61ca8fad28e380efaf55a0ea1a32e
         return undefined
     }
 }
@@ -559,6 +612,7 @@ system.runInterval(() => {
         const equipment = player.getComponent(EntityEquippableComponent.componentId)
         let slot = equipment.getEquipmentSlot(EquipmentSlot.Mainhand)
 
+<<<<<<< HEAD
         const item = slot.getItem()
         const nearPortal = portalNearbyMemoized(player)
         const stateKey = buildPlayerStateKey(player, item, nearPortal)
@@ -584,6 +638,43 @@ system.runInterval(() => {
                         if (!canRunPlayerOperation(player.id)) {
                             cachedPlayerState.delete(player.id)
                             continue
+=======
+            if (item) {
+                if (backpackIDs.includes(item.typeId)) {
+                    if (nearPortal == false) {
+                        player.removeTag("!holding")
+                        let id = item.getDynamicProperty("backpack_id")
+                        if (id == undefined) {
+                            const random = generateRandomID(100)
+                            item.setDynamicProperty("backpack_id", random)
+                            slot.setItem(item)
+                            id = random
+                        }
+                        const tag = "holdingbackpack." + id
+                        if (!safeHasTag(player, tag)) {
+                            flushPlayerBackpacks(player.id, true)
+                            flushDuplicateBackpacks(player.id, id)
+                            removeAllIDTags(player, tag)
+                            player.addTag(tag)
+                            if (!canRunPlayerOperation(player.id)) {
+                                cachedPlayerState.delete(player.id)
+                                continue
+                            }
+                            markPlayerOperation(player.id)
+                            const backpack = loadBackpack(item.typeId, player, item)
+                            if (!backpack) continue
+                            startBackpackTick(backpack, player, tag)
+                            trackActiveBackpackEntity(player.id, backpack.id)
+                            backpack.addTag(player.id)
+                            backpack.addTag("backpack")
+                        }
+                    } else {
+                        clearBackpackTick(player.id)
+                        if (!safeHasTag(player, "!holding")) {
+                            removeAllIDTags(player, "")
+                            flushPlayerBackpacks(player.id, true)
+                            player.addTag("!holding")
+>>>>>>> 41c7712cb2d61ca8fad28e380efaf55a0ea1a32e
                         }
                         markPlayerOperation(player.id)
                         const backpack = loadBackpack(item.typeId, player, item)
