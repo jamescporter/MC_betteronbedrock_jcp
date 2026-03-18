@@ -53,7 +53,7 @@
                     15
                 ]
             },
-            "y": "query.heightmap(variable.worldx, variable.worldz) + - 0"
+            "y": "query.heightmap(variable.worldx, variable.worldz)"
         }
     }
 }
