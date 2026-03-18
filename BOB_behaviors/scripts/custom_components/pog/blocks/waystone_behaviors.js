@@ -1,6 +1,6 @@
 import { world, system, TicksPerSecond, EntityIsTamedComponent } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { dimensionNames } from "../../../functionality/util";
+import { dimensionNames } from "../../../functionality/util.js";
 
 const warpRegex = /(?:Warp:)(.*?)-((?:-|)\d+)\|((?:-|)\d+)\|((?:-|)\d+)\|(minecraft:.+)/;
 
