@@ -296,9 +296,12 @@ function getSlotSignature(itemStack) {
     return `${itemStack.typeId}|${loreHash}|${itemStack.amount}`;
 }
 
+console.warn("[BOB Script] main.js loaded; registering worldInitialize subscription.");
+
 // Custom Components
 world.beforeEvents.worldInitialize.subscribe(
     ({ blockComponentRegistry, itemComponentRegistry }) => {
+        console.warn("[BOB Script] worldInitialize reached; registering custom block and item components.");
         registerBlockComponents(blockComponentRegistry);
         registerItemComponents(itemComponentRegistry);
     },

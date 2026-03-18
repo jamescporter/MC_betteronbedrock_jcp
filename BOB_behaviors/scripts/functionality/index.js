@@ -1,5 +1,5 @@
-import "./armor_effects/stardust";
-import "./items/backpacks";
-import "./quests/main";
-import "./ambience/ambient_stuff";
-import "./ambience/fog";
+import "./armor_effects/stardust.js";
+import "./items/backpacks.js";
+import "./quests/main.js";
+import "./ambience/ambient_stuff.js";
+import "./ambience/fog.js";
