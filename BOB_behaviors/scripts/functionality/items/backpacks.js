@@ -2,6 +2,8 @@ import { world, system, EntityInventoryComponent, Dimension, ItemStack, ItemType
 const PLAYER_OPERATION_COOLDOWN_TICKS = 10
 const SAVE_DEBOUNCE_TICKS = 4
 const PORTAL_NEARBY_CACHE_TICKS = 1
+const BACKPACK_FOLLOW_DISTANCE = 2
+const BACKPACK_REPOSITION_THRESHOLD = 0.15
 let globalTick = 0
 
 const cachedPlayerState = new Map()
@@ -53,6 +55,24 @@ function portalNearbyMemoized(player) {
     portalNearbyCache.set(player.id, { tick: globalTick, result })
     return result
 }
+
+function getBackpackFollowLocation(player) {
+    const viewDir = player.getViewDirection()
+    const headLoc = player.getHeadLocation()
+    return {
+        x: headLoc.x + (viewDir.x * BACKPACK_FOLLOW_DISTANCE),
+        y: headLoc.y + (viewDir.y * BACKPACK_FOLLOW_DISTANCE),
+        z: headLoc.z + (viewDir.z * BACKPACK_FOLLOW_DISTANCE)
+    }
+}
+
+function distanceSquared(locationA, locationB) {
+    const deltaX = locationA.x - locationB.x
+    const deltaY = locationA.y - locationB.y
+    const deltaZ = locationA.z - locationB.z
+    return (deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ)
+}
+
 function safeHasTag(entity, tag) {
     if (!entity?.isValid()) return false
 
@@ -439,9 +459,7 @@ function loadBackpack(entityTypeID, player, item) {
             structure_Manager.save("backpack" + id, block.location, block.location, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })
         }
         structure_Manager.load("backpack" + id, block.location, dim)
-        const viewDir = player.getViewDirection()
-        const headLoc = player.getHeadLocation()
-        const backPack = spawnEntityAnywhere(entityTypeID, { x: headLoc.x + (viewDir.x * 1), y: headLoc.y + (viewDir.y * 1), z: headLoc.z + (viewDir.z * 1) }, dim)
+        const backPack = spawnEntityAnywhere(entityTypeID, getBackpackFollowLocation(player), dim)
         if (!backPack?.isValid()) return undefined
         const entityInv = backPack.getComponent(EntityInventoryComponent.componentId)
         if (!entityInv?.container) {
@@ -580,9 +598,10 @@ function startBackpackTick(entity, player, backpackTag) {
             return
         }
 
-        const headLoc = player.getHeadLocation()
-        const viewDir = player.getViewDirection()
-        entity.teleport({ x: headLoc.x + (viewDir.x * 1), y: headLoc.y + (viewDir.y * 1), z: headLoc.z + (viewDir.z * 1) })
+        const targetLocation = getBackpackFollowLocation(player)
+        if (distanceSquared(entity.location, targetLocation) > (BACKPACK_REPOSITION_THRESHOLD * BACKPACK_REPOSITION_THRESHOLD)) {
+            entity.teleport(targetLocation)
+        }
     }, 2)
 
     activeBackpackTicks.set(player.id, runID)
