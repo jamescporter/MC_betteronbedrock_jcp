@@ -1,5 +1,5 @@
 {
-    "format_version": "1.21.40",
+    "format_version": "1.26.0",
     "minecraft:block": {
         "description": {
             "identifier": "better_on_bedrock:tin_block",
@@ -10,7 +10,7 @@
         },
         "components": {
             "minecraft:geometry": {
-                "identifier": "geometry.full_block",
+                "identifier": "minecraft:geometry.full_block",
                 "culling": "better_on_bedrock:cube"
             },
             "minecraft:material_instances": {
