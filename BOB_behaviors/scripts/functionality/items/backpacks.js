@@ -13,6 +13,7 @@ const lastPlayerOperationTick = new Map()
 const activeBackpackEntityIdsByPlayer = new Map()
 const backpackInventoryState = new Map()
 const portalNearbyCache = new Map()
+const backpackOperationLocks = new Set()
 
 function warnBackpack(message) {
     console.warn(`[BOB Backpacks] ${message}`)
@@ -80,6 +81,14 @@ function safeHasTag(entity, tag) {
         return entity.hasTag(tag)
     } catch {
         return false
+    }
+}
+
+function toBlockPos(vec) {
+    return {
+        x: Math.floor(vec.x),
+        y: Math.floor(vec.y),
+        z: Math.floor(vec.z)
     }
 }
 
@@ -171,13 +180,15 @@ function saveBackpack(entity) {
     const data = backpackData[entity.typeId]
     if (id == undefined || !data) return false
     const maxCount = data.count
-    const block = dim.getBlock({ x: entityLoc.x, y: 100, z: entityLoc.z })
+    const stagingBasePos = toBlockPos({ x: entityLoc.x, y: 100, z: entityLoc.z })
+    const stagingUpperPos = toBlockPos({ x: entityLoc.x, y: 101, z: entityLoc.z })
+    const block = dim.getBlock(stagingBasePos)
     if (!block) return false
     const lastBlock = block.permutation
     let block2 = undefined
     let lastBlock2 = undefined
     if (maxCount > 1) {
-        block2 = dim.getBlock({ x: entityLoc.x, y: 101, z: entityLoc.z })
+        block2 = dim.getBlock(stagingUpperPos)
         if (!block2) return false
         lastBlock2 = block2.permutation
         block2.setPermutation(BlockPermutation.resolve("barrel"))
@@ -190,18 +201,18 @@ function saveBackpack(entity) {
         const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
         if (!blockInv2?.container) return false
         transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)
-        structure_Manager.save("backpack" + id + "_2", block2.location, block2.location, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
+        structure_Manager.save("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
         emptyInventory(blockInv2)
         system.runTimeout(() => {
-            block_Manager.setBlock(dim, block2.location, "air")
+            block_Manager.setBlock(dim, stagingUpperPos, "air")
             block2.setPermutation(lastBlock2)
         }, 1)
     }
     transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)
-    structure_Manager.save("backpack" + id, block.location, block.location, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
+    structure_Manager.save("backpack" + id, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
     emptyInventory(blockInv)
     system.runTimeout(() => {
-        block_Manager.setBlock(dim, block.location, "air")
+        block_Manager.setBlock(dim, stagingBasePos, "air")
         block.setPermutation(lastBlock)
     }, 1)
     entity.remove()
@@ -239,6 +250,18 @@ function markPlayerOperation(playerId) {
     lastPlayerOperationTick.set(playerId, globalTick)
 }
 
+function tryLockBackpackOperation(backpackId) {
+    if (backpackId == undefined) return false
+    if (backpackOperationLocks.has(backpackId)) return false
+    backpackOperationLocks.add(backpackId)
+    return true
+}
+
+function unlockBackpackOperation(backpackId) {
+    if (backpackId == undefined) return
+    backpackOperationLocks.delete(backpackId)
+}
+
 function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTicks = undefined) {
     if (!entity?.isValid()) return
     const resolvedPlayerId = playerId ?? entity.getDynamicProperty("playerID")
@@ -274,19 +297,27 @@ function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTic
 
         markPlayerOperation(resolvedPlayerId)
         const backpackId = entity.getDynamicProperty("backpack_id")
-        const currentSignature = getBackpackSignature(entity)
-        const previousSignature = backpackId != undefined ? backpackInventoryState.get(backpackId) : undefined
-        if (backpackId != undefined && previousSignature == currentSignature) {
-            // Unchanged backpacks still need a safe close path; direct removal can drop items.
-            warnBackpack(`Closing unchanged backpack entity ${key} for player ${resolvedPlayerId} (${backpackId}).`)
-            closeBackpackEntityWithoutSave(entity)
+        if (!tryLockBackpackOperation(backpackId)) {
+            queueSaveBackpack(entity, resolvedPlayerId, false, 1)
             return
         }
+        try {
+            const currentSignature = getBackpackSignature(entity)
+            const previousSignature = backpackId != undefined ? backpackInventoryState.get(backpackId) : undefined
+            if (backpackId != undefined && previousSignature == currentSignature) {
+                // Unchanged backpacks still need a safe close path; direct removal can drop items.
+                warnBackpack(`Closing unchanged backpack entity ${key} for player ${resolvedPlayerId} (${backpackId}).`)
+                closeBackpackEntityWithoutSave(entity)
+                return
+            }
 
-        const saved = saveBackpack(entity)
-        if (saved) {
-            if (backpackId != undefined) backpackInventoryState.set(backpackId, currentSignature)
-            untrackActiveBackpackEntity(resolvedPlayerId, key)
+            const saved = saveBackpack(entity)
+            if (saved) {
+                if (backpackId != undefined) backpackInventoryState.set(backpackId, currentSignature)
+                untrackActiveBackpackEntity(resolvedPlayerId, key)
+            }
+        } finally {
+            unlockBackpackOperation(backpackId)
         }
     }, delay)
 
@@ -434,12 +465,14 @@ function loadBackpack(entityTypeID, player, item) {
     const maxCount = data.count
     try {
         let block2 = undefined
-        const block = dim.getBlock({ x: player.location.x, y: 100, z: player.location.z })
+        const stagingBasePos = toBlockPos({ x: player.location.x, y: 100, z: player.location.z })
+        const stagingUpperPos = toBlockPos({ x: player.location.x, y: 101, z: player.location.z })
+        const block = dim.getBlock(stagingBasePos)
         if (!block) {
             warnBackpack(`Failed to load backpack ${id} for player ${player.id}: staging block at y=100 was unavailable.`)
             return undefined
         }
-        if (maxCount > 1) block2 = dim.getBlock({ x: player.location.x, y: 101, z: player.location.z })
+        if (maxCount > 1) block2 = dim.getBlock(stagingUpperPos)
         const lastBlock = block.permutation
         let lastBlock2 = undefined
         if (maxCount > 1) {
@@ -448,17 +481,17 @@ function loadBackpack(entityTypeID, player, item) {
                 return undefined
             }
             lastBlock2 = block2.permutation
-            if (structure_Manager.load("backpack" + id + "_2", block2.location, dim).successCount < 1) {
+            if (structure_Manager.load("backpack" + id + "_2", stagingUpperPos, dim).successCount < 1) {
                 block2.setPermutation(BlockPermutation.resolve("barrel"))
-                structure_Manager.save("backpack" + id + "_2", block2.location, block2.location, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })
+                structure_Manager.save("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })
             }
-            structure_Manager.load("backpack" + id + "_2", block2.location, dim)
+            structure_Manager.load("backpack" + id + "_2", stagingUpperPos, dim)
         }
-        if (structure_Manager.load("backpack" + id, block.location, dim).successCount < 1) {
+        if (structure_Manager.load("backpack" + id, stagingBasePos, dim).successCount < 1) {
             block.setPermutation(BlockPermutation.resolve("barrel"))
-            structure_Manager.save("backpack" + id, block.location, block.location, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })
+            structure_Manager.save("backpack" + id, stagingBasePos, stagingBasePos, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })
         }
-        structure_Manager.load("backpack" + id, block.location, dim)
+        structure_Manager.load("backpack" + id, stagingBasePos, dim)
         const backPack = spawnEntityAnywhere(entityTypeID, getBackpackFollowLocation(player), dim)
         if (!backPack?.isValid()) return undefined
         const entityInv = backPack.getComponent(EntityInventoryComponent.componentId)
@@ -477,11 +510,11 @@ function loadBackpack(entityTypeID, player, item) {
             transferInventory(blockInv2.container, entityInv.container, dim, block2.location, 0, 27, entityInv.container.size)
             emptyInventory(blockInv2)
             system.runTimeout(() => {
-                block_Manager.setBlock(dim, block2.location, "air")
+                block_Manager.setBlock(dim, stagingUpperPos, "air")
                 block2.setPermutation(lastBlock2)
             }, 1)
         }
-        const blockInv = dim.getBlock(block.location)?.getComponent(BlockInventoryComponent.componentId)
+        const blockInv = dim.getBlock(stagingBasePos)?.getComponent(BlockInventoryComponent.componentId)
         if (!blockInv?.container) {
             warnBackpack(`Failed loading primary backpack container for player ${player.id} (${id}); closing entity.`)
             closeBackpackEntityWithoutSave(backPack)
@@ -490,7 +523,7 @@ function loadBackpack(entityTypeID, player, item) {
         transferInventory(blockInv.container, entityInv.container, dim, block.location, 0, 0, 27)
         emptyInventory(blockInv)
         system.runTimeout(() => {
-            block_Manager.setBlock(dim, block.location, "air")
+            block_Manager.setBlock(dim, stagingBasePos, "air")
             block.setPermutation(lastBlock)
         }, 1)
         backPack.setDynamicProperty("backpack_id", id)
@@ -499,9 +532,9 @@ function loadBackpack(entityTypeID, player, item) {
         backPack.nameTag = backpackData[backPack.typeId].name
         backPack.setDynamicProperty("playerID", player.id)
         return backPack
-    } catch (error) {
-        const failureReason = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
-        warnBackpack(`Failed to load backpack ${id} for player ${player.id}: ${failureReason}`)
+    } catch (e) {
+        const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+        console.warn(`[backpacks] Failed to load backpack ${id} for player ${player.id}: ${failureReason}`)
         return undefined
     }
 }
@@ -512,26 +545,24 @@ function loadBackpack(entityTypeID, player, item) {
  * @param {import("@minecraft/server").Dimension} dimension
  */
 function transferInventory(container1, container2, dimension, fromInvLocation, FromInvStartingSlot, ToInvStartingSlot, maxSlot) {
-    let targetSlot = ToInvStartingSlot
-    const sourceEnd = Math.min(maxSlot, container1.size)
-
-    for (let sourceSlot = FromInvStartingSlot; sourceSlot < sourceEnd; sourceSlot++) {
-        if (targetSlot >= container2.size) break
-
+    let destOffset = 0
+    for (let sourceSlot = FromInvStartingSlot; sourceSlot < maxSlot; sourceSlot++) {
+        const destinationSlot = ToInvStartingSlot + destOffset
         const item = container1.getItem(sourceSlot)
         if (item == undefined) {
-            targetSlot++
+            destOffset++
             continue
         }
 
         if (!unallowedItems.includes(item.typeId)) {
-            container2.setItem(targetSlot, item)
+            if (destinationSlot >= container2.size) break
+            container2.setItem(destinationSlot, item)
         } else {
             spawnItemAnywhere(item, fromInvLocation, dimension)
         }
 
         container1.setItem(sourceSlot, undefined)
-        targetSlot++
+        destOffset++
     }
 }
 
@@ -737,6 +768,7 @@ system.runInterval(() => {
             const playerEntity = id != undefined ? world.getEntity(id) : undefined
             if (id != undefined) {
                 if (playerEntity == undefined || !safeHasTag(playerEntity, "holdingbackpack." + itemid)) {
+                    if (itemid == undefined || backpackOperationLocks.has(itemid)) continue
                     queueSaveBackpack(backpack, id, true)
                 }
             }
