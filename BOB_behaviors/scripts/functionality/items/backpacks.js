@@ -665,8 +665,20 @@ function transitionToHoldingBackpack(player, item, slot) {
         cachedPlayerState.delete(player.id)
         return
     }
-    markPlayerOperation(player.id)
-    const backpack = loadBackpack(item.typeId, player, item)
+    const canUseBackpackLock = typeof tryLockBackpackOperation == "function" && typeof unlockBackpackOperation == "function"
+    if (canUseBackpackLock && !tryLockBackpackOperation(id)) {
+        cachedPlayerState.delete(player.id)
+        return
+    }
+
+    let backpack = undefined
+    try {
+        markPlayerOperation(player.id)
+        backpack = loadBackpack(item.typeId, player, item)
+    } finally {
+        if (canUseBackpackLock) unlockBackpackOperation(id)
+    }
+
     const backpackValid = backpack?.isValid()
     if (!backpackValid) {
         warnBackpack(`Failed to initialise backpack entity for backpack ${id} and player ${player.id}: no valid entity returned.`)
