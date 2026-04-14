@@ -80,7 +80,9 @@ function safeHasTag(entity, tag) {
 
     try {
         return entity.hasTag(tag)
-    } catch {
+    } catch (e) {
+        const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+        warnBackpack(`Failed checking tag "${tag}" on entity ${entity.id ?? "unknown"} (${entity.typeId ?? "unknown"}): ${failureReason}`)
         return false
     }
 }
@@ -556,7 +558,7 @@ function loadBackpack(entityTypeID, player, item) {
         return backPack
     } catch (e) {
         const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
-        console.warn(`[backpacks] Failed to load backpack ${id} for player ${player.id}: ${failureReason}`)
+        warnBackpack(`Failed to load backpack ${id} for player ${player.id}: ${failureReason}`)
         return undefined
     }
 }
@@ -625,7 +627,9 @@ const dims = [
 function generateRandomID(length) {
     const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
     let id = ""
-    for (let i = 0; i < length; i++) try { id = id + characters[Math.floor(Math.random() * characters.length)] } catch { }
+    for (let i = 0; i < length; i++) {
+        id = id + characters[Math.floor(Math.random() * characters.length)]
+    }
     return id
 }
 
