@@ -20,7 +20,12 @@ function warnBackpack(message) {
 }
 
 system.runInterval(() => {
-    globalTick++
+    try {
+        globalTick++
+    } catch (error) {
+        const errorDetails = error instanceof Error ? (error.stack ?? `${error.name}: ${error.message}`) : String(error)
+        warnBackpack(`Operation "global tick increment" failed. Error: ${errorDetails}`)
+    }
 }, 1)
 
 function portalNearby(player) {
@@ -744,56 +749,81 @@ function transitionToHoldingBackpack(player, item, slot) {
 }
 
 system.runInterval(() => {
-    for (const player of world.getAllPlayers()) {
-        const equipment = player.getComponent(EntityEquippableComponent.componentId)
-        const slot = equipment.getEquipmentSlot(EquipmentSlot.Mainhand)
-        const item = slot.getItem()
-        const nearPortal = portalNearbyMemoized(player)
-        const stateKey = buildPlayerStateKey(player, item, nearPortal)
-        if (cachedPlayerState.get(player.id) == stateKey) continue
-        cachedPlayerState.set(player.id, stateKey)
+    let playerId = undefined
+    try {
+        for (const player of world.getAllPlayers()) {
+            playerId = player.id
+            const equipment = player.getComponent(EntityEquippableComponent.componentId)
+            const slot = equipment.getEquipmentSlot(EquipmentSlot.Mainhand)
+            const item = slot.getItem()
+            const nearPortal = portalNearbyMemoized(player)
+            const stateKey = buildPlayerStateKey(player, item, nearPortal)
+            if (cachedPlayerState.get(player.id) == stateKey) continue
+            cachedPlayerState.set(player.id, stateKey)
 
-        const isBackpackItem = item && backpackIDs.includes(item.typeId)
-        if (isBackpackItem && nearPortal == false) {
-            transitionToHoldingBackpack(player, item, slot)
-        } else if (isBackpackItem && nearPortal) {
-            transitionToPortalBlocked(player)
-        } else {
-            transitionToNotHoldingBackpack(player)
+            const isBackpackItem = item && backpackIDs.includes(item.typeId)
+            if (isBackpackItem && nearPortal == false) {
+                transitionToHoldingBackpack(player, item, slot)
+            } else if (isBackpackItem && nearPortal) {
+                transitionToPortalBlocked(player)
+            } else {
+                transitionToNotHoldingBackpack(player)
+            }
         }
+    } catch (error) {
+        const errorDetails = error instanceof Error ? (error.stack ?? `${error.name}: ${error.message}`) : String(error)
+        warnBackpack(`Operation "5-tick player backpack loop" failed. Player id: ${playerId ?? "unknown"}. Error: ${errorDetails}`)
     }
 }, 5)
 world.afterEvents.playerJoin.subscribe((data) => {
-    const player = world.getEntity(data.playerId)
-    if (player)
-        removeAllIDTags(player, "")
-    cachedPlayerState.delete(data.playerId)
-    portalNearbyCache.delete(data.playerId)
-    clearBackpackTick(data.playerId)
+    try {
+        const player = world.getEntity(data.playerId)
+        if (player)
+            removeAllIDTags(player, "")
+        cachedPlayerState.delete(data.playerId)
+        portalNearbyCache.delete(data.playerId)
+        clearBackpackTick(data.playerId)
+    } catch (error) {
+        const errorDetails = error instanceof Error ? (error.stack ?? `${error.name}: ${error.message}`) : String(error)
+        warnBackpack(`Operation "playerJoin backpack initialisation" failed. Player id: ${data.playerId ?? "unknown"}. Error: ${errorDetails}`)
+    }
 })
 
 world.afterEvents.playerLeave.subscribe((data) => {
-    clearBackpackTick(data.playerId)
-    cachedPlayerState.delete(data.playerId)
-    portalNearbyCache.delete(data.playerId)
-    flushPlayerBackpacks(data.playerId, true)
-    activeBackpackEntityIdsByPlayer.delete(data.playerId)
+    try {
+        clearBackpackTick(data.playerId)
+        cachedPlayerState.delete(data.playerId)
+        portalNearbyCache.delete(data.playerId)
+        flushPlayerBackpacks(data.playerId, true)
+        activeBackpackEntityIdsByPlayer.delete(data.playerId)
+    } catch (error) {
+        const errorDetails = error instanceof Error ? (error.stack ?? `${error.name}: ${error.message}`) : String(error)
+        warnBackpack(`Operation "playerLeave backpack cleanup" failed. Player id: ${data.playerId ?? "unknown"}. Error: ${errorDetails}`)
+    }
 })
 
 system.runInterval(() => {
-    for (const dim of dims) {
-        const backpacks = dim.getEntities({ tags: ["backpack"] })
-        for (const backpack of backpacks) {
-            const itemid = backpack.getDynamicProperty("backpack_id")
-            const id = backpack.getDynamicProperty("playerID")
-            if (id != undefined) trackActiveBackpackEntity(id, backpack.id)
-            const playerEntity = id != undefined ? world.getEntity(id) : undefined
-            if (id != undefined) {
-                if (playerEntity == undefined || !safeHasTag(playerEntity, "holdingbackpack." + itemid)) {
-                    if (itemid == undefined || backpackOperationLocks.has(itemid)) continue
-                    queueSaveBackpack(backpack, id, true)
+    let playerId = undefined
+    let backpackId = undefined
+    try {
+        for (const dim of dims) {
+            const backpacks = dim.getEntities({ tags: ["backpack"] })
+            for (const backpack of backpacks) {
+                backpackId = backpack.getDynamicProperty("backpack_id")
+                const id = backpack.getDynamicProperty("playerID")
+                playerId = id
+                if (id != undefined) trackActiveBackpackEntity(id, backpack.id)
+                const playerEntity = id != undefined ? world.getEntity(id) : undefined
+                if (id != undefined) {
+                    if (playerEntity == undefined || !safeHasTag(playerEntity, "holdingbackpack." + backpackId)) {
+                        if (backpackId == undefined || backpackOperationLocks.has(backpackId)) continue
+                        queueSaveBackpack(backpack, id, true)
+                    }
                 }
             }
         }
+    } catch (error) {
+        const errorDetails = error instanceof Error ? (error.stack ?? `${error.name}: ${error.message}`) : String(error)
+        warnBackpack(`Operation "20-tick backpack reconciliation loop" failed. Player id: ${playerId ?? "unknown"}. Backpack id: ${backpackId ?? "unknown"}. Error: ${errorDetails}`)
     }
 }, 20)
