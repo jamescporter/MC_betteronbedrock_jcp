@@ -24,30 +24,31 @@ system.runInterval(() => {
 }, 1)
 
 function portalNearby(player) {
-	const { x, y, z } = player.location;
+    const baseLocation = toBlockPos(player.location)
 
-	// Define the check area corners
-	const corner1 = { x: x + 1, y: y + 1, z: z + 1 };
-	const corner2 = { x: x - 1, y, z: z - 1 };
+    const minX = baseLocation.x - 1
+    const maxX = baseLocation.x + 1
+    const minY = baseLocation.y
+    const maxY = baseLocation.y + 1
+    const minZ = baseLocation.z - 1
+    const maxZ = baseLocation.z + 1
 
-	// Iterate through individual block positions within the area
-	for (let checkX = corner1.x; checkX >= corner2.x; checkX--) {
-		for (let checkY = corner1.y; checkY >= corner2.y; checkY--) {
-			for (let checkZ = corner1.z; checkZ >= corner2.z; checkZ--) {
-				const location = { x: checkX, y: checkY, z: checkZ };
-				const block = player.dimension.getBlock(location);
+    for (let checkX = minX; checkX <= maxX; checkX++) {
+        for (let checkY = minY; checkY <= maxY; checkY++) {
+            for (let checkZ = minZ; checkZ <= maxZ; checkZ++) {
+                const block = player.dimension.getBlock({ x: checkX, y: checkY, z: checkZ })
 
-				if (
-					block?.typeId === "minecraft:portal" ||
-					block?.typeId === "minecraft:end_portal" ||
-					block?.typeId === "better_on_bedrock:waystone"
-				) return true;
-			}
-		}
-	}
+                if (
+                    block?.typeId === "minecraft:portal" ||
+                    block?.typeId === "minecraft:end_portal" ||
+                    block?.typeId === "better_on_bedrock:waystone"
+                ) return true
+            }
+        }
+    }
 
-	return false;
-};
+    return false
+}
 
 function portalNearbyMemoized(player) {
     const cached = portalNearbyCache.get(player.id)
