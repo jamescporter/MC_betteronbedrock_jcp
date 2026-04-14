@@ -524,26 +524,24 @@ function loadBackpack(entityTypeID, player, item) {
  * @param {import("@minecraft/server").Dimension} dimension
  */
 function transferInventory(container1, container2, dimension, fromInvLocation, FromInvStartingSlot, ToInvStartingSlot, maxSlot) {
-    let targetSlot = ToInvStartingSlot
-    const sourceEnd = Math.min(maxSlot, container1.size)
-
-    for (let sourceSlot = FromInvStartingSlot; sourceSlot < sourceEnd; sourceSlot++) {
-        if (targetSlot >= container2.size) break
-
+    let destOffset = 0
+    for (let sourceSlot = FromInvStartingSlot; sourceSlot < maxSlot; sourceSlot++) {
+        const destinationSlot = ToInvStartingSlot + destOffset
         const item = container1.getItem(sourceSlot)
         if (item == undefined) {
-            targetSlot++
+            destOffset++
             continue
         }
 
         if (!unallowedItems.includes(item.typeId)) {
-            container2.setItem(targetSlot, item)
+            if (destinationSlot >= container2.size) break
+            container2.setItem(destinationSlot, item)
         } else {
             spawnItemAnywhere(item, fromInvLocation, dimension)
         }
 
         container1.setItem(sourceSlot, undefined)
-        targetSlot++
+        destOffset++
     }
 }
 
