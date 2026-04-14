@@ -184,37 +184,58 @@ function saveBackpack(entity) {
     const stagingUpperPos = toBlockPos({ x: entityLoc.x, y: 101, z: entityLoc.z })
     const block = dim.getBlock(stagingBasePos)
     if (!block) return false
-    const lastBlock = block.permutation
+    const originalBasePermutation = block.permutation
+
     let block2 = undefined
-    let lastBlock2 = undefined
+    let originalUpperPermutation = undefined
     if (maxCount > 1) {
         block2 = dim.getBlock(stagingUpperPos)
         if (!block2) return false
-        lastBlock2 = block2.permutation
-        block2.setPermutation(BlockPermutation.resolve("barrel"))
+        originalUpperPermutation = block2.permutation
     }
-    block.setPermutation(BlockPermutation.resolve("barrel"))
-    const entityInv = entity.getComponent(EntityInventoryComponent.componentId)
-    const blockInv = block.getComponent(BlockInventoryComponent.componentId)
-    if (!entityInv?.container || !blockInv?.container) return false
-    if (block2 != undefined) {
-        const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
-        if (!blockInv2?.container) return false
-        transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)
-        structure_Manager.save("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
-        emptyInventory(blockInv2)
-        system.runTimeout(() => {
-            block_Manager.setBlock(dim, stagingUpperPos, "air")
-            block2.setPermutation(lastBlock2)
-        }, 1)
+
+    let baseChanged = false
+    let upperChanged = false
+    let saveSucceeded = false
+
+    try {
+        if (block2 != undefined) {
+            block2.setPermutation(BlockPermutation.resolve("barrel"))
+            upperChanged = true
+        }
+
+        block.setPermutation(BlockPermutation.resolve("barrel"))
+        baseChanged = true
+
+        const entityInv = entity.getComponent(EntityInventoryComponent.componentId)
+        const blockInv = block.getComponent(BlockInventoryComponent.componentId)
+        if (!entityInv?.container || !blockInv?.container) return false
+
+        if (block2 != undefined) {
+            const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
+            if (!blockInv2?.container) return false
+            transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)
+            structure_Manager.save("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
+            emptyInventory(blockInv2)
+        }
+
+        transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)
+        structure_Manager.save("backpack" + id, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
+        emptyInventory(blockInv)
+        saveSucceeded = true
+    } finally {
+        if (upperChanged && originalUpperPermutation != undefined) {
+            const stagingUpperBlock = dim.getBlock(stagingUpperPos)
+            if (stagingUpperBlock) stagingUpperBlock.setPermutation(originalUpperPermutation)
+        }
+
+        if (baseChanged) {
+            const stagingBaseBlock = dim.getBlock(stagingBasePos)
+            if (stagingBaseBlock) stagingBaseBlock.setPermutation(originalBasePermutation)
+        }
     }
-    transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)
-    structure_Manager.save("backpack" + id, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
-    emptyInventory(blockInv)
-    system.runTimeout(() => {
-        block_Manager.setBlock(dim, stagingBasePos, "air")
-        block.setPermutation(lastBlock)
-    }, 1)
+
+    if (!saveSucceeded) return false
     entity.remove()
     return true
 }
