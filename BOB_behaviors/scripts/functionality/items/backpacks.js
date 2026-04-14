@@ -13,6 +13,7 @@ const lastPlayerOperationTick = new Map()
 const activeBackpackEntityIdsByPlayer = new Map()
 const backpackInventoryState = new Map()
 const portalNearbyCache = new Map()
+const backpackOperationLocks = new Set()
 
 function warnBackpack(message) {
     console.warn(`[BOB Backpacks] ${message}`)
@@ -239,6 +240,18 @@ function markPlayerOperation(playerId) {
     lastPlayerOperationTick.set(playerId, globalTick)
 }
 
+function tryLockBackpackOperation(backpackId) {
+    if (backpackId == undefined) return false
+    if (backpackOperationLocks.has(backpackId)) return false
+    backpackOperationLocks.add(backpackId)
+    return true
+}
+
+function unlockBackpackOperation(backpackId) {
+    if (backpackId == undefined) return
+    backpackOperationLocks.delete(backpackId)
+}
+
 function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTicks = undefined) {
     if (!entity?.isValid()) return
     const resolvedPlayerId = playerId ?? entity.getDynamicProperty("playerID")
@@ -274,19 +287,27 @@ function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTic
 
         markPlayerOperation(resolvedPlayerId)
         const backpackId = entity.getDynamicProperty("backpack_id")
-        const currentSignature = getBackpackSignature(entity)
-        const previousSignature = backpackId != undefined ? backpackInventoryState.get(backpackId) : undefined
-        if (backpackId != undefined && previousSignature == currentSignature) {
-            // Unchanged backpacks still need a safe close path; direct removal can drop items.
-            warnBackpack(`Closing unchanged backpack entity ${key} for player ${resolvedPlayerId} (${backpackId}).`)
-            closeBackpackEntityWithoutSave(entity)
+        if (!tryLockBackpackOperation(backpackId)) {
+            queueSaveBackpack(entity, resolvedPlayerId, false, 1)
             return
         }
+        try {
+            const currentSignature = getBackpackSignature(entity)
+            const previousSignature = backpackId != undefined ? backpackInventoryState.get(backpackId) : undefined
+            if (backpackId != undefined && previousSignature == currentSignature) {
+                // Unchanged backpacks still need a safe close path; direct removal can drop items.
+                warnBackpack(`Closing unchanged backpack entity ${key} for player ${resolvedPlayerId} (${backpackId}).`)
+                closeBackpackEntityWithoutSave(entity)
+                return
+            }
 
-        const saved = saveBackpack(entity)
-        if (saved) {
-            if (backpackId != undefined) backpackInventoryState.set(backpackId, currentSignature)
-            untrackActiveBackpackEntity(resolvedPlayerId, key)
+            const saved = saveBackpack(entity)
+            if (saved) {
+                if (backpackId != undefined) backpackInventoryState.set(backpackId, currentSignature)
+                untrackActiveBackpackEntity(resolvedPlayerId, key)
+            }
+        } finally {
+            unlockBackpackOperation(backpackId)
         }
     }, delay)
 
@@ -647,12 +668,22 @@ system.runInterval(() => {
                         flushDuplicateBackpacks(player.id, id)
                         removeAllIDTags(player, tag)
                         player.addTag(tag)
-                        if (!canRunPlayerOperation(player.id)) {
+                        if (!tryLockBackpackOperation(id)) {
                             cachedPlayerState.delete(player.id)
                             continue
                         }
-                        markPlayerOperation(player.id)
-                        const backpack = loadBackpack(item.typeId, player, item)
+                        if (!canRunPlayerOperation(player.id)) {
+                            unlockBackpackOperation(id)
+                            cachedPlayerState.delete(player.id)
+                            continue
+                        }
+                        let backpack = undefined
+                        try {
+                            markPlayerOperation(player.id)
+                            backpack = loadBackpack(item.typeId, player, item)
+                        } finally {
+                            unlockBackpackOperation(id)
+                        }
                         const backpackValid = backpack?.isValid()
                         if (!backpackValid) {
                             warnBackpack(`Failed to initialise backpack entity for backpack ${id} and player ${player.id}: no valid entity returned.`)
@@ -716,6 +747,7 @@ system.runInterval(() => {
             const playerEntity = id != undefined ? world.getEntity(id) : undefined
             if (id != undefined) {
                 if (playerEntity == undefined || !safeHasTag(playerEntity, "holdingbackpack." + itemid)) {
+                    if (itemid == undefined || backpackOperationLocks.has(itemid)) continue
                     queueSaveBackpack(backpack, id, true)
                 }
             }
