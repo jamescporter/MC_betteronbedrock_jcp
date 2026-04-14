@@ -198,6 +198,24 @@ function saveBackpack(entity) {
     let baseChanged = false
     let upperChanged = false
     let saveSucceeded = false
+    const playerId = entity.getDynamicProperty("playerID") ?? "unknown"
+    const logStructureFailure = (operation, structureId, position, successCount) => {
+        warnBackpack(`Failed to ${operation} structure ${structureId} for backpack ${id}, player ${playerId}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): successCount=${successCount}.`)
+    }
+    const trySaveStructure = (structureId, position, fromPos, toPos, saveDimension, options) => {
+        try {
+            const result = structure_Manager.save(structureId, fromPos, toPos, saveDimension, options)
+            if (result.successCount < 1) {
+                logStructureFailure("save", structureId, position, result.successCount)
+                return false
+            }
+            return true
+        } catch (e) {
+            const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+            warnBackpack(`Exception saving structure ${structureId} for backpack ${id}, player ${playerId}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): ${failureReason}`)
+            return false
+        }
+    }
 
     try {
         if (block2 != undefined) {
@@ -216,12 +234,12 @@ function saveBackpack(entity) {
             const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
             if (!blockInv2?.container) return false
             transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)
-            structure_Manager.save("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
+            if (!trySaveStructure("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
             emptyInventory(blockInv2)
         }
 
         transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)
-        structure_Manager.save("backpack" + id, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })
+        if (!trySaveStructure("backpack" + id, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
         emptyInventory(blockInv)
         saveSucceeded = true
     } finally {
@@ -486,6 +504,37 @@ function loadBackpack(entityTypeID, player, item) {
     if (id == undefined || !data) return undefined
     const maxCount = data.count
     try {
+        const logStructureFailure = (operation, structureId, position, successCount) => {
+            warnBackpack(`Failed to ${operation} structure ${structureId} for backpack ${id}, player ${player.id}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): successCount=${successCount}.`)
+        }
+        const tryLoadStructure = (structureId, position, loadDimension) => {
+            try {
+                const result = structure_Manager.load(structureId, position, loadDimension)
+                if (result.successCount < 1) {
+                    logStructureFailure("load", structureId, position, result.successCount)
+                    return undefined
+                }
+                return result
+            } catch (e) {
+                const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+                warnBackpack(`Exception loading structure ${structureId} for backpack ${id}, player ${player.id}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): ${failureReason}`)
+                return undefined
+            }
+        }
+        const trySaveStructure = (structureId, position, fromPos, toPos, saveDimension, options) => {
+            try {
+                const result = structure_Manager.save(structureId, fromPos, toPos, saveDimension, options)
+                if (result.successCount < 1) {
+                    logStructureFailure("save", structureId, position, result.successCount)
+                    return undefined
+                }
+                return result
+            } catch (e) {
+                const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+                warnBackpack(`Exception saving structure ${structureId} for backpack ${id}, player ${player.id}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): ${failureReason}`)
+                return undefined
+            }
+        }
         let block2 = undefined
         const stagingBasePos = toBlockPos({ x: player.location.x, y: 100, z: player.location.z })
         const stagingUpperPos = toBlockPos({ x: player.location.x, y: 101, z: player.location.z })
@@ -503,17 +552,21 @@ function loadBackpack(entityTypeID, player, item) {
                 return undefined
             }
             lastBlock2 = block2.permutation
-            if (structure_Manager.load("backpack" + id + "_2", stagingUpperPos, dim).successCount < 1) {
+            const upperStructureId = "backpack" + id + "_2"
+            const initialUpperLoad = tryLoadStructure(upperStructureId, stagingUpperPos, dim)
+            if (!initialUpperLoad) {
                 block2.setPermutation(BlockPermutation.resolve("barrel"))
-                structure_Manager.save("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })
+                if (!trySaveStructure(upperStructureId, stagingUpperPos, stagingUpperPos, stagingUpperPos, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
             }
-            structure_Manager.load("backpack" + id + "_2", stagingUpperPos, dim)
+            if (!tryLoadStructure(upperStructureId, stagingUpperPos, dim)) return undefined
         }
-        if (structure_Manager.load("backpack" + id, stagingBasePos, dim).successCount < 1) {
+        const baseStructureId = "backpack" + id
+        const initialBaseLoad = tryLoadStructure(baseStructureId, stagingBasePos, dim)
+        if (!initialBaseLoad) {
             block.setPermutation(BlockPermutation.resolve("barrel"))
-            structure_Manager.save("backpack" + id, stagingBasePos, stagingBasePos, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })
+            if (!trySaveStructure(baseStructureId, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
         }
-        structure_Manager.load("backpack" + id, stagingBasePos, dim)
+        if (!tryLoadStructure(baseStructureId, stagingBasePos, dim)) return undefined
         const backPack = spawnEntityAnywhere(entityTypeID, getBackpackFollowLocation(player), dim)
         if (!backPack?.isValid()) return undefined
         const entityInv = backPack.getComponent(EntityInventoryComponent.componentId)
