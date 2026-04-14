@@ -499,8 +499,9 @@ function loadBackpack(entityTypeID, player, item) {
         backPack.nameTag = backpackData[backPack.typeId].name
         backPack.setDynamicProperty("playerID", player.id)
         return backPack
-    } catch {
-        warnBackpack(`Unexpected error while loading backpack ${id} for player ${player.id}.`)
+    } catch (error) {
+        const failureReason = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
+        warnBackpack(`Failed to load backpack ${id} for player ${player.id}: ${failureReason}`)
         return undefined
     }
 }
@@ -652,7 +653,11 @@ system.runInterval(() => {
                         }
                         markPlayerOperation(player.id)
                         const backpack = loadBackpack(item.typeId, player, item)
-                        if (!backpack) continue
+                        const backpackValid = backpack?.isValid()
+                        if (!backpackValid) {
+                            warnBackpack(`Failed to initialise backpack entity for backpack ${id} and player ${player.id}: no valid entity returned.`)
+                            continue
+                        }
                         startBackpackTick(backpack, player, tag)
                         trackActiveBackpackEntity(player.id, backpack.id)
                         backpack.addTag(player.id)
