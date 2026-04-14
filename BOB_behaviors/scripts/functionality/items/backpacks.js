@@ -651,6 +651,76 @@ function removeAllIDTags(player, besidesTag) {
     }
 }
 
+/**
+ * @param {import("@minecraft/server").Player} player
+ */
+function transitionToNotHoldingBackpack(player) {
+    clearBackpackTick(player.id)
+    if (safeHasTag(player, "!holding")) return
+    removeAllIDTags(player, "")
+    flushPlayerBackpacks(player.id, true)
+    player.addTag("!holding")
+}
+
+/**
+ * @param {import("@minecraft/server").Player} player
+ */
+function transitionToPortalBlocked(player) {
+    transitionToNotHoldingBackpack(player)
+}
+
+/**
+ * @param {import("@minecraft/server").Player} player
+ * @param {import("@minecraft/server").ItemStack} item
+ * @param {import("@minecraft/server").ContainerSlot} slot
+ */
+function transitionToHoldingBackpack(player, item, slot) {
+    player.removeTag("!holding")
+
+    let id = item.getDynamicProperty("backpack_id")
+    if (id == undefined) {
+        const random = generateRandomID(100)
+        item.setDynamicProperty("backpack_id", random)
+        slot.setItem(item)
+        id = random
+    }
+
+    const tag = "holdingbackpack." + id
+    if (safeHasTag(player, tag)) return
+
+    flushPlayerBackpacks(player.id, true)
+    flushDuplicateBackpacks(player.id, id)
+    removeAllIDTags(player, tag)
+    player.addTag(tag)
+    if (!canRunPlayerOperation(player.id)) {
+        cachedPlayerState.delete(player.id)
+        return
+    }
+    const canUseBackpackLock = typeof tryLockBackpackOperation == "function" && typeof unlockBackpackOperation == "function"
+    if (canUseBackpackLock && !tryLockBackpackOperation(id)) {
+        cachedPlayerState.delete(player.id)
+        return
+    }
+
+    let backpack = undefined
+    try {
+        markPlayerOperation(player.id)
+        backpack = loadBackpack(item.typeId, player, item)
+    } finally {
+        if (canUseBackpackLock) unlockBackpackOperation(id)
+    }
+
+    const backpackValid = backpack?.isValid()
+    if (!backpackValid) {
+        warnBackpack(`Failed to initialise backpack entity for backpack ${id} and player ${player.id}: no valid entity returned.`)
+        return
+    }
+    startBackpackTick(backpack, player, tag)
+    trackActiveBackpackEntity(player.id, backpack.id)
+    backpack.addTag(player.id)
+    backpack.addTag("backpack")
+}
+
 system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
         const equipment = player.getComponent(EntityEquippableComponent.componentId)
@@ -661,72 +731,13 @@ system.runInterval(() => {
         if (cachedPlayerState.get(player.id) == stateKey) continue
         cachedPlayerState.set(player.id, stateKey)
 
-        if (item) {
-            if (backpackIDs.includes(item.typeId)) {
-                if (nearPortal == false) {
-                    player.removeTag("!holding")
-                    let id = item.getDynamicProperty("backpack_id")
-                    if (id == undefined) {
-                        const random = generateRandomID(100)
-                        item.setDynamicProperty("backpack_id", random)
-                        slot.setItem(item)
-                        id = random
-                    }
-                    const tag = "holdingbackpack." + id
-                    if (!safeHasTag(player, tag)) {
-                        flushPlayerBackpacks(player.id, true)
-                        flushDuplicateBackpacks(player.id, id)
-                        removeAllIDTags(player, tag)
-                        player.addTag(tag)
-                        if (!tryLockBackpackOperation(id)) {
-                            cachedPlayerState.delete(player.id)
-                            continue
-                        }
-                        if (!canRunPlayerOperation(player.id)) {
-                            unlockBackpackOperation(id)
-                            cachedPlayerState.delete(player.id)
-                            continue
-                        }
-                        let backpack = undefined
-                        try {
-                            markPlayerOperation(player.id)
-                            backpack = loadBackpack(item.typeId, player, item)
-                        } finally {
-                            unlockBackpackOperation(id)
-                        }
-                        const backpackValid = backpack?.isValid()
-                        if (!backpackValid) {
-                            warnBackpack(`Failed to initialise backpack entity for backpack ${id} and player ${player.id}: no valid entity returned.`)
-                            continue
-                        }
-                        startBackpackTick(backpack, player, tag)
-                        trackActiveBackpackEntity(player.id, backpack.id)
-                        backpack.addTag(player.id)
-                        backpack.addTag("backpack")
-                    }
-                } else {
-                    clearBackpackTick(player.id)
-                    if (!safeHasTag(player, "!holding")) {
-                        removeAllIDTags(player, "")
-                        flushPlayerBackpacks(player.id, true)
-                        player.addTag("!holding")
-                    }
-                }
-            } else {
-                clearBackpackTick(player.id)
-                if (!safeHasTag(player, "!holding")) {
-                    removeAllIDTags(player, "")
-                    flushPlayerBackpacks(player.id, true)
-                    player.addTag("!holding")
-                }
-            }
+        const isBackpackItem = item && backpackIDs.includes(item.typeId)
+        if (isBackpackItem && nearPortal == false) {
+            transitionToHoldingBackpack(player, item, slot)
+        } else if (isBackpackItem && nearPortal) {
+            transitionToPortalBlocked(player)
         } else {
-            clearBackpackTick(player.id)
-            if (!safeHasTag(player, "!holding")) {
-                removeAllIDTags(player, "")
-                flushPlayerBackpacks(player.id, true)
-                player.addTag("!holding")
-            }
+            transitionToNotHoldingBackpack(player)
         }
     }
 }, 5)
