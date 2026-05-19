@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Dewasa
 bob.gui.wawla.honey=Sayang
 bob.gui.wawla.compostLevel=Tingkat Kompos
 bob.gui.wawla.correctTool=Alat yang Benar
-bob.gui.wawla.canHarvest=Bisa Panen
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Tangan
 bob.gui.wawla.tool.axe=Kapak

@@ -43,6 +43,10 @@ This fork mainly focuses on reliability and performance.
 
 
 V1.2.1-JCP
+- **WAWLA growth accuracy fix:** Crop growth stage is now clamped to the configured max before calculating the displayed growth percentage, preventing out-of-range values from producing incorrect percentages.
+- **WAWLA harvestability display fix:** Fully grown crops are now treated as harvestable in the WAWLA display branch even when other farmability heuristics do not flag them.
+- **WAWLA farmable tag fallback:** The `better_on_bedrock:is_farmable` block tag is now honoured as a fallback harvestability signal.
+- **WAWLA wording update:** The user-facing `bob.gui.wawla.canHarvest` text now reads **“Ready to Harvest”** (key wiring kept stable).
 - **Guidebook command ported from v1.2.1 source:** Added runtime custom command registration for `/guidebook` via `customCommandRegistry` during world initialisation.
 - **Survival-safe command behaviour:** `/guidebook` is available at permission level `Any` with `cheatsRequired = false`, and grants one `better_on_bedrock:guide_book` to the executing player (dropping overflow at player location if inventory is full).
 - **Command localisation:** Added `command.better_on_bedrock.common.guidebook.description` in active English language files so command help/description resolves correctly.

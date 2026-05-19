@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Kasvanut
 bob.gui.wawla.honey=Hunaja
 bob.gui.wawla.compostLevel=Kompostin taso
 bob.gui.wawla.correctTool=Oikea työkalu
-bob.gui.wawla.canHarvest=Voidaan korjata
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Käsi
 bob.gui.wawla.tool.axe=Kirves

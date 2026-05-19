@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=成長した
 bob.gui.wawla.honey=ハニー
 bob.gui.wawla.compostLevel=堆肥レベル
 bob.gui.wawla.correctTool=正しいツール
-bob.gui.wawla.canHarvest=収穫できる
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=手
 bob.gui.wawla.tool.axe=斧

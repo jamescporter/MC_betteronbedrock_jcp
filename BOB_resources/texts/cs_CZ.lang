@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Dospělý
 bob.gui.wawla.honey=Med
 bob.gui.wawla.compostLevel=Úroveň kompostu
 bob.gui.wawla.correctTool=Správný nástroj
-bob.gui.wawla.canHarvest=Může sklizeň
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Ruka
 bob.gui.wawla.tool.axe=Sekera

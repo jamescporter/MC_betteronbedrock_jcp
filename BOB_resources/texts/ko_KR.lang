@@ -77,7 +77,7 @@ bob.gui.wawla.isGrown=완전히 성장함
 bob.gui.wawla.honey=꿀
 bob.gui.wawla.compostLevel=퇴비 수준
 bob.gui.wawla.correctTool=적합한 도구
-bob.gui.wawla.canHarvest=수확 가능
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=손
 bob.gui.wawla.tool.axe=도끼

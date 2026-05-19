@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Yetişkin
 bob.gui.wawla.honey=Bal
 bob.gui.wawla.compostLevel=Kompost Seviyesi
 bob.gui.wawla.correctTool=Doğru Araç
-bob.gui.wawla.canHarvest=Hasat Yapabilir
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=El
 bob.gui.wawla.tool.axe=Balta
