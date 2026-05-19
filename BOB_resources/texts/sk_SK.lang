@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Pestované
 bob.gui.wawla.honey=Zlato
 bob.gui.wawla.compostLevel=Úroveň kompostu
 bob.gui.wawla.correctTool=Správny nástroj
-bob.gui.wawla.canHarvest=Môže zber
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Ruka
 bob.gui.wawla.tool.axe=Ax

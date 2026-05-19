@@ -176,13 +176,15 @@ export function wawla(player) {
         let fullyGrown = false;
         if (crops[block.typeId] !== undefined) {
             const maxGrowth = crops[block.typeId];
-            const currentGrowth = ((
+            const rawGrowth = (
                 block.permutation.getState("growth")
                 || block.permutation.getState("age")
                 || block.permutation.getState("better_on_bedrock:growth_stage")
-            ) ?? 0) / maxGrowth;
+            ) ?? 0;
+            const clampedGrowth = Math.min(Math.max(rawGrowth, 0), maxGrowth);
+            const currentGrowth = clampedGrowth / maxGrowth;
             const percentage = Math.round((currentGrowth !== 0 ? Number(currentGrowth.toFixed(2)) : 0) * 100);
-            fullyGrown = percentage == 100;
+            fullyGrown = clampedGrowth >= maxGrowth;
             growth = fullyGrown ?
                 "§a%bob.gui.wawla.isGrown" : percentage.toString();
         };
@@ -207,7 +209,7 @@ export function wawla(player) {
             {
                 translate: toolInfo.tool !== undefined ?
                     "\n§7%bob.gui.wawla.correctTool: §3".concat(toolInfo.tool)
-                        .concat("\n§7%bob.gui.wawla.canHarvest: ").concat(toolInfo.farmable ? "§a%gui.yes" : "§c%gui.no")
+                        .concat("\n§7%bob.gui.wawla.canHarvest: ").concat((toolInfo.farmable || fullyGrown) ? "§a%gui.yes" : "§c%gui.no")
                     : null
             },
             {
@@ -288,6 +290,9 @@ function getTool(block) {
         tool = "%item.shears.name";
     else if (block.typeId.includes("hat"))
         tool = "%bob.gui.wawla.tool.hand";
+
+    if (block.hasTag("better_on_bedrock:is_farmable"))
+        farmable = true;
 
     return { tool, farmable };
 };

@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Μεγαλωμένο
 bob.gui.wawla.honey=Μέλι
 bob.gui.wawla.compostLevel=Επίπεδο Κομποστοποίησης
 bob.gui.wawla.correctTool=Σωστό εργαλείο
-bob.gui.wawla.canHarvest=Μπορεί να Συγκομίσει
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Χέρι
 bob.gui.wawla.tool.axe=Τσεκούρι

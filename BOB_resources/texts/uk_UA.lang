@@ -67,7 +67,7 @@ bob.gui.wawla.isGrown=Спілий
 bob.gui.wawla.honey=Мед
 bob.gui.wawla.compostLevel=Рівень Компосту
 bob.gui.wawla.correctTool=Потрібний Інстурмент
-bob.gui.wawla.canHarvest=Врожай
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Руки
 bob.gui.wawla.tool.axe = Сокира

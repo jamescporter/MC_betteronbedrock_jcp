@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Crecido
 bob.gui.wawla.honey=Miel
 bob.gui.wawla.compostLevel=Nivel de abono
 bob.gui.wawla.correctTool=Herramienta correcta
-bob.gui.wawla.canHarvest=Puede cosechar
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Mano
 bob.gui.wawla.tool.axe=Hacha

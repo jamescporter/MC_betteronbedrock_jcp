@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Vuxen
 bob.gui.wawla.honey=Honung
 bob.gui.wawla.compostLevel=Kompostnivå
 bob.gui.wawla.correctTool=Rätt verktyg
-bob.gui.wawla.canHarvest=Kan skörda
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Hand
 bob.gui.wawla.tool.axe=Yxa

@@ -63,7 +63,7 @@ bob.gui.wawla.isGrown=長大了
 bob.gui.wawla.honey=蜂蜜
 bob.gui.wawla.compostLevel=堆肥水平
 bob.gui.wawla.correctTool=正確的工具
-bob.gui.wawla.canHarvest=可以收穫
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=手
 bob.gui.wawla.tool.axe=斧頭

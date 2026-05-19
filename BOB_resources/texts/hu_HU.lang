@@ -68,7 +68,7 @@ bob.gui.wawla.isGrown=Felnőtt
 bob.gui.wawla.honey=Méz
 bob.gui.wawla.compostLevel=Komposzt szint
 bob.gui.wawla.correctTool=Helyes eszköz
-bob.gui.wawla.canHarvest=Betakarítás
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Kéz
 bob.gui.wawla.tool.axe=Fejsze

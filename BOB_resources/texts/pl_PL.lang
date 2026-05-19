@@ -63,7 +63,7 @@ bob.gui.wawla.isGrown=Dorosły
 bob.gui.wawla.honey=Miód
 bob.gui.wawla.compostLevel=Poziom kompostu
 bob.gui.wawla.correctTool=Właściwe narzędzie
-bob.gui.wawla.canHarvest=Można zbierać
+bob.gui.wawla.canHarvest=Ready to Harvest
 
 bob.gui.wawla.tool.hand=Ręka
 bob.gui.wawla.tool.axe=Topór
