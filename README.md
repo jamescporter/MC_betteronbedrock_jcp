@@ -41,6 +41,7 @@ From the manifests in this repo:
 
 This fork mainly focuses on reliability and performance.
 
+V1.2.0-JCP
 - **Performance and scalability:** per-tick and high-frequency scripts were refactored to reduce repeated work, improve caching, and lower runtime overhead.
 - **Bug fixes and hardening:** Lots of defensive fixes addressung malformed data handling, null/unsafe state access, duplicate triggers, and cleanup edge cases.
 - **Item/combat system stability:** backpacks, staffs, spear/trident logic, strip-block interactions, and related item systems were made more robust while preserving existing functionality.
@@ -50,3 +51,6 @@ This fork mainly focuses on reliability and performance.
 - **Fire Wisps size:** Fire Wisps now have a ~33% larger custom hitbox and a slight scale increase, making them less frustrating to hit without changing their core behaviour.
 - **Bassalt Crobbers:** Bassalt Crobbers now prioritise targeting and attack goals above idle wandering to improve combat responsiveness. Updated delayed attack path requirements (`require_complete_path: false`) and added conservative Nether navigation flags (`can_path_over_water: false`, `avoid_damage_blocks: true`) while keeping existing water avoidance and attack timing/damage unchanged.
 - **JSON validity hotfix (Piglin behaviour):** Fixed an invalid inline comment in `BOB_behaviors/entities/nether_mobs/piglin.json` that broke JSON parsing, and completed `broadcast_targets` with both `"piglin"` and `"piglin_brute"` as originally intended.
+
+**Bugs:**
+- Currently the back packs don't work properly and duplicate items
