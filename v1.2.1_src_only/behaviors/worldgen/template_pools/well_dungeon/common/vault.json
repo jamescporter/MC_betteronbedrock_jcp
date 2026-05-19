@@ -1,0 +1,29 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:common/vault"
+        },
+         "fallback": "pog:common/vault",
+        "elements": [
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/vaults/vault",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/vaults/ominous_vault",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            }
+        ]
+    }
+}

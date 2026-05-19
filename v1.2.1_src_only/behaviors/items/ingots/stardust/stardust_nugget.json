@@ -1,0 +1,20 @@
+{
+	"format_version": "1.21.110",
+	"minecraft:item": {
+		"description": {
+			"identifier": "better_on_bedrock:stardust_nugget",
+			"menu_category": {
+				"category": "items"
+			}
+		},
+		"components": {
+			"minecraft:icon": "stardust_nugget",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:stardust_nugget.name"
+            },
+            "minecraft:fire_resistant": {
+                "value": true
+            }
+		}
+	}
+}
