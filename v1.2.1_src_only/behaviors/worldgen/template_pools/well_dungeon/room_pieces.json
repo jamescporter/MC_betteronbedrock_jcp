@@ -1,0 +1,83 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:well_dungeon/room_pieces"
+        },
+        "fallback": "pog:well_dungeon/room_pieces",
+        "elements": [
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_01",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_02",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_03",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_04",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_05",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_06",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_07",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/pieces/room_piece_08",
+                    "processors": "pog:dungeon/common_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            }
+        ]
+    }
+}

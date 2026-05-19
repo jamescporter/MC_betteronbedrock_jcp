@@ -1,0 +1,56 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:pale_dungeon/rooms/combat_room_02"
+        },
+        "fallback": "pog:pale_dungeon/rooms/combat_room_02",
+        "elements": [
+            {
+                "weight": 50,
+                "element": {
+                    "location": "pale_dungeon/rooms/pieces/small_piece_01",
+                    "processors": "pog:dungeon/pots_and_chests",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 50,
+                "element": {
+                    "location": "pale_dungeon/rooms/pieces/small_piece_02",
+                    "processors": "pog:dungeon/pots_and_chests",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 50,
+                "element": {
+                    "location": "pale_dungeon/rooms/pieces/small_piece_03",
+                    "processors": "pog:dungeon/pots_and_chests",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 50,
+                "element": {
+                    "location": "pale_dungeon/rooms/pieces/small_piece_04",
+                    "processors": "pog:dungeon/pots_and_chests",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }/*,
+            {
+                "weight": 50,
+                "element": {
+                    "location": "pale_dungeon/rooms/pieces/small_piece_05",
+                    "processors": "pog:dungeon/pots_and_chests",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }*/
+        ]
+    }
+}
