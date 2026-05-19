@@ -41,6 +41,14 @@ From the manifests in this repo:
 
 This fork mainly focuses on reliability and performance.
 
+
+V1.2.1-JCP
+- **Guidebook command ported from v1.2.1 source:** Added runtime custom command registration for `/guidebook` via `customCommandRegistry` during world initialisation.
+- **Survival-safe command behaviour:** `/guidebook` is available at permission level `Any` with `cheatsRequired = false`, and grants one `better_on_bedrock:guide_book` to the executing player (dropping overflow at player location if inventory is full).
+- **Command localisation:** Added `command.better_on_bedrock.common.guidebook.description` in active English language files so command help/description resolves correctly.
+- **Guide Book purpose:** The Guide Book is the in-game onboarding/reference item for Better on Bedrock systems, intended to help players understand mechanics, progression, and general add-on usage.
+- **Repo wiki started:** Added an initial single-page wiki (`wiki.md`) containing the first Guide Book entry (description, purpose, behaviour, and obtainment routes).
+
 V1.2.0-JCP
 - **Performance and scalability:** per-tick and high-frequency scripts were refactored to reduce repeated work, improve caching, and lower runtime overhead.
 - **Bug fixes and hardening:** Lots of defensive fixes addressung malformed data handling, null/unsafe state access, duplicate triggers, and cleanup edge cases.

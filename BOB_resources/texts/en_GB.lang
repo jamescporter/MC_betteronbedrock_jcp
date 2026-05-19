@@ -1279,3 +1279,4 @@ tile.better_on_bedrock:willager_statue.name=Willager Statue [Trophy]
 tile.better_on_bedrock:withered_samurai_trophy.name=Withered Samurai Trophy
 
 
+command.better_on_bedrock.common.guidebook.description=Gives the player a Better on Bedrock guide book.
