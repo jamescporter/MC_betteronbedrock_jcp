@@ -11,6 +11,7 @@ import { seeker } from "./functionality/entities/seeker.js";
 import { sootEye } from "./functionality/entities/soot_eye.js";
 
 import { registerBlockComponents, registerItemComponents } from "./custom_components/index.js";
+import { registerCustomCommands } from "./commands/index.js";
 
 import "./scripting_events/index.js";
 import "./functionality/index.js";
@@ -300,9 +301,10 @@ console.warn("[BOB Script] main.js loaded; registering worldInitialize subscript
 
 // Custom Components
 world.beforeEvents.worldInitialize.subscribe(
-    ({ blockComponentRegistry, itemComponentRegistry }) => {
+    ({ blockComponentRegistry, itemComponentRegistry, customCommandRegistry }) => {
         console.warn("[BOB Script] worldInitialize reached; registering custom block and item components.");
         registerBlockComponents(blockComponentRegistry);
         registerItemComponents(itemComponentRegistry);
+        registerCustomCommands(customCommandRegistry);
     },
 );
