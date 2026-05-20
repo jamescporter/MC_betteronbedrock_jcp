@@ -464,21 +464,23 @@
 							]
 						},
 						{
+							"min_activation_range": 0,
+							"max_activation_range": 16,
 							"weight": 1,
-							"cooldown_time": 60,
-							"cast_duration": 60,
-							"particle_color": "#FFB3B3CC",
+							"cooldown_time": 1,
+							"cast_duration": 0.7,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
 							"sequence": [
 								{
 									"shape": "circle",
 									"target": "self",
-									"base_delay": 0.1,
-									"num_entities_spawned": 8,
+									"base_delay": 0.01,
+									"delay_per_summon": 0.03,
+									"num_entities_spawned": 4,
 									"entity_type": "better_on_bedrock:willager_clone",
-									"summon_cap": 8,
-									"summon_cap_radius": 16,
-									"size": 4,
-									"sound_event": "prepare.wololo"
+									"size": 6,
+									"entity_lifespan": 60
 								}
 							]
 						}
