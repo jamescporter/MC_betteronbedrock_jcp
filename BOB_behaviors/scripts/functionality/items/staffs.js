@@ -324,6 +324,36 @@ export function useStaff(itemStack, player) {
     if (!itemStack.hasTag("better_on_bedrock:staff") || !player.isSneaking)
         return;
 
+    const specialCooldowns = {
+        "better_on_bedrock:staff": {
+            cooldownItem: "better_on_bedrock:staff",
+            requiredSeconds: 0.95,
+        },
+        "better_on_bedrock:flame_staff": {
+            cooldownItem: "better_on_bedrock:staff",
+            requiredSeconds: 9.9,
+        },
+        "better_on_bedrock:ice_staff": {
+            cooldownItem: "better_on_bedrock:staff",
+            requiredSeconds: 0,
+        },
+        "better_on_bedrock:flender_staff": {
+            cooldownItem: "better_on_bedrock:staff",
+            requiredSeconds: 0,
+        },
+    };
+
+    function isSpecialOnCooldown(staffTypeId) {
+        const cooldownData = specialCooldowns[staffTypeId];
+        if (!cooldownData || cooldownData.requiredSeconds <= 0)
+            return false;
+
+        return (player.getItemCooldown(cooldownData.cooldownItem) / TicksPerSecond) < cooldownData.requiredSeconds;
+    };
+
+    if (isSpecialOnCooldown(itemStack.typeId))
+        return;
+
     const headLocation = player.getHeadLocation();
     const viewDirection = player.getViewDirection();
     const spawnLocation = {
@@ -334,11 +364,9 @@ export function useStaff(itemStack, player) {
 
     switch (itemStack.typeId) {
         case "better_on_bedrock:staff": {
-            if (
-                (player.getItemCooldown("better_on_bedrock:staff") / TicksPerSecond) < 0.95
-                || manaCheck(itemStack, player, true)
-            ) return;
-            
+            if (manaCheck(itemStack, player, true))
+                return;
+
             const entity = player.dimension.spawnEntity("minecraft:shulker_bullet", spawnLocation);
             entity.applyImpulse(viewDirection);
 
@@ -349,17 +377,18 @@ export function useStaff(itemStack, player) {
             break;
         };
         case "better_on_bedrock:flame_staff": {
-            if (
-                (player.getItemCooldown("better_on_bedrock:staff") / TicksPerSecond) < 9.9
-                || manaCheck(itemStack, player, true)
-            ) return;
-            
+            if (manaCheck(itemStack, player, true))
+                return;
+
             const entity = player.dimension.spawnEntity("better_on_bedrock:fireballinit", spawnLocation);
             entity.applyImpulse(viewDirection);
 
             player.dimension.playSound("mob.ghast.fireball", player.getHeadLocation());
             break;
         };
+        case "better_on_bedrock:ice_staff":
+        case "better_on_bedrock:flender_staff":
+        default: break;
     };
 };
 
