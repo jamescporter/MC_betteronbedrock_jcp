@@ -1,12 +1,12 @@
 {
     "format_version": 2,
     "header": {
-        "name": "pack.name",
-        "description": "pack.description",
+        "name": "BetterOnBedrockJCP",
+        "description": "BetterOnBedrock",
         "uuid": "e0992d5f-e7d3-4260-abba-2da0d6015c05",
         "pack_scope": "world",
         "version": [ 1, 2, 0 ],
-        "min_engine_version": [ 1, 21, 110 ]
+        "min_engine_version": [ 1, 21, 120 ]
     },
     "metadata": {
         "product_type": "addon",
