@@ -52,6 +52,7 @@ V1.2.1-JCP
 - **Command localisation:** Added `command.better_on_bedrock.common.guidebook.description` in active English language files so command help/description resolves correctly.
 - **Guide Book purpose:** The Guide Book is the in-game onboarding/reference item for Better on Bedrock systems, intended to help players understand mechanics, progression, and general add-on usage.
 - **Repo wiki started:** Added an initial single-page wiki (`wiki.md`) containing the first Guide Book entry (description, purpose, behaviour, and obtainment routes).
+- **Resin Candy boots note (non-applicable):** Verified across both JCP pack paths and `v1.2.1_src_only` source paths that no wearable/attachable **Resin Candy boots** item exists (only `better_on_bedrock:resin_candy` food plus non-wearable Resin items such as shard/dagger), so the related 1.2.1 texture-binding release note is non-applicable to this fork.
 
 V1.2.0-JCP
 - **Performance and scalability:** per-tick and high-frequency scripts were refactored to reduce repeated work, improve caching, and lower runtime overhead.
