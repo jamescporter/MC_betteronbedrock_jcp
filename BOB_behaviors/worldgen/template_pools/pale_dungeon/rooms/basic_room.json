@@ -10,7 +10,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/rooms/pieces/basic_piece_01",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -19,7 +19,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/rooms/pieces/basic_piece_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -28,7 +28,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/rooms/pieces/basic_piece_03",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
