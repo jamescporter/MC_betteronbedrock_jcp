@@ -10,7 +10,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_01",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1
@@ -19,7 +19,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1
@@ -28,7 +28,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_03",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1
@@ -37,7 +37,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_04",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1
@@ -46,7 +46,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_05",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1
@@ -55,7 +55,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_06",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1
@@ -64,7 +64,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_07",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1
@@ -73,7 +73,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/pieces/room_piece_08",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/common_barrels",
                     "projection": "rigid"
                 },
                 "weight": 1

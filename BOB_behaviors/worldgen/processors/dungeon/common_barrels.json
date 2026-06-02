@@ -1,0 +1,182 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:processor_list": {
+    "description": { "identifier": "pog:dungeon/common_barrels" },
+    "processors": [
+      {
+        "processor_type": "minecraft:capped",
+        "limit": 6,
+        "delegate": {
+          "processor_type": "minecraft:rule",
+          "rules": [
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/dungeon_well/common_barrel.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 2 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 2 }
+              }
+            },
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/dungeon_well/common_barrel.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 3 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 3 }
+              }
+            },
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/dungeon_well/common_barrel.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 4 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 4 }
+              }
+            },
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/dungeon_well/common_barrel.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 5 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 5 }
+              }
+            }
+          ]
+        }
+      },
+      {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:blockstate_match",
+            "block_state": {
+              "name": "minecraft:vault",
+              "states": {
+                "minecraft:cardinal_direction": "north",
+                "vault_state": "inactive"
+              }
+            }
+          },
+          "block_entity_modifier": {
+            "type": "minecraft:append_loot",
+            "loot_table": "loot_tables/chests/dungeon_well/vault.json"
+          },
+          "output_state": {
+            "name": "minecraft:vault",
+            "states": {
+              "minecraft:cardinal_direction": "north",
+              "vault_state": "inactive"
+            }
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:blockstate_match",
+            "block_state": {
+              "name": "minecraft:vault",
+              "states": {
+                "minecraft:cardinal_direction": "east",
+                "vault_state": "inactive"
+              }
+            }
+          },
+          "block_entity_modifier": {
+            "type": "minecraft:append_loot",
+            "loot_table": "loot_tables/chests/dungeon_well/vault.json"
+          },
+          "output_state": {
+            "name": "minecraft:vault",
+            "states": {
+              "minecraft:cardinal_direction": "east",
+              "vault_state": "inactive"
+            }
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:blockstate_match",
+            "block_state": {
+              "name": "minecraft:vault",
+              "states": {
+                "minecraft:cardinal_direction": "south",
+                "vault_state": "inactive"
+              }
+            }
+          },
+          "block_entity_modifier": {
+            "type": "minecraft:append_loot",
+            "loot_table": "loot_tables/chests/dungeon_well/vault.json"
+          },
+          "output_state": {
+            "name": "minecraft:vault",
+            "states": {
+              "minecraft:cardinal_direction": "south",
+              "vault_state": "inactive"
+            }
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:blockstate_match",
+            "block_state": {
+              "name": "minecraft:vault",
+              "states": {
+                "minecraft:cardinal_direction": "west",
+                "vault_state": "inactive"
+              }
+            }
+          },
+          "block_entity_modifier": {
+            "type": "minecraft:append_loot",
+            "loot_table": "loot_tables/chests/dungeon_well/vault.json"
+          },
+          "output_state": {
+            "name": "minecraft:vault",
+            "states": {
+              "minecraft:cardinal_direction": "west",
+              "vault_state": "inactive"
+            }
+          }
+        }
+      ]
+    }
+    ]
+  }
+}

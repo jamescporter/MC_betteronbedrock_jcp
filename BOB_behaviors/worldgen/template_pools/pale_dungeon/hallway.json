@@ -10,7 +10,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/hallway_01",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -19,7 +19,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/hallway_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -28,7 +28,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/hallway_03",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -37,7 +37,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/stairs_01",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -46,7 +46,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/stairs_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -55,7 +55,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/crossway_01",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -64,7 +64,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/crossway_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -73,7 +73,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/crossway_03",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -82,7 +82,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/crossway_04",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -91,7 +91,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/crossway_05",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -100,7 +100,7 @@
                 "weight": 50,
                 "element": {
                     "location": "pale_dungeon/hallways/crossway_06",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -109,7 +109,7 @@
                 "weight": 59,
                 "element": {
                     "location": "pale_dungeon/rooms/basic_room",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -118,7 +118,7 @@
                 "weight": 59,
                 "element": {
                     "location": "pale_dungeon/rooms/combat_room",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
@@ -127,7 +127,7 @@
                 "weight": 59,
                 "element": {
                     "location": "pale_dungeon/rooms/combat_room_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/pots_and_chests",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }

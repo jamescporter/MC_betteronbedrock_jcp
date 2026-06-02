@@ -9,7 +9,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_01",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -18,7 +18,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -27,7 +27,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_03",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -36,7 +36,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_04",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -45,7 +45,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_05",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -54,7 +54,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_06",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -63,7 +63,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_07",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -72,7 +72,16 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/room_08",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
+                    "projection": "rigid"
+                },
+                "weight": 2
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/rooms/room_10",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 2
@@ -81,7 +90,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/combat_room_01",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 7
@@ -90,7 +99,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/combat_room_02",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 7
@@ -99,7 +108,7 @@
                 "element": {
                     "element_type": "minecraft:single_pool_element",
                     "location": "well_dungeon/rooms/combat_room_03",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:dungeon/uncommon_barrels",
                     "projection": "rigid"
                 },
                 "weight": 3
