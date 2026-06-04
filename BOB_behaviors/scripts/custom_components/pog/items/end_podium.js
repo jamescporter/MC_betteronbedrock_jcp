@@ -3,6 +3,9 @@ import { system } from "@minecraft/server";
 /** @type { import("@minecraft/server").ItemCustomComponent } */
 export const events = {
     onUseOn: ({ block, usedOnBlockPermutation, itemStack, source }) => {
+        if (!block || !itemStack || !source?.isValid())
+            return;
+
         const { x, y, z } = block.location;
         switch (block.typeId) {
             case "better_on_bedrock:end_podium": {
@@ -16,7 +19,10 @@ export const events = {
                 block.dimension.spawnParticle("test:dragon_death2", location);
 
                 source.runCommandAsync("clear @s better_on_bedrock:the_ardent_crystal 0 1");
-                system.runTimeout(() => block.dimension.spawnEntity("better_on_bedrock:poggy", location));
+                system.runTimeout(() => {
+                    if (block.isValid())
+                        block.dimension.spawnEntity("better_on_bedrock:poggy", location);
+                });
                 break;
             };
 

@@ -54,8 +54,11 @@ export const events = {
         );
     },
     onPlayerInteract: ({ block, dimension, player }) => {
+        if (!player?.isValid())
+            return;
+
         const permutation = block.permutation;
-        const mainHand = player.getComponent(EntityEquippableComponent.componentId).getEquipment(EquipmentSlot.Mainhand);
+        const mainHand = player.getComponent(EntityEquippableComponent.componentId)?.getEquipment(EquipmentSlot.Mainhand);
         const currentGrowth = permutation.getState("better_on_bedrock:growth_stage");
         if (currentGrowth == undefined)
             return;

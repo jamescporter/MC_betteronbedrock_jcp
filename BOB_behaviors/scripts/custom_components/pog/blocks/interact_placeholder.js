@@ -71,7 +71,7 @@ const plants = {
 /** @type { import("@minecraft/server").BlockCustomComponent } */
 export const events = {
     onPlayerDestroy: ({ block, dimension, destroyedBlockPermutation }) => {
-        if (destroyedBlockPermutation.type.id !== "better_on_bedrock:hanging_pot_base")
+        if (destroyedBlockPermutation?.type.id !== "better_on_bedrock:hanging_pot_base")
             return;
 
         const plantValue = destroyedBlockPermutation.getState("pog:pot_plant");
@@ -86,11 +86,11 @@ export const events = {
         dimension.spawnItem(itemStack, block.location);
     },
     onPlayerInteract: ({ block, dimension, player }) => {
-        if (block.typeId !== "better_on_bedrock:hanging_pot_base")
+        if (!player?.isValid() || block.typeId !== "better_on_bedrock:hanging_pot_base")
             return;
 
         const equippable = player.getComponent(EntityEquippableComponent.componentId);
-        const mainhand = equippable.getEquipment(EquipmentSlot.Mainhand);
+        const mainhand = equippable?.getEquipment(EquipmentSlot.Mainhand);
         const plantValue = block.permutation.getState("pog:pot_plant");
         if (mainhand === undefined && plantValue !== "none")
         {
@@ -101,8 +101,8 @@ export const events = {
             block.setPermutation(block.permutation.withState("pog:pot_plant", "none"));
             
             const itemStack = new ItemStack(itemId);
-            const inventory = player.getComponent(EntityInventoryComponent.componentId).container;
-            if (inventory.emptySlotsCount == 0) {
+            const inventory = player.getComponent(EntityInventoryComponent.componentId)?.container;
+            if (inventory === undefined || inventory.emptySlotsCount == 0) {
                 player.dimension.spawnItem(itemStack, player.location);
             }
             else {

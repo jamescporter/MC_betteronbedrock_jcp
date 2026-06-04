@@ -200,7 +200,7 @@ export const blocks = [
                     "minecraft:netherite_tier",
                     "better_on_bedrock:stardust_tier",
                 ],
-                drop: "better_on_bedrock:stardust",
+                drop: "better_on_bedrock:corstinite_ingot",
                 xp: false,
             },
             {

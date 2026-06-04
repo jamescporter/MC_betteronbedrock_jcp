@@ -4,15 +4,15 @@ export const events = {
     beforeOnPlayerPlace: (data) => {
         const { block, permutationToPlace } = data;
         const above = block.above();
-        if (!above.isAir) {
+        if (!above?.isAir) {
             data.cancel = true;
             return;
         };
 
-        const north = block.north().typeId == permutationToPlace.type.id;
-        const east = block.east().typeId == permutationToPlace.type.id;
-        const south = block.south().typeId == permutationToPlace.type.id;
-        const west = block.west().typeId == permutationToPlace.type.id;
+        const north = block.north()?.typeId == permutationToPlace.type.id;
+        const east = block.east()?.typeId == permutationToPlace.type.id;
+        const south = block.south()?.typeId == permutationToPlace.type.id;
+        const west = block.west()?.typeId == permutationToPlace.type.id;
         const mirrored = (north || east || south || west);
 
         data.permutationToPlace = permutationToPlace.withState("pog:mirrored", mirrored);
@@ -26,13 +26,13 @@ export const events = {
         block.setPermutation(block.permutation.withState("pog:door_open", !isOpen));
 
         const other = isTopBit ? block.below() : block.above();
-        if (other.typeId == block.typeId)
+        if (other?.typeId == block.typeId)
             other.setPermutation(other.permutation.withState("pog:door_open", !isOpen));
         block.dimension.playSound(isOpen ? "close.wooden_door" : "open.wooden_door", block.location);
     },
     onTick: ({ block, dimension }) => {
         const isTopBit = block.permutation.getState("pog:top_bit");
-        if (!isTopBit && block.above().typeId !== block.typeId)
+        if (!isTopBit && block.above()?.typeId !== block.typeId)
             block.setType("minecraft:air");
 
         const isOpen = block.permutation.getState("pog:door_open");
@@ -53,7 +53,7 @@ export const events = {
     },
     onPlayerDestroy: ({ block, destroyedBlockPermutation }) => {
         const below = block.below();
-        if (below.typeId == destroyedBlockPermutation.type.id)
+        if (below?.typeId == destroyedBlockPermutation.type.id)
             below.setType("minecraft:air");
     },
 };
