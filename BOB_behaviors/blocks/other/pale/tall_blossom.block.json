@@ -31,7 +31,12 @@
                         "block_filter": [
                             "grass_block",
                             "dirt",
-                            "pale_moss_block",
+                            "pale_moss_block"
+                        ]
+                    },
+                    {
+                        "allowed_faces": [ "down" ],
+                        "block_filter": [
                             "better_on_bedrock:tall_blossom"
                         ]
                     }
@@ -47,12 +52,6 @@
             ]
         },
         "permutations": [
-            {
-                "condition": "q.block_state('pog:double_plant') == 'default'",
-                "components": {
-                    "minecraft:loot": "loot_tables/empty.json"
-                }
-            },
             {
                 "condition": "q.block_state('pog:double_plant') == 'top_bit'",
                 "components": {

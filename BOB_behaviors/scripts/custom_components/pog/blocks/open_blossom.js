@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 function isNight() {
     const time = world.getTimeOfDay();
     return time >= 13000 && time < 24000;
@@ -6,9 +6,9 @@ function isNight() {
 
 /** @type { import("@minecraft/server").BlockCustomComponent } */
 export const events = {
-    onTick: ({ block, dimension }) => {
+    onTick: ({ block }) => {
         try {
-            const isTopBit = block.permutation.getState("pog:double_plant") == "top_bit";
+            const isTopBit = block.permutation.getState("pog:double_plant") === "top_bit";
             if (isTopBit)
                 return;
             
@@ -17,7 +17,7 @@ export const events = {
             if (isNight()) {
                 if (!isOpen) {
                     const { x, y, z } = block.location;
-                    const entity = block.dimension.spawnEntity("better_on_bedrock:tall_blossom", { x: x + 0.5, y, z: z + 0.5 });
+                    block.dimension.spawnEntity("better_on_bedrock:tall_blossom", { x: x + 0.5, y, z: z + 0.5 });
                 };
                 
                 if (other.typeId == block.typeId)
@@ -33,5 +33,11 @@ export const events = {
             };
         }
         catch {};
+    },
+    onPlace: (event) => {
+        system.run(() => events.onTick(event));
+    },
+    onRandomTick: (event) => {
+        events.onTick(event);
     },
 };

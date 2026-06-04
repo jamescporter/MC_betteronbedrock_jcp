@@ -56,6 +56,16 @@
                             "event": "better_on_bedrock:instant_despawn",
                             "target": "self"
                         }
+                    },
+                    {
+                        "block": {
+                            "name": "better_on_bedrock:tall_eyeblossom",
+                            "states": {}
+                        },
+                        "exited_block_event": {
+                            "event": "better_on_bedrock:instant_despawn",
+                            "target": "self"
+                        }
                     }
                 ]
             },
