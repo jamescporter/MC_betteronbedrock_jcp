@@ -37,6 +37,9 @@ From the manifests in this repo:
 - This has basically been vibe-coded as an experiment. I've been going over codex changes with multiple iterations to catch introduced bugs/hallucinations and cross-checking.
 - Currently untested.
 
+### Future changes
+- Rename all remaining references to `poggy` to a replacement identifier/name once the new naming is decided.
+
 ## Overview of changes in this mod:
 
 This fork mainly focuses on reliability and performance.

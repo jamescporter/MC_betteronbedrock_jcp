@@ -6,7 +6,7 @@ import { ModalFormData } from "@minecraft/server-ui";
  * @param { import("@minecraft/server").Player } player
  */
 export function configScreen(itemStack, player) {
-    if (itemStack.typeId !== "better_on_bedrock:config")
+    if (!player?.isValid() || itemStack?.typeId !== "better_on_bedrock:config")
         return;
 
     const form = new ModalFormData()
@@ -82,10 +82,13 @@ export function configScreen(itemStack, player) {
 
 /** @param { import("@minecraft/server").Player } player */
 export function configItem(player) {
+    if (!player?.isValid())
+        return;
+
     const systemInfo = player.clientSystemInfo;
     const switchCheck = (
-        systemInfo.maxRenderDistance <= 12
-        && systemInfo.platformType == PlatformType.Console
+        systemInfo?.maxRenderDistance <= 12
+        && systemInfo?.platformType == PlatformType.Console
     );
 
     if (!player.hasTag("gotConfig")) {
@@ -94,7 +97,7 @@ export function configItem(player) {
         player.addTag("gotConfig");
         player.addTag("pog:ambientSounds");
 
-        const inventory = player.getComponent(EntityInventoryComponent.componentId).container;
-        inventory.addItem(new ItemStack("better_on_bedrock:guide_book"));
+        const inventory = player.getComponent(EntityInventoryComponent.componentId)?.container;
+        inventory?.addItem(new ItemStack("better_on_bedrock:guide_book"));
     };
 };

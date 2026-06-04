@@ -3,6 +3,9 @@ import { world, system, TicksPerSecond, EntityEquippableComponent, EquipmentSlot
 /** @type { import("@minecraft/server").ItemCustomComponent } */
 export const events = {
     onUse: ({ source, itemStack }) => {
+        if (!source?.isValid() || itemStack === undefined)
+            return;
+
         if (world.isHardcore) {
             source.playSound("item.necklace.fail");
             source.sendMessage([
@@ -13,7 +16,7 @@ export const events = {
         };
 
         const equippableInventory = source.getComponent(EntityEquippableComponent.componentId);
-        const offhandItem = equippableInventory.getEquipment(EquipmentSlot.Offhand);
+        const offhandItem = equippableInventory?.getEquipment(EquipmentSlot.Offhand);
         if (offhandItem == undefined || offhandItem.typeId !== "better_on_bedrock:soul_star") {
             source.startItemCooldown("ghost", TicksPerSecond * 2);
             source.playSound("item.necklace.fail");
@@ -28,6 +31,9 @@ export const events = {
             offhand.setItem(undefined);
 
         const durability = itemStack.getComponent(ItemDurabilityComponent.componentId);
+        if (durability === undefined)
+            return;
+
         durability.damage++;
         equippableInventory.setEquipment(EquipmentSlot.Mainhand, itemStack);
 
@@ -37,6 +43,9 @@ export const events = {
         source.dimension.spawnParticle("pog:poof", source.location);
         source.playSound("item.necklace.use");
         system.runTimeout(() => {
+            if (!source.isValid())
+                return;
+
             source.setGameMode(GameMode.survival);
             source.setDynamicProperty("usedGhostNecklace", undefined);
             source.dimension.spawnParticle("pog:poof", source.location);

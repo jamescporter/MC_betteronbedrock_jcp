@@ -11,9 +11,12 @@ export const events = {
         player,
         destroyedBlockPermutation: permutation,
     }) => {
+        if (!player?.isValid())
+            return;
+
         if (permutation.hasTag("stone")) {
             const equippable = player.getComponent(EntityEquippableComponent.componentId);
-            const itemStack = equippable.getEquipment(EquipmentSlot.Mainhand);
+            const itemStack = equippable?.getEquipment(EquipmentSlot.Mainhand);
             if (itemStack === void 0)
                 return;
 

@@ -6,20 +6,28 @@ import { Direction } from "@minecraft/server";
  * @param { import("@minecraft/server").Direction } blockFace 
  */
 export default function(block, itemStack, blockFace) {
-    if (blockFace !== Direction.Up || itemStack.typeId !== "better_on_bedrock:end_blossom_spore_head_item")
+    if (blockFace !== Direction.Up || itemStack?.typeId !== "better_on_bedrock:end_blossom_spore_head_item")
         return;
 
     const above = block.above();
-    switch (block.typeId) {
+    if (!above?.isAir)
+        return;
+
+    switch (block?.typeId) {
         case "better_on_bedrock:upward_blossom_head":
         case "better_on_bedrock:upward_blossom_stem":
             above.setType("better_on_bedrock:upward_blossom_head");
             block.setType("better_on_bedrock:upward_blossom_stem");
         break;
 
-        default:
+        default: {
+            const top = above.above();
+            if (!top?.isAir)
+                return;
+
             above.setType("better_on_bedrock:upward_blossom_base");
-            above.above().setType("better_on_bedrock:upward_blossom_head");
+            top.setType("better_on_bedrock:upward_blossom_head");
+        }
         break;
     };
 };
