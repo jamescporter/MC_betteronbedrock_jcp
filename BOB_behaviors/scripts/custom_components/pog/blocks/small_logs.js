@@ -47,7 +47,7 @@ export default class SmallLogsComponent {
      * @param { import("@minecraft/server").Block } block
      */
     static shouldUpdateLog(block) {
-        if (!block.hasTag(SmallLogsComponent.TAG))
+        if (!block?.hasTag(SmallLogsComponent.TAG))
             return;
 
         const permutation = block.permutation;
@@ -105,7 +105,7 @@ export default class SmallLogsComponent {
     };
 
     static checkFaces(block, values = []) {
-        if (!block.hasTag(SmallLogsComponent.TAG))
+        if (!block?.hasTag(SmallLogsComponent.TAG))
             return false;
 
         const permutation = block.permutation;

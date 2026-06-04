@@ -5,13 +5,16 @@ system.runInterval(() => {
     const players = world.getAllPlayers();
     for (let i = 0; i < players.length; i++) {
         const player = players[i];
+        if (!player?.isValid())
+            continue;
+
         const entity = player.dimension.getEntities({
             type: "better_on_bedrock:poggy",
             location: player.location,
             closest: 1
         })[0];
 
-        if (entity === undefined)
+        if (entity === undefined || !entity.isValid())
             continue;
 
         const variant = entity.getComponent(EntityVariantComponent.componentId)?.value;
@@ -28,13 +31,16 @@ system.runInterval(() => {
 
 /** @param { import("@minecraft/server").Player } player */
 export function poggy(player) {
+    if (!player?.isValid())
+        return;
+
     const entity = player.dimension.getEntities({
         type: "better_on_bedrock:poggy",
         location: player.location,
         closest: 1
     })[0];
 
-    if (entity === undefined)
+    if (entity === undefined || !entity.isValid())
         return;
 
     const variant = entity.getComponent(EntityVariantComponent.componentId)?.value;
@@ -43,7 +49,7 @@ export function poggy(player) {
         case 4: entity.applyKnockback(0, 0, 0, -0.3); break;
         case 11: {
             const entityFromView = getClosestEntityFromViewDirection(entity, 128);
-            if (entityFromView?.id === player.id)
+            if (entityFromView?.isValid() && entityFromView.id === player.id)
                 entityFromView.applyDamage(1);
             break;
         };
@@ -73,7 +79,7 @@ export function poggy(player) {
         };
         case 15: {
             const entityFromView = getClosestEntityFromViewDirection(entity, 128);
-            if (entityFromView?.id === player.id)
+            if (entityFromView?.isValid() && entityFromView.id === player.id)
                 entityFromView.applyDamage(6);
             break;
         };

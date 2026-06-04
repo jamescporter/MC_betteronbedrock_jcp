@@ -5,7 +5,7 @@ export const events = {
     beforeOnPlayerPlace: (data) => {
         const { block, permutationToPlace } = data;
         const above = block.above();
-        if (!above.isAir) {
+        if (!above?.isAir) {
             data.cancel = true;
             return;
         };
