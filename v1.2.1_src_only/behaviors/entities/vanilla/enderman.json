@@ -66,6 +66,17 @@
           "target_teleport_chance": 0.05,
           "light_teleport_chance": 0.05
         }
+      },
+      "better_on_bedrock:dragon_summoned_rewards_disabled": {
+        "minecraft:mark_variant": {
+          "value": 1
+        },
+        "minecraft:loot": {
+          "table": "loot_tables/entities/enderman_dragon_summoned.json"
+        },
+        "minecraft:experience_reward": {
+          "on_death": 0
+        }
       }
     },
 
@@ -117,14 +128,6 @@
       "minecraft:collision_box": {
         "width": 0.6,
         "height": 2.9
-      },
-      "minecraft:teleport": {
-        "random_teleports": true,
-        "max_random_teleport_time": 30,
-        "random_teleport_cube": [32, 32, 32],
-        "target_distance": 16,
-        "target_teleport_chance": 0.05,
-        "light_teleport_chance": 0.05
       },
       "minecraft:looked_at": {
         "search_radius": 64.0,
@@ -334,6 +337,16 @@
         },
         "remove": {
           "component_groups": ["minecraft:not_riding"]
+        }
+      },
+      "better_on_bedrock:dragon_summoned": {
+        "remove": {},
+        "add": {
+          "component_groups": [
+            "minecraft:enderman_calm",
+            "minecraft:not_riding",
+            "better_on_bedrock:dragon_summoned_rewards_disabled"
+          ]
         }
       }
     }
