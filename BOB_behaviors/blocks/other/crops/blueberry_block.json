@@ -50,7 +50,8 @@
             },
             
             "minecraft:custom_components": [ "pog:ticking" ],
-            "tag:better_on_bedrock:bush": {}
+            "tag:better_on_bedrock:bush": {},
+            "tag:minecraft:crop": {}
         },
         "permutations": [
             {
@@ -80,7 +81,8 @@
                         }
                     },
                     "minecraft:loot": "loot_tables/blocks/blueberry_half.json",
-                    "minecraft:selection_box": true
+                    "minecraft:selection_box": true,
+					"tag:better_on_bedrock:is_farmable": {}
                 }
             },
             {
@@ -95,7 +97,8 @@
                         }
                     },
                     "minecraft:loot": "loot_tables/blocks/blueberry.json",
-                    "minecraft:selection_box": true
+                    "minecraft:selection_box": true,
+					"tag:better_on_bedrock:is_farmable": {}
                 }
             }
         ]

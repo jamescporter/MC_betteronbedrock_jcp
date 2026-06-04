@@ -9,7 +9,7 @@
                 "weight": 50,
                 "element": {
                     "location": "overworld/goblin_house",
-                    "processors": "better_on_bedrock:empty",
+                    "processors": "pog:overworld/goblin_house",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
