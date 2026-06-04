@@ -259,6 +259,7 @@
                   "delay_per_summon": 0.05,
                   "num_entities_spawned": 5,
                   "entity_type": "minecraft:enderman",
+                  "spawn_event": "better_on_bedrock:dragon_summoned",
                   "size": 1
                 }
               ]

@@ -1,10 +1,16 @@
-import { world, Player } from "@minecraft/server";
+import { world, Player, EntityMarkVariantComponent } from "@minecraft/server";
 import { bounties, defaultBounties } from "./bounties.js";
 import { readJsonProperty } from "../util.js";
 
 world.afterEvents.entityDie.subscribe(
     ({ deadEntity, damageSource: { damagingEntity } }) => {
         if (!(damagingEntity instanceof Player))
+            return;
+
+        if (
+            deadEntity.typeId == "minecraft:enderman"
+            && deadEntity.getComponent(EntityMarkVariantComponent.componentId)?.value == 1
+        )
             return;
         
         const bountyEntity = bounties.find((bounty) =>
