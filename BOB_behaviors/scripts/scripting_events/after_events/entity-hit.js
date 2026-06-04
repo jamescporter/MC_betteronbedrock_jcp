@@ -7,6 +7,9 @@ import { applyEnchantments } from "../../functionality/enchanted/main";
 
 world.afterEvents.entityHitEntity.subscribe(
     ({ damagingEntity, hitEntity }) => {
+        if (!damagingEntity?.isValid() || !hitEntity?.isValid())
+            return;
+
         applyEnchantments(damagingEntity, hitEntity);
 
         if (damagingEntity instanceof Player) {

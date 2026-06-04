@@ -25,7 +25,7 @@
 
 			"minecraft:custom_components": [ "pog:tick" ],
 			"minecraft:tick": {
-				"interval_range": [ 20, 40 ],
+				"interval_range": [ 40, 40 ],
 				"looping": true
 			}
 		}

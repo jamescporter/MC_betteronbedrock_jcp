@@ -1,11 +1,11 @@
 {
-    "format_version": "1.21.10",
+    "format_version": "1.21.110",
     "minecraft:item": {
         "description": {
             "identifier": "better_on_bedrock:corstinite_chestplate",
             "menu_category": {
                 "category": "equipment",
-                "group": "itemGroup.name.chestplate"
+                "group": "minecraft:itemGroup.name.chestplate"
             }
         },
         "components": {

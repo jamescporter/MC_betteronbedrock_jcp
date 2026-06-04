@@ -4,6 +4,9 @@ import { amethystKnockback } from "../../functionality/armor_effects/amethyst";
 
 world.afterEvents.entityHurt.subscribe(
     ({ damage, damageSource, hurtEntity }) => {
+        if (!damageSource.damagingEntity?.isValid() || !hurtEntity?.isValid())
+            return;
+
         amethystKnockback(damageSource, hurtEntity);
 
         if (damageSource.damagingEntity?.hasComponent(EntityEquippableComponent.componentId)) {
