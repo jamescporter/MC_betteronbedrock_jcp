@@ -9,7 +9,7 @@
                      "wants": [
                         {
                            "item": "minecraft:emerald",
-                           "quantity": 10,
+                           "quantity": 8,
                            "price_multiplier": 0.05
                         }
                      ],
@@ -129,7 +129,7 @@
                      "wants": [
                         {
                            "item": "minecraft:gold_ingot",
-                           "quantity": 25
+                           "quantity": 18
                         }
                      ],
                      "gives": [
@@ -145,7 +145,7 @@
                      "wants": [
                         {
                            "item": "minecraft:gold_ingot",
-                           "quantity": 25
+                           "quantity": 18
                         }
                      ],
                      "gives": [
@@ -164,8 +164,8 @@
                            "quantity": 1
                         },
                         {
-                           "item": "minecraft:gold_block",
-                           "quantity": 1
+                           "item": "minecraft:gold_ingot",
+                           "quantity": 4
                         }
                      ],
                      "gives": [
@@ -182,11 +182,11 @@
                      "wants": [
                         {
                            "item": "minecraft:diamond",
-                           "quantity": 15
+                           "quantity": 13
                         },
                         {
                            "item": "minecraft:gold_block",
-                           "quantity": 6
+                           "quantity": 5
                         }
                      ],
                      "gives": [
@@ -203,11 +203,11 @@
                      "wants": [
                         {
                            "item": "minecraft:copper_ingot",
-                           "quantity": 8
+                           "quantity": 7
                         },
                         {
                            "item": "minecraft:gold_nugget",
-                           "quantity": 20
+                           "quantity": 16
                         }
                      ],
                      "gives": [
@@ -223,7 +223,7 @@
                      "wants": [
                         {
                            "item": "minecraft:iron_ingot",
-                           "quantity": 15
+                           "quantity": 12
                         }
                      ],
                      "gives": [
@@ -258,7 +258,7 @@
                      "wants": [
                         {
                            "item": "minecraft:diamond",
-                           "quantity": 20
+                           "quantity": 17
                         }
                      ],
                      "gives": [
@@ -274,7 +274,7 @@
                      "wants": [
                         {
                            "item": "minecraft:carrot",
-                           "quantity": 24
+                           "quantity": 20
                         }
                      ],
                      "gives": [
@@ -322,11 +322,11 @@
                      "wants": [
                         {
                            "item": "minecraft:coal",
-                           "quantity": 64
+                           "quantity": 48
                         },
                         {
                            "item": "minecraft:charcoal",
-                           "quantity": 64
+                           "quantity": 48
                         },
                         {
                            "item": "minecraft:emerald",
@@ -346,7 +346,7 @@
                      "wants": [
                         {
                            "item": "minecraft:bread",
-                           "quantity": 16
+                           "quantity": 12
                         }
                      ],
                      "gives": [
@@ -379,7 +379,7 @@
                      "wants": [
                         {
                            "item": "minecraft:copper_ingot",
-                           "quantity": 36
+                           "quantity": 30
                         }
                      ],
                      "gives": [
