@@ -374,7 +374,7 @@ export const events = {
     beforeOnPlayerPlace: (data) => {
         const { block, permutationToPlace } = data;
         const above = block.above();
-        if (!above.isAir) {
+        if (!above?.isAir) {
             data.cancel = true;
             return;
         };
@@ -384,6 +384,9 @@ export const events = {
         });
     },
     onPlayerDestroy: ({ block, destroyedBlockPermutation, player }) => {
+        if (!player?.isValid())
+            return;
+
         const below = block.below();
         //if (below.typeId == destroyedBlockPermutation.type.id)
         //    below.setType("minecraft:air");
@@ -393,13 +396,17 @@ export const events = {
         const location = { x, y: isTopBit ? (y - 1) : y, z };
 
         const other = block.dimension.getBlock(location);
-        if (other.typeId == destroyedBlockPermutation.type.id)
+        if (other?.typeId == destroyedBlockPermutation.type.id)
             other.setType("minecraft:air");
 
         // Global warps
         const globals = world.getDynamicPropertyIds().filter((v) => v.startsWith("Warp:"));
         const g = globals.filter((v) => {
-            const { x, y, z } = world.getDynamicProperty(v);
+            const warp = world.getDynamicProperty(v);
+            if (warp === undefined)
+                return false;
+
+            const { x, y, z } = warp;
             return (
                 location.x == x
                 && location.y == y
@@ -408,8 +415,13 @@ export const events = {
         });
 
         for (let tag of g) {
-            const { x, y, z } = world.getDynamicProperty(tag);
-            const [_, warpName, dimensionName] = tag.match(/(?:Warp:)(.*?)-(minecraft:.+)/);
+            const warp = world.getDynamicProperty(tag);
+            const match = tag.match(/(?:Warp:)(.*?)-(minecraft:.+)/);
+            if (warp === undefined || match === null)
+                continue;
+
+            const { x, y, z } = warp;
+            const [_, warpName, dimensionName] = match;
             player.playSound(`block.better_on_bedrock:waystone.remove`)
             world.setDynamicProperty(tag, undefined);
             player.sendMessage([
@@ -427,7 +439,11 @@ export const events = {
         // Player warps
         const warps = player.getTags().filter((v) => v.startsWith("Warp:"));
         const w = warps.filter((v) => {
-            const [_, warpName, xCord, yCord, zCord, dimensionName] = v.match(warpRegex);
+            const match = v.match(warpRegex);
+            if (match === null)
+                return false;
+
+            const [_, warpName, xCord, yCord, zCord, dimensionName] = match;
             return (
                 location.x == Number(xCord)
                 && location.y == Number(yCord)
@@ -436,7 +452,11 @@ export const events = {
         });
 
         for (let tag of w) {
-            const [_, warpName, xCord, yCord, zCord, dimensionName] = tag.match(warpRegex);
+            const match = tag.match(warpRegex);
+            if (match === null)
+                continue;
+
+            const [_, warpName, xCord, yCord, zCord, dimensionName] = match;
 
             player.removeTag(tag);
             player.playSound(`block.better_on_bedrock:waystone.remove`)
