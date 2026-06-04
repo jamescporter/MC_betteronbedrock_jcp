@@ -38,7 +38,10 @@ export const events = {
             block.setPermutation(block.permutation.withState("pog:is_on", false));
         };
     },
-    onPlace: ({ block }) => {
-        block.setPermutation(block.permutation.withState("pog:is_on", false));
-    }
+    onPlace: (event) => {
+        events.onTick(event);
+    },
+    onRandomTick: (event) => {
+        events.onTick(event);
+    },
 };
