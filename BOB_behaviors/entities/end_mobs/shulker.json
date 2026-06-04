@@ -184,32 +184,36 @@
                   "value": "player"
                 },
                 {
-                  "test": "has_equipment",
-                  "subject": "other",
-                  "domain": "feet",
-                  "operator": "not",
-                  "value": "better_on_bedrock:shulker_boots"
-                },
-                {
-                  "test": "has_equipment",
-                  "subject": "other",
-                  "domain": "head",
-                  "operator": "not",
-                  "value": "better_on_bedrock:shulker_helmet"
-                },
-                {
-                  "test": "has_equipment",
-                  "subject": "other",
-                  "domain": "torso",
-                  "operator": "not",
-                  "value": "better_on_bedrock:shulker_chestplate"
-                },
-                {
-                  "test": "has_equipment",
-                  "subject": "other",
-                  "domain": "leg",
-                  "operator": "not",
-                  "value": "better_on_bedrock:shulker_leggings"
+                  "any_of": [
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "feet",
+                      "operator": "not",
+                      "value": "better_on_bedrock:shulker_boots"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "head",
+                      "operator": "not",
+                      "value": "better_on_bedrock:shulker_helmet"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "torso",
+                      "operator": "not",
+                      "value": "better_on_bedrock:shulker_chestplate"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "leg",
+                      "operator": "not",
+                      "value": "better_on_bedrock:shulker_leggings"
+                    }
+                  ]
                 }
               ]
             },
