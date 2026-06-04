@@ -90,7 +90,8 @@
 						}
 					},
 					"minecraft:loot": "loot_tables/blocks/grape_half.json",
-					"minecraft:selection_box": true
+					"minecraft:selection_box": true,
+					"tag:better_on_bedrock:is_farmable": {}
 				}
 			},
 			{
@@ -105,7 +106,8 @@
 						}
 					},
 					"minecraft:loot": "loot_tables/blocks/grape.json",
-					"minecraft:selection_box": true
+					"minecraft:selection_box": true,
+					"tag:better_on_bedrock:is_farmable": {}
 				}
 			}
 		]

@@ -39,7 +39,8 @@
                         "allowed_faces": [ "up" ]
                     }
                 ]
-            }
+            },
+			"tag:better_on_bedrock:is_farmable": {}
         }
     }
 }

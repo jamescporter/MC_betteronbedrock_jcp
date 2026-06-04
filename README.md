@@ -1,6 +1,6 @@
-# Better on Bedrock (Modified) - Based on v1.2.0
+# Better on Bedrock (Modified) - Based on v1.2.0 with selected v1.2.1 ports
 
-This repository contains a **modified version** of the original **Better on Bedrock** add-on for Minecraft Bedrock Edition, based on **version 1.2.0**.
+This repository contains a **modified version** of the original **Better on Bedrock** add-on for Minecraft Bedrock Edition, based on **version 1.2.0** with selected **v1.2.1** behaviour/resource updates ported forward.
 
 ## Original project
 **Copyright © 2024-present Poggy MIT License.**
@@ -16,8 +16,8 @@ Both packs are required for proper gameplay.
 
 ### Version and compatibility
 From the manifests in this repo:
-- Add-on version: `1.2.0-0.9`
-- Minimum Bedrock engine version: `1.21.110`
+- Add-on version: `1.2.1-0.9`
+- Minimum Bedrock engine version: `1.21.120`
 
 ### Installation (manual)
 1. Download or clone this repository.
@@ -43,6 +43,12 @@ This fork mainly focuses on reliability and performance.
 
 
 V1.2.1-JCP
+- **Direct v1.2.1 behaviour ports:** Copied the low-risk 1.2.1 behaviour data updates into the main BOB pack, including the guidebook recipe, crop/farmable tags, the local pedestal selector, the void-block tick interval, and small orange-tree/goblin/well-dungeon worldgen template tweaks.
+- **Manifest/version alignment:** Updated behaviour and resource manifests to version `1.2.1` and aligned their pack dependency versions while keeping the current branch's script API dependencies.
+- **Fire-resistant material items:** Added fire resistance to Stardust/Corstinite material items so they match the intent of the existing fire-resistant armour/tool tier.
+- **Stardust/Corstinite item schema alignment:** Ported v1.2.1 item format/menu-group metadata for armour and Stardust tools while preserving the current branch's custom tool durability component wiring.
+- **Hit-event safety guards:** Adapted the 1.2.1 invalid-entity guards for the current branch's `isValid()` API style in entity hit/hurt event handling.
+- **Still deferred:** Broad script rewrites, entity rewrites, binary structures, goblin-trader economy changes, the Enderman/Shulker source-only overrides, and the Stardust Block item remain review-only because the current branch has divergent fixes or gameplay decisions.
 - **WAWLA growth accuracy fix:** Crop growth stage is now clamped to the configured max before calculating the displayed growth percentage, preventing out-of-range values from producing incorrect percentages.
 - **WAWLA harvestability display fix:** Fully grown crops are now treated as harvestable in the WAWLA display branch even when other farmability heuristics do not flag them.
 - **WAWLA farmable tag fallback:** The `better_on_bedrock:is_farmable` block tag is now honoured as a fallback harvestability signal.
