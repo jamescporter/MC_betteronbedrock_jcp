@@ -1,67 +1,70 @@
 import { world, system, EntityVariantComponent, EntityMarkVariantComponent, EntityHealthComponent } from "@minecraft/server";
 import { getClosestEntityFromViewDirection } from "../util";
+import { applyKnockbackSafe, isEntityValid, teleportSafe } from "./entity_helpers.js";
 
 system.runInterval(() => {
     const players = world.getAllPlayers();
     for (let i = 0; i < players.length; i++) {
         const player = players[i];
-        if (!player?.isValid())
+        if (!isEntityValid(player))
             continue;
 
         const entity = player.dimension.getEntities({
             type: "better_on_bedrock:poggy",
             location: player.location,
+            maxDistance: 128,
             closest: 1
         })[0];
 
-        if (entity === undefined || !entity.isValid())
+        if (!isEntityValid(entity))
             continue;
 
         const variant = entity.getComponent(EntityVariantComponent.componentId)?.value;
         switch (variant) {
             case 0:
-                entity.teleport(player.location);
+                teleportSafe(entity, player.location);
                 entity.dimension.playSound("mob.endermen.portal", player.location);
-                entity.applyKnockback(0, 0, 0, -3.5);
+                applyKnockbackSafe(entity, { x: 0, z: 0 }, -3.5);
             break;
-            case 4: entity.applyKnockback(0, 0, 0, -0.3); break;
+            case 4: applyKnockbackSafe(entity, { x: 0, z: 0 }, -0.3); break;
         };
     };
 }, 32);
 
 /** @param { import("@minecraft/server").Player } player */
 export function poggy(player) {
-    if (!player?.isValid())
+    if (!isEntityValid(player))
         return;
 
     const entity = player.dimension.getEntities({
         type: "better_on_bedrock:poggy",
         location: player.location,
+        maxDistance: 128,
         closest: 1
     })[0];
 
-    if (entity === undefined || !entity.isValid())
+    if (!isEntityValid(entity))
         return;
 
     const variant = entity.getComponent(EntityVariantComponent.componentId)?.value;
     switch (variant) {
-        case 3: entity.applyKnockback(0, 0, 0, 0.16); break;
-        case 4: entity.applyKnockback(0, 0, 0, -0.3); break;
+        case 3: applyKnockbackSafe(entity, { x: 0, z: 0 }, 0.16); break;
+        case 4: applyKnockbackSafe(entity, { x: 0, z: 0 }, -0.3); break;
         case 11: {
             const entityFromView = getClosestEntityFromViewDirection(entity, 128);
-            if (entityFromView?.isValid() && entityFromView.id === player.id)
+            if (isEntityValid(entityFromView) && entityFromView.id === player.id)
                 entityFromView.applyDamage(1);
             break;
         };
         case 12: {
-            entity.applyKnockback(0, 0, 0, -0.3);
+            applyKnockbackSafe(entity, { x: 0, z: 0 }, -0.3);
 
             const dx = entity.location.x - player.location.x;
             const dy = entity.location.y - player.location.y;
             const dz = entity.location.z - player.location.z;
             const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
             if (distance <= 4) {
-                player.applyKnockback(0, 0, 5.4, 1);
+                applyKnockbackSafe(player, { x: 0, z: 0 }, 1);
                 player.applyDamage(4);
 
                 if (entity.getComponent(EntityMarkVariantComponent.componentId)?.value == 1) {
@@ -74,12 +77,12 @@ export function poggy(player) {
             break;
         };
         case 13: {
-            entity.teleport(player.location);
+            teleportSafe(entity, player.location);
             break;
         };
         case 15: {
             const entityFromView = getClosestEntityFromViewDirection(entity, 128);
-            if (entityFromView?.isValid() && entityFromView.id === player.id)
+            if (isEntityValid(entityFromView) && entityFromView.id === player.id)
                 entityFromView.applyDamage(6);
             break;
         };
