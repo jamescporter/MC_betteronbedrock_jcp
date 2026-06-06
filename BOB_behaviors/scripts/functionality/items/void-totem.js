@@ -1,5 +1,21 @@
 import { EntityEquippableComponent, EquipmentSlot, TicksPerSecond } from "@minecraft/server";
 
+function consumeEquippedTotem(equipment, slot) {
+    const stack = equipment.getEquipment(slot);
+    if (stack?.typeId !== "better_on_bedrock:void_totem")
+        return false;
+
+    if (stack.amount > 1) {
+        stack.amount--;
+        equipment.setEquipment(slot, stack);
+    }
+    else {
+        equipment.setEquipment(slot, undefined);
+    }
+
+    return true;
+};
+
 /** @param { import("@minecraft/server").Player } player */
 export function voidTotem(player) {
     if (!player?.isValid())
@@ -9,9 +25,17 @@ export function voidTotem(player) {
         return;
 
     const equipment = player.getComponent(EntityEquippableComponent.componentId);
+    if (!equipment)
+        return;
+
     const mainhand = equipment.getEquipment(EquipmentSlot.Mainhand);
     const offhand = equipment.getEquipment(EquipmentSlot.Offhand);
-    if (mainhand?.typeId !== "better_on_bedrock:void_totem" && offhand?.typeId !== "better_on_bedrock:void_totem")
+    const totemSlot = mainhand?.typeId === "better_on_bedrock:void_totem"
+        ? EquipmentSlot.Mainhand
+        : offhand?.typeId === "better_on_bedrock:void_totem"
+            ? EquipmentSlot.Offhand
+            : undefined;
+    if (totemSlot === undefined)
         return;
 
     player.applyKnockback(0, 0, 0, 7.3);
@@ -20,5 +44,5 @@ export function voidTotem(player) {
     player.addEffect("blindness", TicksPerSecond * 4);
     player.dimension.playSound("random.totem", player.location);
     player.dimension.spawnParticle("minecraft:totem_particle", player.location);
-    player.runCommandAsync("clear @s better_on_bedrock:void_totem 0 1");
+    consumeEquippedTotem(equipment, totemSlot);
 };

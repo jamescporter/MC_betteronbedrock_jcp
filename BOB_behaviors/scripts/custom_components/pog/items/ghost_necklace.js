@@ -1,4 +1,4 @@
-import { world, system, TicksPerSecond, EntityEquippableComponent, EquipmentSlot, GameMode, ItemDurabilityComponent } from "@minecraft/server";
+import { world, system, TicksPerSecond, EntityEquippableComponent, EquipmentSlot, GameMode, ItemDurabilityComponent, ItemStack } from "@minecraft/server";
 
 /** @type { import("@minecraft/server").ItemCustomComponent } */
 export const events = {
@@ -16,7 +16,14 @@ export const events = {
         };
 
         const equippableInventory = source.getComponent(EntityEquippableComponent.componentId);
-        const offhandItem = equippableInventory?.getEquipment(EquipmentSlot.Offhand);
+        if (!equippableInventory)
+            return;
+
+        const durability = itemStack.getComponent(ItemDurabilityComponent.componentId);
+        if (durability === undefined || durability.damage >= durability.maxDurability)
+            return;
+
+        const offhandItem = equippableInventory.getEquipment(EquipmentSlot.Offhand);
         if (offhandItem == undefined || offhandItem.typeId !== "better_on_bedrock:soul_star") {
             source.startItemCooldown("ghost", TicksPerSecond * 2);
             source.playSound("item.necklace.fail");
@@ -30,12 +37,13 @@ export const events = {
         else
             offhand.setItem(undefined);
 
-        const durability = itemStack.getComponent(ItemDurabilityComponent.componentId);
-        if (durability === undefined)
-            return;
-
         durability.damage++;
-        equippableInventory.setEquipment(EquipmentSlot.Mainhand, itemStack);
+        equippableInventory.setEquipment(
+            EquipmentSlot.Mainhand,
+            durability.damage >= durability.maxDurability
+                ? new ItemStack("better_on_bedrock:broken_ghost_necklace")
+                : itemStack
+        );
 
         source.setGameMode(GameMode.spectator);
         source.setDynamicProperty("usedGhostNecklace", true);
