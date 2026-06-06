@@ -1,4 +1,4 @@
-import { EntityEquippableComponent, EntityItemComponent, EquipmentSlot, GameMode, ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
+import { EntityEquippableComponent, EquipmentSlot, GameMode, ItemDurabilityComponent, ItemEnchantableComponent } from "@minecraft/server";
 const instantMineableBlocks = [
     "minecraft:azalea",
     "minecraft:flowering_azalea",
@@ -104,8 +104,11 @@ function shouldDamageItem(level) {
 };
 
 function reduceDurability(entity, itemStack, damageAmount = 1) {
-    const durability = itemStack.getComponent(ItemDurabilityComponent.componentId);
-    const equippable = entity.getComponent(EntityEquippableComponent.componentId);
+    const durability = itemStack?.getComponent(ItemDurabilityComponent.componentId);
+    const equippable = entity?.getComponent(EntityEquippableComponent.componentId);
+    if (!durability || !equippable)
+        return;
+
     if (durability.damage + damageAmount >= durability.maxDurability) {
         equippable.setEquipment(EquipmentSlot.Mainhand, undefined);
         entity.dimension.playSound("random.break", entity.location);
@@ -126,18 +129,12 @@ export const events = {
         if (source.matches({ gameMode: GameMode.creative }) || itemStack == undefined)
             return;
 
-        const enchantable = itemStack.getComponent(ItemEnchantableComponent.componentId);
-        if (enchantable.hasEnchantment("silk_touch")) {
-            reduceDurability(source, itemStack);
-        };
-
-        if (!enchantable.hasEnchantment("unbreaking") && !instantMineableBlocks.includes(minedBlockPermutation.type.id)) {
-            reduceDurability(source, itemStack);
+        if (instantMineableBlocks.includes(minedBlockPermutation.type.id))
             return;
-        };
 
-        const unbreaking = enchantable.getEnchantment("unbreaking");
-        if (unbreaking && shouldDamageItem(unbreaking.level))
+        const enchantable = itemStack.getComponent(ItemEnchantableComponent.componentId);
+        const unbreaking = enchantable?.getEnchantment("unbreaking");
+        if (!unbreaking || shouldDamageItem(unbreaking.level))
             reduceDurability(source, itemStack);
     },
 };

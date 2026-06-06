@@ -1,4 +1,4 @@
-import { world, system, TicksPerSecond, EquipmentSlot, EntityEquippableComponent, ItemDurabilityComponent } from "@minecraft/server";
+import { world, system, TicksPerSecond, EquipmentSlot, EntityEquippableComponent, GameMode, ItemDurabilityComponent } from "@minecraft/server";
 
 const lastFillRegionByPlayer = new Map();
 
@@ -25,7 +25,7 @@ export function voidBoots(player) {
     }
 
     const equipment = player.getComponent(EntityEquippableComponent.componentId);
-    const boots = equipment.getEquipment(EquipmentSlot.Feet);
+    const boots = equipment?.getEquipment(EquipmentSlot.Feet);
     if (boots?.typeId !== "better_on_bedrock:voiding_boots" || landCheck(player)) {
         lastFillRegionByPlayer.delete(player.id);
         return;
@@ -62,14 +62,21 @@ system.runInterval(() => {
                 continue;
 
             const equipment = player.getComponent(EntityEquippableComponent.componentId);
-            const boots = equipment.getEquipment(EquipmentSlot.Feet);
+            const boots = equipment?.getEquipment(EquipmentSlot.Feet);
             if (boots?.typeId !== "better_on_bedrock:voiding_boots" || landCheck(player) || player.location.y < 0)
                 continue;
 
+            if (player.getGameMode() === GameMode.creative)
+                continue;
+
             const durability = boots.getComponent(ItemDurabilityComponent.componentId);
+            if (!durability)
+                continue;
+
             durability.damage += 1;
             if (durability.damage >= durability.maxDurability) {
                 yield equipment.setEquipment(EquipmentSlot.Feet, undefined);
+                player.dimension.playSound("random.break", player.location);
                 continue;
             };
 
