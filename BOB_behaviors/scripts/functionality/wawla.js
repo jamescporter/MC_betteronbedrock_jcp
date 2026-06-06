@@ -25,8 +25,8 @@ const crops = {
 
 const maxDistance = 7.5;
 function getIdentifier(id) {
-    const name = id.split(":")[0];
-    return name
+    const identifier = id.includes(":") ? id.split(":")[1] : id;
+    return identifier
         .replaceAll("_", " ")
         .replace(/(\b[a-z](?!\s))/g, (x) => x.toUpperCase());
 };
@@ -176,11 +176,10 @@ export function wawla(player) {
         let fullyGrown = false;
         if (crops[block.typeId] !== undefined) {
             const maxGrowth = crops[block.typeId];
-            const rawGrowth = (
-                block.permutation.getState("growth")
-                || block.permutation.getState("age")
-                || block.permutation.getState("better_on_bedrock:growth_stage")
-            ) ?? 0;
+            const rawGrowth = block.permutation.getState("growth")
+                ?? block.permutation.getState("age")
+                ?? block.permutation.getState("better_on_bedrock:growth_stage")
+                ?? 0;
             const clampedGrowth = Math.min(Math.max(rawGrowth, 0), maxGrowth);
             const currentGrowth = clampedGrowth / maxGrowth;
             const percentage = Math.round((currentGrowth !== 0 ? Number(currentGrowth.toFixed(2)) : 0) * 100);

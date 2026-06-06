@@ -41,14 +41,18 @@ world.afterEvents.entityDie.subscribe(
 
                     savedBounty[1] = 0; // Set progress to 0
                     savedBounty[2] = 2; // Completed
-                    if (bountyEntity.id === 19) {
+                    const nextBounty = bounties.find((bounty) => bounty.id == bountyEntity.id + 1);
+                    const nextSavedBounty = nextBounty !== undefined
+                        ? savedBounties.find((q) => q[0] == nextBounty.id)
+                        : undefined;
+                    if (nextSavedBounty !== undefined) {
+                        nextSavedBounty[2] = 0; // Open
+                    }
+                    else {
                         damagingEntity.sendMessage([
                             { text: "§a[!] §r" },
                             { translate: "bob.message.bounty.completedAll" },
                         ]);
-                    }
-                    else {
-                        savedBounties.find((q) => q[0] == bountyEntity.id + 1)[2] = 0; // Open
                     };
                 };
 
