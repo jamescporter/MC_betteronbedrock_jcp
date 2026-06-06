@@ -28,6 +28,14 @@ system.runInterval(() => {
     }
 }, 1)
 
+function getBlockSafely(dimension, location) {
+    try {
+        return dimension.getBlock(location)
+    } catch (e) {
+        return undefined
+    }
+}
+
 function portalNearby(player) {
     const baseLocation = toBlockPos(player.location)
 
@@ -41,7 +49,7 @@ function portalNearby(player) {
     for (let checkX = minX; checkX <= maxX; checkX++) {
         for (let checkY = minY; checkY <= maxY; checkY++) {
             for (let checkZ = minZ; checkZ <= maxZ; checkZ++) {
-                const block = player.dimension.getBlock({ x: checkX, y: checkY, z: checkZ })
+                const block = getBlockSafely(player.dimension, { x: checkX, y: checkY, z: checkZ })
 
                 if (
                     block?.typeId === "minecraft:portal" ||
@@ -240,12 +248,12 @@ function saveBackpack(entity) {
         if (block2 != undefined) {
             const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
             if (!blockInv2?.container) return false
-            transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)
+            if (!transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)) return false
             if (!trySaveStructure("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
             emptyInventory(blockInv2)
         }
 
-        transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)
+        if (!transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)) return false
         if (!trySaveStructure("backpack" + id, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
         emptyInventory(blockInv)
         saveSucceeded = true
@@ -589,7 +597,10 @@ function loadBackpack(entityTypeID, player, item) {
                 closeBackpackEntityWithoutSave(backPack)
                 return undefined
             }
-            transferInventory(blockInv2.container, entityInv.container, dim, block2.location, 0, 27, entityInv.container.size)
+            if (!transferInventory(blockInv2.container, entityInv.container, dim, block2.location, 0, 27, entityInv.container.size)) {
+                closeBackpackEntityWithoutSave(backPack)
+                return undefined
+            }
             emptyInventory(blockInv2)
             system.runTimeout(() => {
                 block_Manager.setBlock(dim, stagingUpperPos, "air")
@@ -602,7 +613,10 @@ function loadBackpack(entityTypeID, player, item) {
             closeBackpackEntityWithoutSave(backPack)
             return undefined
         }
-        transferInventory(blockInv.container, entityInv.container, dim, block.location, 0, 0, 27)
+        if (!transferInventory(blockInv.container, entityInv.container, dim, block.location, 0, 0, 27)) {
+            closeBackpackEntityWithoutSave(backPack)
+            return undefined
+        }
         emptyInventory(blockInv)
         system.runTimeout(() => {
             block_Manager.setBlock(dim, stagingBasePos, "air")
@@ -628,24 +642,51 @@ function loadBackpack(entityTypeID, player, item) {
  */
 function transferInventory(container1, container2, dimension, fromInvLocation, FromInvStartingSlot, ToInvStartingSlot, maxSlot) {
     let destOffset = 0
-    for (let sourceSlot = FromInvStartingSlot; sourceSlot < maxSlot; sourceSlot++) {
+    const sourceEndSlot = Math.min(maxSlot, container1.size)
+
+    for (let sourceSlot = FromInvStartingSlot; sourceSlot < sourceEndSlot; sourceSlot++) {
         const destinationSlot = ToInvStartingSlot + destOffset
-        const item = container1.getItem(sourceSlot)
+        let item = undefined
+
+        try {
+            item = container1.getItem(sourceSlot)
+        } catch (e) {
+            const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+            warnBackpack(`Failed reading backpack transfer source slot ${sourceSlot}: ${failureReason}`)
+            return false
+        }
+
         if (item == undefined) {
             destOffset++
             continue
         }
 
-        if (!unallowedItems.includes(item.typeId)) {
-            if (destinationSlot >= container2.size) break
-            container2.setItem(destinationSlot, item)
+        if (!unallowedItems.includes(item.typeId) && destinationSlot < container2.size) {
+            try {
+                container2.setItem(destinationSlot, item)
+            } catch (e) {
+                const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+                warnBackpack(`Failed writing backpack transfer destination slot ${destinationSlot}: ${failureReason}`)
+                return false
+            }
         } else {
+            if (!unallowedItems.includes(item.typeId)) {
+                warnBackpack(`Backpack transfer destination slot ${destinationSlot} is outside container size ${container2.size}; dropping ${item.typeId} safely instead of deleting it.`)
+            }
             spawnItemAnywhere(item, fromInvLocation, dimension)
         }
 
-        container1.setItem(sourceSlot, undefined)
+        try {
+            container1.setItem(sourceSlot, undefined)
+        } catch (e) {
+            const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+            warnBackpack(`Failed clearing backpack transfer source slot ${sourceSlot}: ${failureReason}`)
+            return false
+        }
         destOffset++
     }
+
+    return true
 }
 
 /**
