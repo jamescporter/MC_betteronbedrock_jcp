@@ -5,7 +5,7 @@ import { Entity, Player } from "@minecraft/server";
  * @param { Entity } hitEntity
  */
 export function applyEnchantments(damagingEntity, hitEntity) {
-    if (!hitEntity || !damagingEntity)
+    if (!isEntityValid(hitEntity) || !isEntityValid(damagingEntity))
         return;
 
     const dimension = hitEntity.dimension;
@@ -30,7 +30,7 @@ export function applyEnchantments(damagingEntity, hitEntity) {
         case "fire_aspect": hitEntity.setOnFire(4); break;
         case "knockback": {
             const knockbackStrength = [0, 1, 3][damageEnchantmentLevel];
-            hitEntity.applyKnockback(-hitEntity.getViewDirection().z, 1, knockbackStrength, 0.4);
+            applyKnockback(hitEntity, knockbackStrength);
             break;
         };
         case "sharpness": {
@@ -54,6 +54,44 @@ export function applyEnchantments(damagingEntity, hitEntity) {
             break;
         };
     };
+};
+
+/**
+ * @param { Entity | undefined } entity
+ */
+function isEntityValid(entity) {
+    if (!entity)
+        return false;
+
+    try {
+        if (typeof entity.isValid === "function")
+            return entity.isValid();
+
+        return entity.isValid !== false;
+    } catch {
+        return false;
+    }
+};
+
+/**
+ * @param { Entity } hitEntity
+ * @param { number } knockbackStrength
+ */
+function applyKnockback(hitEntity, knockbackStrength) {
+    const viewDirection = hitEntity.getViewDirection();
+    const horizontalX = -viewDirection.z;
+    const horizontalZ = 1;
+    const horizontalLength = Math.hypot(horizontalX, horizontalZ) || 1;
+    const horizontalVector = {
+        x: (horizontalX / horizontalLength) * knockbackStrength,
+        z: (horizontalZ / horizontalLength) * knockbackStrength
+    };
+
+    try {
+        hitEntity.applyKnockback(horizontalVector, 0.4);
+    } catch {
+        hitEntity.applyKnockback(horizontalX / horizontalLength, horizontalZ / horizontalLength, knockbackStrength, 0.4);
+    }
 };
 
 /**

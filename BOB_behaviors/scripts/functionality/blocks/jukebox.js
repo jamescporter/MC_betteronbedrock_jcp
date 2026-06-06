@@ -1,26 +1,23 @@
-import { Direction, world } from "@minecraft/server";
+import { world } from "@minecraft/server";
 
-world.afterEvents.playerInteractWithBlock.subscribe(event => {
-    const block = event.block
-    const player = event.player
-    const blockLoc = event.block.location
+const CUSTOM_RECORD_SOUNDS = [
+    "balloon.pop",
+    "camera.take_picture",
+    "sparkler.use",
+    "elemconstruct"
+];
 
-    if (block.typeId == 'minecraft:jukebox') {
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a balloon.pop`)
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a camera.take_picture`)
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a sparkler.use`)
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a elemconstruct`)
-    }
-})
-world.afterEvents.playerBreakBlock.subscribe(event => {
-    const block = event.block
-    const player = event.player
-    const blockLoc = event.block.location
+function stopCustomRecordSounds(dimension) {
+    for (const sound of CUSTOM_RECORD_SOUNDS)
+        dimension.runCommandAsync(`stopsound @a ${sound}`);
+}
 
-    if (event.brokenBlockPermutation.type.id == 'minecraft:jukebox') {
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a balloon.pop`)
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a camera.take_picture`)
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a sparkler.use`)
-        world.getDimension(player.dimension.id).runCommandAsync(`stopsound @a elemconstruct`)
-    }
-})
+world.afterEvents.playerInteractWithBlock.subscribe(({ block, player }) => {
+    if (block.typeId === "minecraft:jukebox")
+        stopCustomRecordSounds(player.dimension);
+});
+
+world.afterEvents.playerBreakBlock.subscribe(({ brokenBlockPermutation, player }) => {
+    if (brokenBlockPermutation.type.id === "minecraft:jukebox")
+        stopCustomRecordSounds(player.dimension);
+});

@@ -1,5 +1,9 @@
 import { world, system, BlockTypes, EntityEquippableComponent, EntityInventoryComponent, EquipmentSlot, ItemStack } from "@minecraft/server";
-export const blocks = BlockTypes.getAll().map((block) => block.id);
+
+export let blocks = [];
+system.run(() => {
+    blocks = BlockTypes.getAll().map((block) => block.id);
+});
 
 import { wawla } from "./functionality/wawla.js";
 import { ghostNecklace } from "./functionality/items/ghost-necklace.js";
@@ -23,8 +27,6 @@ import "./functionality/entities/seeker_teleport.js";
 
 import "./functionality/blocks/jukebox.js";
 import "./functionality/blocks/strip_block.js";
-
-import "./functionality/enchanted/main.js";
 
 // Imports our custom components
 import { wall_Manager } from './custom_components/blocks/walls/wall_Manager.js'
@@ -225,20 +227,23 @@ system.runInterval(() => {
                 equipmentSignature: "",
                 lastSlowScanTick: -FORCE_SLOW_RESCAN_TICKS,
                 hasFixedGhostNecklace: false,
+                hadAmbientSoundsTag: false,
                 slotSignatures: new Map(),
             };
 
             const equipmentSignature = getEquipmentSignature(player);
-            const hasRelevantTags = safeHasTag(player, "pog:ambientSounds");
+            const hasAmbientSoundsTag = safeHasTag(player, "pog:ambientSounds");
+            const shouldRunAmbience = hasAmbientSoundsTag || state.hadAmbientSoundsTag;
             const shouldForceRescan = (globalTick - state.lastSlowScanTick) >= FORCE_SLOW_RESCAN_TICKS;
             const isEquipmentUnchanged = state.equipmentSignature === equipmentSignature;
 
-            if (!shouldForceRescan && isEquipmentUnchanged && !hasRelevantTags && !state.hasFixedGhostNecklace)
+            if (!shouldForceRescan && isEquipmentUnchanged && !shouldRunAmbience && !state.hasFixedGhostNecklace)
                 continue;
 
-            if (safeHasTag(player, "pog:ambientSounds"))
+            if (shouldRunAmbience)
                 yield ambience(player);
 
+            state.hadAmbientSoundsTag = hasAmbientSoundsTag;
             state.hasFixedGhostNecklace = ghostNecklace(player);
 
             if (shouldForceRescan || !isEquipmentUnchanged)
@@ -297,12 +302,9 @@ function getSlotSignature(itemStack) {
     return `${itemStack.typeId}|${loreHash}|${itemStack.amount}`;
 }
 
-console.warn("[BOB Script] main.js loaded; registering worldInitialize subscription.");
-
 // Custom Components
-world.beforeEvents.worldInitialize.subscribe(
+system.beforeEvents.startup.subscribe(
     ({ blockComponentRegistry, itemComponentRegistry, customCommandRegistry }) => {
-        console.warn("[BOB Script] worldInitialize reached; registering custom block and item components.");
         registerBlockComponents(blockComponentRegistry);
         registerItemComponents(itemComponentRegistry);
         registerCustomCommands(customCommandRegistry);
