@@ -57,6 +57,9 @@
 			"minecraft:experience_reward": {
 				"on_death": "10"
 			},
+			"minecraft:scale": {
+				"value": 1.5
+			},
 			"minecraft:behavior.circle_around_anchor": {
 				"priority": 3,
 				"radius_range": [
@@ -143,7 +146,7 @@
 								"delay_per_summon": 0,
 								"num_entities_spawned": 1,
 								"summon_cap": 1,
-								"entity_type": "",
+								"entity_type": "minecraft:silverfish",
 								"size": 0.5,
 								"entity_lifespan": 1.1,
 								"sound_event": "prepare.wololo"

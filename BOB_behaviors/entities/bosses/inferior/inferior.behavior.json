@@ -325,7 +325,10 @@
 			"switch_to_melee": {
 				"remove": {
 					"component_groups": [
-						"ranged_mode"
+						"ranged",
+						"flame_beam",
+						"fire_aura_charge_up",
+						"fire_aura_attack"
 					]
 				},
 				"add": {
@@ -431,7 +434,8 @@
 								},
 								"remove": {
 									"component_groups": [
-										"fire_aura",
+										"fire_aura_attack",
+										"fire_aura_charge_up",
 										"ranged"
 									]
 								},
