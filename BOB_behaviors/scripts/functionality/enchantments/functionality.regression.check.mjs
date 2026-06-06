@@ -44,6 +44,29 @@ function queuedTraversal(graph, startId, maxBlocks, chunkSize = 16) {
     };
 }
 
+
+function queuedBreakSimulation(blocks, chunkSize = 16) {
+    const minedTypeIds = [];
+    let brokenBlocks = 0;
+
+    for (let index = 0; index < blocks.length; index += chunkSize) {
+        for (let i = index; i < Math.min(index + chunkSize, blocks.length); i++) {
+            const block = blocks[i];
+            if (i === 0)
+                continue;
+
+            if (!block.matchesTarget || block.typeId === "minecraft:air" || block.protected)
+                continue;
+
+            minedTypeIds.push(block.typeId);
+            block.typeId = "minecraft:air";
+            brokenBlocks++;
+        }
+    }
+
+    return { minedTypeIds, brokenBlocks };
+}
+
 const representativeVein = [
     { id: "ore0", neighbors: ["ore1", "ore2", "ore3"] },
     { id: "ore1", neighbors: ["ore0", "ore4"] },
@@ -88,4 +111,15 @@ function runRegressionCase(name, graph, start) {
 runRegressionCase("representative vein", representativeVein, "ore0");
 runRegressionCase("representative tree", representativeTree, "trunk0");
 
-console.log("Regression checks passed: queued traversal preserves order/durability/xp against legacy traversal.");
+
+const protectedSimulation = queuedBreakSimulation([
+    { typeId: "minecraft:air", matchesTarget: false },
+    { typeId: "minecraft:iron_ore", matchesTarget: true },
+    { typeId: "minecraft:diamond_block", matchesTarget: false },
+    { typeId: "minecraft:gold_ore", matchesTarget: true, protected: true },
+    { typeId: "minecraft:iron_ore", matchesTarget: true },
+], 2);
+assert.deepEqual(protectedSimulation.minedTypeIds, ["minecraft:iron_ore", "minecraft:iron_ore"], "queued breaking should only drop actually mined matching blocks");
+assert.equal(protectedSimulation.brokenBlocks, 2, "queued breaking should only charge durability for actually mined matching blocks");
+
+console.log("Regression checks passed: queued traversal preserves order/durability/xp against legacy traversal and skips protected or changed blocks.");
