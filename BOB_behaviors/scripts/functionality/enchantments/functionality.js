@@ -13,6 +13,17 @@ function scheduleMineQueue() {
     system.run(processMineQueue);
 };
 
+function blockMatchesMineTarget(block, blockType, matches = [], states = {}) {
+    try {
+        return block.matches(blockType, states)
+            || block.matches(blockType.replace("lit_", ""), states)
+            || matches.includes(block.typeId);
+    }
+    catch {
+        return false;
+    };
+};
+
 function processMineQueue() {
     const current = mineQueue[0];
     if (current === undefined) {
@@ -20,37 +31,47 @@ function processMineQueue() {
         return;
     };
 
-    try {
-        const end = Math.min(current.index + MINE_QUEUE_CHUNK_SIZE, current.blocks.length);
-        for (let i = current.index; i < end; i++) {
-            current.blocks[i].setType("minecraft:air");
-        };
+    const end = Math.min(current.index + MINE_QUEUE_CHUNK_SIZE, current.blocks.length);
+    for (let i = current.index; i < end; i++) {
+        const block = current.blocks[i];
+        if (i === 0)
+            continue;
 
-        current.index = end;
-        if (current.index >= current.blocks.length) {
-            try {
-                current.onComplete();
-            }
-            catch (error) {
-                console.warn("[enchantments] queued mine completion failed", error);
-            }
-            finally {
-                mineQueue.shift();
-            };
-        };
-    }
-    catch (error) {
-        console.warn("[enchantments] queued mine block set failed", error);
         try {
-            current.onError?.(error);
+            if (!blockMatchesMineTarget(block, current.blockType, current.matches, current.states))
+                continue;
+
+            const typeId = block.typeId;
+            if (typeId === "minecraft:air")
+                continue;
+
+            block.setType("minecraft:air");
+            current.minedTypeIds.push(typeId);
+            current.brokenBlocks++;
         }
-        catch (callbackError) {
-            console.warn("[enchantments] queued mine error callback failed", callbackError);
+        catch (error) {
+            console.warn(`[enchantments:${current.queueLabel}] queued mine skipped protected or inaccessible block`, error);
+        };
+    };
+
+    current.index = end;
+    if (current.index >= current.blocks.length) {
+        try {
+            current.onComplete(current.minedTypeIds, current.brokenBlocks);
+        }
+        catch (error) {
+            console.warn(`[enchantments:${current.queueLabel}] queued mine completion failed`, error);
+            try {
+                current.onError?.(error);
+            }
+            catch (callbackError) {
+                console.warn(`[enchantments:${current.queueLabel}] queued mine error callback failed`, callbackError);
+            };
         }
         finally {
             mineQueue.shift();
         };
-    }
+    };
 
     if (mineQueue.length > 0) {
         system.run(processMineQueue);
@@ -60,8 +81,19 @@ function processMineQueue() {
     };
 };
 
-function queueVeinMine(blocks, onComplete, onError) {
-    mineQueue.push({ blocks, onComplete, onError, index: 0 });
+function queueVeinMine(blocks, blockType, blockDrops, queueLabel, onComplete, onError) {
+    mineQueue.push({
+        blocks,
+        queueLabel,
+        blockType,
+        matches: blockDrops?.matches,
+        states: blockDrops?.states,
+        onComplete,
+        onError,
+        index: 0,
+        minedTypeIds: [],
+        brokenBlocks: 0,
+    });
     scheduleMineQueue();
 };
 
@@ -70,32 +102,39 @@ function queueVeinMine(blocks, onComplete, onError) {
  * @returns { import("@minecraft/server").Block[] }
  */
 function getMineShape(block) {
-    const above = block.above();
-    const below = block.below();
+    const { x, y, z } = block.location;
+    const offsets = [
+        [ 0, 1, 0 ],
+        [ 1, 1, -1 ], [ 0, 1, -1 ], [ -1, 1, -1 ],
+        [ 1, 1, 1 ], [ 0, 1, 1 ], [ -1, 1, 1 ],
+        [ 1, 1, 0 ], [ -1, 1, 0 ],
 
-    const aNorth = above.north();
-    const aSouth = above.south();
-    const aEast = above.east();
-    const aWest = above.west();
-    
-    const bNorth = below.north();
-    const bSouth = below.south();
-    const bEast = below.east();
-    const bWest = below.west();
-    return [
-        above,
-        aNorth.east(), aNorth, aNorth.west(),
-        aSouth.east(), aSouth, aSouth.west(),
-        aEast, aWest,
-        
-        below,
-        bNorth.east(), bNorth, bNorth.west(),
-        bSouth.east(), bSouth, bSouth.west(),
-        bEast, bWest,
-        
-        block.north(), block.south(),
-        block.east(), block.west(),
+        [ 0, -1, 0 ],
+        [ 1, -1, -1 ], [ 0, -1, -1 ], [ -1, -1, -1 ],
+        [ 1, -1, 1 ], [ 0, -1, 1 ], [ -1, -1, 1 ],
+        [ 1, -1, 0 ], [ -1, -1, 0 ],
+
+        [ 0, 0, -1 ], [ 0, 0, 1 ],
+        [ 1, 0, 0 ], [ -1, 0, 0 ],
     ];
+    const shape = [];
+
+    for (const [ offsetX, offsetY, offsetZ ] of offsets) {
+        try {
+            const neighbour = block.dimension.getBlock({
+                x: x + offsetX,
+                y: y + offsetY,
+                z: z + offsetZ,
+            });
+            if (neighbour !== undefined)
+                shape.push(neighbour);
+        }
+        catch {
+            // Skip unloaded or otherwise inaccessible neighbours rather than aborting the whole vein search.
+        };
+    };
+
+    return shape;
 };
 
 /**
@@ -128,14 +167,7 @@ export function searchForVein(start, blockType, matches = [], states = {}, maxBl
             ) !== undefined)
                 continue;
 
-            if (
-                block.matches(blockType, states)
-                || block.matches(blockType.replace("lit_", ""), states)
-            ) {
-                locations.push({ x, y, z });
-                search.push(block);
-            }
-            else if (matches.includes(block.typeId)) {
+            if (blockMatchesMineTarget(block, blockType, matches, states)) {
                 locations.push({ x, y, z });
                 search.push(block);
             };
@@ -255,15 +287,14 @@ export function mine(block, blockType, player, itemStack, blocksArray, shouldUse
     if (blocks.length === 0)
         return;
 
-    const types = blocks.map((b) => b.typeId).filter((id) => id !== "minecraft:air");
-    let brokenBlocks = blocks.length - 1;
-    if (durability !== undefined && brokenBlocks > 0)
-        reservedDurabilityByPlayer.set(playerDurabilityKey, reservedDurability + brokenBlocks);
+    const reservedBlocks = blocks.length - 1;
+    if (durability !== undefined && reservedBlocks > 0)
+        reservedDurabilityByPlayer.set(playerDurabilityKey, reservedDurability + reservedBlocks);
 
     function releaseReservedDurability() {
-        if (durability !== undefined && brokenBlocks > 0) {
+        if (durability !== undefined && reservedBlocks > 0) {
             const queuedDurability = reservedDurabilityByPlayer.get(playerDurabilityKey) ?? 0;
-            const remainingReserved = Math.max(queuedDurability - brokenBlocks, 0);
+            const remainingReserved = Math.max(queuedDurability - reservedBlocks, 0);
             if (remainingReserved > 0)
                 reservedDurabilityByPlayer.set(playerDurabilityKey, remainingReserved);
             else
@@ -271,8 +302,11 @@ export function mine(block, blockType, player, itemStack, blocksArray, shouldUse
         };
     }
 
-    queueVeinMine(blocks, () => {
+    queueVeinMine(blocks, blockType, blockDrops, queueLabel, (types, brokenBlocks) => {
         try {
+            if (brokenBlocks <= 0)
+                return;
+
             const equippable = player.getComponent(EntityEquippableComponent.componentId);
             if (durability !== undefined) {
                 if ((durability.damage + brokenBlocks) < durability.maxDurability) {
