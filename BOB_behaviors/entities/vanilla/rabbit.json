@@ -1,8 +1,9 @@
 {
-  "format_version": "1.13.0",
+  "format_version": "1.26.10",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:rabbit",
+      "spawn_category": "creature",
       "is_spawnable": true,
       "is_summonable": true,
       "is_experimental": false,
@@ -20,13 +21,15 @@
         "minecraft:scale": {
           "value": 0.4
         },
+        "minecraft:collision_box": {
+          "width": 0.6, // 0.24/0.4
+          "height": 1.0 // 0.4/0.4
+        },
         "minecraft:ageable": {
           "duration": 1200,
-          "feed_items": [
-            "golden_carrot",
-            "carrot",
-            "yellow_flower"
-          ],
+          "feed_items": ["golden_carrot", "carrot", "dandelion"],
+          "pause_growth_items": ["golden_dandelion"],
+          "reset_growth_items": ["golden_dandelion"],
           "grow_up": {
             "event": "grow_up",
             "target": "self"
@@ -48,24 +51,21 @@
         "minecraft:scale": {
           "value": 0.6
         },
+        "minecraft:collision_box": {
+          "width": 0.81666666, // 0.49/0.6
+          "height": 1.0 // 0.6/0.6
+        },
+        "minecraft:leashable_to": {},
         "minecraft:behavior.breed": {
           "priority": 2,
-          "speed_multiplier": 1.0
+          "speed_multiplier": 0.75 //Should not go over 0.8 to avoid fast skip movement when moving towards each other
         },
         "minecraft:breedable": {
-          "breed_items": [
-            "golden_carrot",
-            "carrot",
-            "yellow_flower"
-          ],
+          "breed_items": ["golden_carrot", "carrot", "dandelion"],
           "breeds_with": {
-            "mate_type": "minecraft:rabbit",
-            "baby_type": "minecraft:rabbit"
+            "minecraft:rabbit": {}
           },
-          "require_tame": false,
-          "mutation_factor": {
-            "variant": 0.2
-          }
+          "require_tame": false
         }
       },
       "coat_brown": {
@@ -115,20 +115,25 @@
       }
     },
     "components": {
+      "minecraft:is_hidden_when_invisible": {},
       "minecraft:type_family": {
-        "family": [
-          "rabbit",
-          "mob"
-        ]
+        "family": ["rabbit", "lightweight", "mob"]
       },
-      "minecraft:despawn": {
-        "despawn_from_distance": {}
-      },
+
       "minecraft:breathable": {
         "total_supply": 15,
         "suffocate_time": 0
       },
       "minecraft:nameable": {},
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:rabbit": "minecraft:rabbit"
+        },
+        "mutation_factor": {
+          "variant": 0.2
+        }
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:health": {
         "value": 3,
         "max": 3
@@ -147,10 +152,6 @@
           }
         ]
       },
-      "minecraft:collision_box": {
-        "width": 0.67,
-        "height": 0.67
-      },
       "minecraft:movement": {
         "value": 0.3
       },
@@ -159,15 +160,27 @@
         "avoid_water": true
       },
       "minecraft:movement.skip": {},
-      "minecraft:jump.dynamic": {},
-      "minecraft:can_climb": {},
-      "minecraft:leashable": {
-        "soft_distance": 4.0,
-        "hard_distance": 6.0,
-        "max_distance": 10.0
+      "minecraft:jump.dynamic": {
+        "regular_skip_data": {
+          "distance_scale": 0.8,
+          "height": 0.25,
+          "jump_delay": 15,
+          "animation_duration": 18
+        },
+        "fast_skip_data": {
+          "distance_scale": 1.75,
+          "height": 0.15,
+          "jump_delay": 1,
+          "animation_duration": 15
+        }
       },
+      "minecraft:can_climb": {},
+      "minecraft:leashable": {},
       "minecraft:balloonable": {
-        "mass": 0.75
+        "mass": 0.4
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
       },
       "minecraft:behavior.float": {
         "priority": 0
@@ -211,26 +224,17 @@
           }
         ]
       },
-      "minecraft:behavior.breed": {
-        "priority": 2,
-        "speed_multiplier": 0.8
-      },
       "minecraft:behavior.tempt": {
         "priority": 3,
         "speed_multiplier": 1,
-        "items": [
-          "golden_carrot",
-          "carrot",
-          "yellow_flower"
-        ]
+        "items": ["golden_carrot", "carrot", "dandelion"]
       },
       "minecraft:behavior.raid_garden": {
         "priority": 5,
-        "blocks": [
-          "carrots"
-        ],
+        "blocks": ["minecraft:carrots"],
         "search_range": 16,
-        "goal_radius": 0.8
+        "goal_radius": 1.0,
+        "speed_multiplier": 0.6
       },
       "minecraft:behavior.random_stroll": {
         "priority": 6,
@@ -242,10 +246,12 @@
         "priority": 11
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
-      }
+      "minecraft:pushable_by_entity": {
+      },
+      "minecraft:pushable_by_block": {
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:block_climber": {}
     },
     "events": {
       "in_desert": {

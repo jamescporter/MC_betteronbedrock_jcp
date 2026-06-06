@@ -1,5 +1,5 @@
 {
-    "format_version": "1.18.20",
+    "format_version": "1.26.10",
     "minecraft:entity": {
         "description": {
             "identifier": "minecraft:bee",
@@ -23,15 +23,25 @@
                 "minecraft:ageable": {
                     "duration": 1200,
                     "feed_items": [
-                        "minecraft:red_flower", // All small flowers except Dandelion
-                        "minecraft:yellow_flower", // Dandelion
+                        "minecraft:poppy",
+                        "minecraft:blue_orchid",
+                        "minecraft:allium",
+                        "minecraft:azure_bluet",
+                        "minecraft:red_tulip",
+                        "minecraft:orange_tulip",
+                        "minecraft:white_tulip",
+                        "minecraft:pink_tulip",
+                        "minecraft:oxeye_daisy",
+                        "minecraft:cornflower",
+                        "minecraft:lily_of_the_valley",
+                        "minecraft:dandelion",
                         "minecraft:wither_rose",
-                        "minecraft:double_plant:0", // Sunflower
-                        "minecraft:double_plant:1", // Lilac
-                        "minecraft:double_plant:4", // Rose Bush
-                        "minecraft:double_plant:5", // Peony
-                        "minecraft:flowering_azalea", //Flowering Azalea
-                        "minecraft:azalea_leaves_flowered", //Flowering Azalea leaves
+                        "minecraft:sunflower",
+                        "minecraft:lilac",
+                        "minecraft:rose_bush",
+                        "minecraft:peony",
+                        "minecraft:flowering_azalea",
+                        "minecraft:azalea_leaves_flowered",
                         "minecraft:mangrove_propagule",
                         "minecraft:pitcher_plant",
                         "minecraft:torchflower",
@@ -46,8 +56,12 @@
                         "better_on_bedrock:lilax_heads",
                         "better_on_bedrock:pink_lavender",
                         "better_on_bedrock:tiny_sprout",
-                        "better_on_bedrock:wildflower"
+                        "better_on_bedrock:wildflower",
+                        "minecraft:wildflowers",
+                        "minecraft:cactus_flower"
                     ],
+                    "pause_growth_items": [ "golden_dandelion" ],
+                    "reset_growth_items": [ "golden_dandelion" ],
                     "grow_up": {
                         "event": "minecraft:ageable_grow_up",
                         "target": "self"
@@ -67,26 +81,32 @@
                     "priority": 4,
                     "speed_multiplier": 1.0
                 },
+
                 "minecraft:breedable": {
                     "require_tame": false,
                     "breeds_with": {
-                        "mate_type": "minecraft:bee",
-                        "baby_type": "minecraft:bee",
-                        "breed_event": {
-                            "event": "minecraft:entity_born",
-                            "target": "baby"
-                        }
+                        "minecraft:bee": {}
                     },
                     "breed_items": [
-                        "minecraft:red_flower", // All small flowers except Dandelion
-                        "minecraft:yellow_flower", // Dandelion
+                        "minecraft:poppy",
+                        "minecraft:blue_orchid",
+                        "minecraft:allium",
+                        "minecraft:azure_bluet",
+                        "minecraft:red_tulip",
+                        "minecraft:orange_tulip",
+                        "minecraft:white_tulip",
+                        "minecraft:pink_tulip",
+                        "minecraft:oxeye_daisy",
+                        "minecraft:cornflower",
+                        "minecraft:lily_of_the_valley",
+                        "minecraft:dandelion",
                         "minecraft:wither_rose",
-                        "minecraft:double_plant:0", // Sunflower
-                        "minecraft:double_plant:1", // Lilac
-                        "minecraft:double_plant:4", // Rose Bush
-                        "minecraft:double_plant:5", // Peony
-                        "minecraft:flowering_azalea", //Flowering Azalea
-                        "minecraft:azalea_leaves_flowered", //Flowering Azalea leaves
+                        "minecraft:sunflower",
+                        "minecraft:lilac",
+                        "minecraft:rose_bush",
+                        "minecraft:peony",
+                        "minecraft:flowering_azalea",
+                        "minecraft:azalea_leaves_flowered",
                         "minecraft:mangrove_propagule",
                         "minecraft:pitcher_plant",
                         "minecraft:torchflower",
@@ -101,7 +121,9 @@
                         "better_on_bedrock:lilax_heads",
                         "better_on_bedrock:pink_lavender",
                         "better_on_bedrock:tiny_sprout",
-                        "better_on_bedrock:wildflower"
+                        "better_on_bedrock:wildflower",
+                        "minecraft:wildflowers",
+                        "minecraft:cactus_flower"
                     ]
                 }
             },
@@ -471,6 +493,12 @@
             }
         },
         "components": {
+            "minecraft:offspring": {
+                "offspring_pairs": {
+                    "minecraft:bee": "minecraft:bee"
+                }
+            },
+            "minecraft:spawn_egg_interaction": {},
             "minecraft:is_hidden_when_invisible": {},
             "minecraft:behavior.tempt": {
                 "priority": 5,
@@ -478,20 +506,33 @@
                 "within_radius": 8,
                 "can_tempt_vertically": true,
                 "items": [
-                    "minecraft:red_flower", // All small flowers except Dandelion
-                    "minecraft:yellow_flower", // Dandelion
+                    "minecraft:poppy",
+                    "minecraft:blue_orchid",
+                    "minecraft:allium",
+                    "minecraft:azure_bluet",
+                    "minecraft:red_tulip",
+                    "minecraft:orange_tulip",
+                    "minecraft:white_tulip",
+                    "minecraft:pink_tulip",
+                    "minecraft:oxeye_daisy",
+                    "minecraft:cornflower",
+                    "minecraft:lily_of_the_valley",
+                    "minecraft:dandelion",
                     "minecraft:wither_rose",
-                    "minecraft:double_plant:0", // Sunflower
-                    "minecraft:double_plant:1", // Lilac
-                    "minecraft:double_plant:4", // Rose Bush
-                    "minecraft:double_plant:5", // Peony
-                    "minecraft:flowering_azalea", //Flowering azalea
-                    "minecraft:azalea_leaves_flowered", //Flowering Azalea leaves
+                    "minecraft:sunflower",
+                    "minecraft:lilac",
+                    "minecraft:rose_bush",
+                    "minecraft:peony",
+                    "minecraft:flowering_azalea",
+                    "minecraft:azalea_leaves_flowered",
                     "minecraft:mangrove_propagule",
                     "minecraft:pitcher_plant",
                     "minecraft:torchflower",
                     "minecraft:cherry_leaves",
                     "minecraft:pink_petals",
+                    "minecraft:open_eyeblossom",
+                    "minecraft:wildflowers",
+                    "minecraft:cactus_flower",
                     "better_on_bedrock:anenome",
                     "better_on_bedrock:big_sprout",
                     "better_on_bedrock:bluegrod",
@@ -513,16 +554,9 @@
                 "y_dist": 8,
                 "y_offset": -1,
                 "interval": 1,
-                "hover_height": [
-                    1,
-                    4
-                ]
+                "hover_height": [1, 4]
             },
-            "minecraft:leashable": {
-                "soft_distance": 4.0,
-                "hard_distance": 6.0,
-                "max_distance": 10.0
-            },
+            "minecraft:leashable": {},
             "minecraft:balloonable": {
                 "mass": 0.5
             },
@@ -530,19 +564,15 @@
                 "priority": 19
             },
             "minecraft:type_family": {
-                "family": [
-                    "bee",
-                    "mob",
-                    "arthropod"
-                ]
+                "family": ["bee", "mob", "arthropod"]
             },
             "minecraft:on_target_acquired": {
                 "event": "attacked",
                 "target": "self"
             },
             "minecraft:breathable": {
-                "totalSupply": 15,
-                "suffocateTime": 0
+                "totalSupply": 0,
+                "suffocateTime": -1
             },
             "minecraft:collision_box": {
                 "width": 0.55,
@@ -553,29 +583,37 @@
                 "emit_flap": true
             },
             "minecraft:home": {
+                "restriction_type": "random_movement",
                 "restriction_radius": 22,
-                "home_block_list": [
-                    "minecraft:bee_nest",
-                    "minecraft:beehive"
-                ]
+                "home_block_list": ["minecraft:bee_nest", "minecraft:beehive"]
             },
             "minecraft:follow_range": {
                 "value": 1024
             },
             "minecraft:damage_sensor": {
-                "triggers": {
-                    "cause": "fall",
-                    "deals_damage": false
-                }
+                "triggers": [
+                    {
+                        "cause": "fall",
+                        "deals_damage": "no"
+                    },
+                    {
+                        "on_damage": {
+                            "filters": {
+                                "test": "is_block",
+                                "subject": "block",
+                                "value": "minecraft:sweet_berry_bush"
+                            }
+                        },
+                        "deals_damage": "no"
+                    }
+                ]
             },
             "minecraft:hurt_on_condition": {
                 "damage_conditions": [
                     {
                         "filters": {
                             "test": "in_lava",
-                            "subject": "self",
-                            "operator": "==",
-                            "value": true
+                            "subject": "self"
                         },
                         "cause": "lava",
                         "damage_per_tick": 4
@@ -616,18 +654,65 @@
                 ],
                 "on_break": [
                     {
-                        "block_list": [
-                            "minecraft:beehive",
-                            "minecraft:bee_nest"
-                        ],
+                        "block_list": ["minecraft:beehive", "minecraft:bee_nest"],
                         "on_block_broken": "hive_destroyed"
                     }
                 ]
             },
             "minecraft:physics": {},
-            "minecraft:pushable": {
-                "is_pushable": true,
-                "is_pushable_by_piston": true
+            "minecraft:pushable_by_entity": {
+            },
+            "minecraft:pushable_by_block": {
+            },
+            "minecraft:interact": {
+                "interactions": [
+                    {
+                        "on_interact": {
+                            "filters": {
+                                "all_of": [
+                                    {
+                                        "test": "is_family",
+                                        "subject": "other",
+                                        "value": "player"
+                                    },
+                                    {
+                                        "test": "has_equipment",
+                                        "domain": "hand",
+                                        "subject": "other",
+                                        "value": "minecraft:open_eyeblossom"
+                                    }
+                                ]
+                            },
+                            "event": "fed_open_eyeblossom"
+                        },
+                        "use_item": true,
+                        "particle_on_start": { "particle_type": "food" },
+                        "interact_text": "action.interact.feed"
+                    },
+                    {
+                        "on_interact": {
+                            "filters": {
+                                "all_of": [
+                                    {
+                                        "test": "is_family",
+                                        "subject": "other",
+                                        "value": "player"
+                                    },
+                                    {
+                                        "test": "has_equipment",
+                                        "domain": "hand",
+                                        "subject": "other",
+                                        "value": "minecraft:wither_rose"
+                                    }
+                                ]
+                            },
+                            "event": "fed_wither_rose"
+                        },
+                        "use_item": true,
+                        "particle_on_start": { "particle_type": "food" },
+                        "interact_text": "action.interact.feed"
+                    }
+                ]
             }
         },
         "events": {
