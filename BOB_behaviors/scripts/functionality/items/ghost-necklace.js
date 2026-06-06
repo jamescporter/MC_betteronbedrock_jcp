@@ -17,7 +17,10 @@ export function ghostNecklace(player) {
 
         hasFixedGhostNecklace = true;
         const durability = itemStack.getComponent(ItemDurabilityComponent.componentId);
-        if (durability.damage == 10) {
+        if (!durability)
+            continue;
+
+        if (durability.damage >= durability.maxDurability) {
             inventory.setItem(i, new ItemStack("better_on_bedrock:broken_ghost_necklace"));
             hasFixedGhostNecklace = false;
         };

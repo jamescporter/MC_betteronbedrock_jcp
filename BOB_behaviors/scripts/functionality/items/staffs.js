@@ -12,7 +12,7 @@ import {
 } from "@minecraft/server";
 
 Player.prototype.aimingEntity = null;
-Player.prototype.useSlots = [];
+Player.prototype.useSlots = undefined;
 Player.prototype.staffUses = 0;
 Player.prototype.isUsingStaff = false;
 function getActiveStaffIntervals(player) {
@@ -20,6 +20,20 @@ function getActiveStaffIntervals(player) {
         player.activeStaffIntervals = new Map();
 
     return player.activeStaffIntervals;
+};
+
+function getStaffUseSlots(player) {
+    if (!Object.prototype.hasOwnProperty.call(player, "useSlots") || !Array.isArray(player.useSlots))
+        player.useSlots = [];
+
+    return player.useSlots;
+};
+
+function resetStaffState(player) {
+    player.isUsingStaff = false;
+    player.staffUses = 0;
+    player.aimingEntity = null;
+    getStaffUseSlots(player).length = 0;
 };
 
 function runManagedStaffInterval(player, key, callback) {
@@ -62,6 +76,8 @@ function staffEffect(player, key, particle, effect, shouldStop) {
     runManagedStaffInterval(player, key, (run) => {
         if (shouldStop()) {
             clearManagedStaffInterval(player, key, run);
+            if (getActiveStaffIntervals(player).size === 0)
+                resetStaffState(player);
             return;
         };
 
@@ -95,6 +111,8 @@ function staffSoundEffect(player, key, sound, shouldStop) {
     runManagedStaffInterval(player, key, (run) => {
         if (shouldStop()) {
             clearManagedStaffInterval(player, key, run);
+            if (getActiveStaffIntervals(player).size === 0)
+                resetStaffState(player);
             return;
         };
 
@@ -140,13 +158,16 @@ function getEntities(player, headLocation = player.getHeadLocation(), viewDirect
  * @param { import("@minecraft/server").Player } player
  */
 export function staffs(itemStack, player) {
-    if (!itemStack.hasTag("better_on_bedrock:staff"))
+    if (!player?.isValid() || !itemStack?.hasTag("better_on_bedrock:staff"))
         return;
 
     function shouldStop() {
         if (itemStack.hasComponent(ItemDurabilityComponent.componentId)) {
             const durability = itemStack.getComponent(ItemDurabilityComponent.componentId);
-            if (durability.damage + player.staffUses == durability.maxDurability) {
+            if (!durability)
+                return !player.isUsingStaff;
+
+            if (durability.damage + player.staffUses >= durability.maxDurability) {
                 player.sendMessage([
                     { text: "§c[!] §r" },
                     { translate: "bob.message.staffs.outOfMana" },
@@ -155,15 +176,16 @@ export function staffs(itemStack, player) {
 
             return (
                 !player.isUsingStaff
-                || durability.damage + player.staffUses == durability.maxDurability
+                || durability.damage + player.staffUses >= durability.maxDurability
             );
         };
 
         return !player.isUsingStaff;
     };
 
-    if (!player.isSneaking)
-        player.useSlots.push(player.selectedSlotIndex);
+    const useSlots = getStaffUseSlots(player);
+    if (!player.isSneaking && useSlots.length === 0)
+        useSlots.push(player.selectedSlotIndex);
 
     switch (itemStack.typeId) {
         case "better_on_bedrock:staff": {
@@ -198,7 +220,8 @@ export function staffs(itemStack, player) {
             });
     
             const projectile = entity.getComponent(EntityProjectileComponent.componentId);
-            projectile.owner = player;
+            if (projectile)
+                projectile.owner = player;
 
             entity.addTag("staff_entity");
             entity.addTag(player.id);
@@ -206,6 +229,7 @@ export function staffs(itemStack, player) {
             runManagedStaffInterval(player, "better_on_bedrock:ice_staff:effect", (run) => {
                 if (shouldStop()) {
                     clearManagedStaffInterval(player, "better_on_bedrock:ice_staff:effect", run);
+                    resetStaffState(player);
                     return;
                 };
 
@@ -289,14 +313,18 @@ export function staffs(itemStack, player) {
  * @param { import("@minecraft/server").ItemStack } itemStack
  * @param { import("@minecraft/server").Player } player
  */
+function getStaffSlot(player) {
+    return getStaffUseSlots(player)[0] ?? player.selectedSlotIndex;
+};
+
 function manaCheck(itemStack, player, sendMessage = false) {
-    const slot = player.useSlots[0];
+    const slot = getStaffSlot(player);
     if (slot === void 0)
-        return;
+        return true;
 
     if (itemStack.hasComponent(ItemDurabilityComponent.componentId)) {
         const durability = itemStack.getComponent(ItemDurabilityComponent.componentId);
-        if (durability.damage + 25 > durability.maxDurability) {
+        if (!durability || durability.damage + 25 > durability.maxDurability) {
             if (sendMessage) {
                 player.sendMessage([
                     { text: "§c[!] §r" },
@@ -310,9 +338,12 @@ function manaCheck(itemStack, player, sendMessage = false) {
         if (player.getGameMode() !== GameMode.creative)
             durability.damage += 25;
 
-        const inventory = player.getComponent(EntityInventoryComponent.componentId).container;
+        const inventory = player.getComponent(EntityInventoryComponent.componentId)?.container;
+        if (!inventory)
+            return true;
+
         inventory.setItem(slot, itemStack);
-        player.useSlots.pop();
+        getStaffUseSlots(player).shift();
     };
 };
 
@@ -321,7 +352,7 @@ function manaCheck(itemStack, player, sendMessage = false) {
  * @param { import("@minecraft/server").Player } player
  */
 export function useStaff(itemStack, player) {
-    if (!itemStack.hasTag("better_on_bedrock:staff") || !player.isSneaking)
+    if (!player?.isValid() || !itemStack?.hasTag("better_on_bedrock:staff") || !player.isSneaking)
         return;
 
     const specialCooldowns = {
@@ -373,7 +404,8 @@ export function useStaff(itemStack, player) {
             player.dimension.playSound("mob.shulker.shoot", player.getHeadLocation());
 
             const projectile = entity.getComponent(EntityProjectileComponent.componentId);
-            projectile.owner = player;
+            if (projectile)
+                projectile.owner = player;
             break;
         };
         case "better_on_bedrock:flame_staff": {
@@ -397,43 +429,58 @@ export function useStaff(itemStack, player) {
  * @param { import("@minecraft/server").Player } player
  */
 export function releaseStaffs(itemStack, player) {
-    if (!player.isUsingStaff)
+    if (!player?.isValid() || !player.isUsingStaff)
         return;
 
     player.isUsingStaff = false;
     clearAllStaffIntervals(player);
 
+    if (!itemStack?.hasTag("better_on_bedrock:staff")) {
+        resetStaffState(player);
+        return;
+    }
+
     switch (itemStack.typeId) {
         case "better_on_bedrock:ice_staff": {
-            if (manaCheck(itemStack, player))
+            if (manaCheck(itemStack, player)) {
+                resetStaffState(player);
                 return;
+            }
             
             const viewDirection = player.getViewDirection();
+            const hadAimingEntity = !!player.aimingEntity;
+            resetStaffState(player);
             system.runTimeout(() => {
-                if (!player.aimingEntity) {
-                    const staffEntities = player.dimension.getEntities({ tags: [ "staff_entity", player.id ] });
-                    for (const entity of staffEntities) {
-                        entity.applyImpulse({
-                            x: viewDirection.x * 2,
-                            y: viewDirection.y * 1.5,
-                            z: viewDirection.z * 2,
-                        });
-                    };
+                if (!player.isValid() || hadAimingEntity)
+                    return;
+
+                const staffEntities = player.dimension.getEntities({ tags: [ "staff_entity", player.id ] });
+                for (const entity of staffEntities) {
+                    entity.applyImpulse({
+                        x: viewDirection.x * 2,
+                        y: viewDirection.y * 1.5,
+                        z: viewDirection.z * 2,
+                    });
                 };
             }, 2);
             return;
         };
         case "better_on_bedrock:flender_staff": {
-            manaCheck(itemStack, player)
+            manaCheck(itemStack, player);
+            resetStaffState(player);
             return;
         };
 
         default: break;
     };
 
-    const inventory = player.getComponent(EntityInventoryComponent.componentId).container;
-    const slot = player.useSlots[0];
-    player.useSlots.pop();
+    const inventory = player.getComponent(EntityInventoryComponent.componentId)?.container;
+    const slot = getStaffSlot(player);
+    getStaffUseSlots(player).shift();
+    if (!inventory || slot === void 0) {
+        resetStaffState(player);
+        return;
+    }
 
     const lastItemStack = inventory.getItem(slot);
     if (
@@ -447,6 +494,5 @@ export function releaseStaffs(itemStack, player) {
 
         inventory.setItem(slot, itemStack);
     };
-    player.staffUses = 0;
-    player.aimingEntity = null;
+    resetStaffState(player);
 };
