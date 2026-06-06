@@ -26,10 +26,10 @@ const parseProjectileItemData = (projectileEntity) => {
 
 world.afterEvents.itemReleaseUse.subscribe((data) => {
     const { source, useDuration } = data;
-    if (!data.itemStack)
+    if (!source?.isValid() || !data.itemStack)
         return;
 
-    const mainhand = source.getComponent(EntityEquippableComponent.componentId).getEquipmentSlot(EquipmentSlot.Mainhand);
+    const mainhand = source.getComponent(EntityEquippableComponent.componentId)?.getEquipmentSlot(EquipmentSlot.Mainhand);
     if (!mainhand)
         return;
 
@@ -67,7 +67,7 @@ world.afterEvents.itemReleaseUse.subscribe((data) => {
     }
 
     const durComp = item.getComponent(ItemDurabilityComponent.componentId);
-    if (!tridentData.projectile || durComp?.damage == durComp?.maxDurability)
+    if (!tridentData.projectile || durComp?.damage >= durComp?.maxDurability)
         return;
 
     const projectileData = tridentData.projectile;
@@ -78,18 +78,19 @@ world.afterEvents.itemReleaseUse.subscribe((data) => {
     projectile.setDynamicProperty("item", JSON.stringify(tridentItemData));
     projectile.setDynamicProperty(DURABILITY_DAMAGE_PROPERTY, tridentItemData.durabilityDamage ?? 0);
     projectile.addTag(CUSTOM_TRIDENT_ENTITY_TAG);
-    
-    if (source.getGameMode() != GameMode.creative)
-        mainhand.setItem();
-
     projectile.setDynamicProperty("ownerID", source.id);
     
     const projectileComp = projectile.getComponent(EntityProjectileComponent.componentId);
+    if (!projectileComp) {
+        projectile.remove();
+        return;
+    }
+
+    if (source.getGameMode() != GameMode.creative)
+        mainhand.setItem();
+
     if (enchComp?.getEnchantments()[0])
         projectile.setProperty('better_on_bedrock:enchanted', true);
-    
-    if (!projectileComp)
-        return;
     
     projectileComp.owner = source;
     
@@ -188,7 +189,7 @@ world.afterEvents.projectileHitEntity.subscribe((data) => {
     }
 
     system.runTimeout(() => {
-        if (!projectile.isValid())
+        if (!projectile?.isValid())
             return;
         
         if (itemData.durabilityDamage === undefined)
@@ -220,7 +221,7 @@ system.runInterval(() => {
                 continue;
 
             const inv = player.getComponent(EntityInventoryComponent.componentId);
-            if (!inv.container || inv.container.emptySlotsCount == 0)
+            if (!inv?.container || inv.container.emptySlotsCount == 0)
                 continue;
 
 

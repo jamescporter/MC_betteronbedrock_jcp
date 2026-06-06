@@ -1,6 +1,9 @@
 /** @type { import("@minecraft/server").ItemCustomComponent } */
 export const events = {
     onConsume: ({ itemStack, source }) => {
+        if (!source?.isValid() || itemStack === undefined)
+            return;
+
         switch (itemStack.typeId) {
             case "better_on_bedrock:healthy_carrot":
                 source.addEffect("regeneration", 100, {
