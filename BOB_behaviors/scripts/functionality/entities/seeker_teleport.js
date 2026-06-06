@@ -1,5 +1,6 @@
 import { world, system } from "@minecraft/server";
 import { getEntitiesNearPlayerCached } from "../../main.js";
+import { applyKnockbackSafe, isEntityValid, teleportSafe } from "./entity_helpers.js";
 
 const SEEKER_SCAN_RADIUS = 48;
 const LAUNCHER_SCAN_RADIUS = 8;
@@ -44,7 +45,7 @@ system.runInterval(() => {
     const activePlayerIds = new Set();
 
     for (const player of players) {
-        if (!player?.isValid() || player.hasTag("bob:disable_combat_checks"))
+        if (!isEntityValid(player) || player.hasTag("bob:disable_combat_checks"))
             continue;
 
         activePlayerIds.add(player.id);
@@ -67,7 +68,7 @@ system.runInterval(() => {
                 closest: 1
             })[0];
 
-            if (launcher) {
+            if (isEntityValid(launcher)) {
                 context.encounterActiveUntil = schedulerTick + ENCOUNTER_KEEPALIVE_TICKS;
 
                 const dx = launcher.location.x - player.location.x;
@@ -76,7 +77,7 @@ system.runInterval(() => {
                 const distanceSquared = dx * dx + dy * dy + dz * dz;
 
                 if (distanceSquared <= 9)
-                    player.applyKnockback(4, 0, 0, 1);
+                    applyKnockbackSafe(player, { x: 0, z: 0 }, 1);
             }
         }
 
@@ -90,10 +91,10 @@ system.runInterval(() => {
                 closest: 1
             })[0];
 
-            if (dummy) {
+            if (isEntityValid(dummy)) {
                 context.encounterActiveUntil = schedulerTick + ENCOUNTER_KEEPALIVE_TICKS;
                 const view = player.getViewDirection();
-                dummy.teleport({
+                teleportSafe(dummy, {
                     x: player.location.x - view.x,
                     y: player.location.y,
                     z: player.location.z - view.z
@@ -111,9 +112,9 @@ system.runInterval(() => {
                 closest: 1
             })[0];
 
-            if (seeker) {
+            if (isEntityValid(seeker)) {
                 context.encounterActiveUntil = schedulerTick + ENCOUNTER_KEEPALIVE_TICKS;
-                seeker.teleport({
+                teleportSafe(seeker, {
                     x: seeker.location.x + 7,
                     y: seeker.location.y,
                     z: seeker.location.z + 7

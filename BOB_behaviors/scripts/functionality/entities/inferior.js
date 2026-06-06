@@ -1,5 +1,6 @@
 import { world, system } from "@minecraft/server";
 import { getEntitiesNearPlayerCached } from "../../main.js";
+import { applyKnockbackSafe, isEntityValid } from "./entity_helpers.js";
 
 const INFERIOR_SCAN_RADIUS = 18;
 const INFERIOR_SCAN_EVERY_TICKS = 2;
@@ -37,7 +38,7 @@ system.runInterval(() => {
     const activePlayerIds = new Set();
 
     for (const player of players) {
-        if (!player?.isValid() || player.hasTag("bob:disable_combat_checks"))
+        if (!isEntityValid(player) || player.hasTag("bob:disable_combat_checks"))
             continue;
 
         activePlayerIds.add(player.id);
@@ -55,7 +56,7 @@ system.runInterval(() => {
             closest: 1
         })[0];
 
-        if (!inferior)
+        if (!isEntityValid(inferior))
             continue;
 
         context.engagedUntilTick = schedulerTick + INFERIOR_ENGAGED_KEEPALIVE_TICKS;
@@ -72,7 +73,7 @@ system.runInterval(() => {
         if (inferior.isOnGround && isOnGroundState === 1 && distanceSquared < 81) {
             inferior.setProperty("pog:is_on_ground", 0);
             player.applyDamage(5);
-            player.applyKnockback(9, 0, 1, 1);
+            applyKnockbackSafe(player, { x: 1, z: 0 }, 1);
         }
     }
 
