@@ -1,8 +1,9 @@
 {
-  "format_version": "1.13.0",
+  "format_version": "1.26.10",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:polar_bear",
+      "spawn_category": "creature",
       "is_spawnable": true,
       "is_summonable": true,
       "is_experimental": false
@@ -35,6 +36,8 @@
         },
         "minecraft:ageable": {
           "duration": 1200,
+          "pause_growth_items": [ "golden_dandelion" ],
+          "reset_growth_items": [ "golden_dandelion" ],
           "grow_up": {
             "event": "minecraft:ageable_grow_up",
             "target": "self"
@@ -129,20 +132,23 @@
       }
     },
     "components": {
-      "minecraft:type_family": {
-        "family": [
-          "polarbear",
-          "mob"
-        ]
+      "minecraft:is_hidden_when_invisible": {
       },
-      "minecraft:despawn": {
-        "despawn_from_distance": {}
+      "minecraft:type_family": {
+        "family": [ "polarbear", "mob" ]
       },
       "minecraft:breathable": {
         "total_supply": 15,
         "suffocate_time": 0
       },
-      "minecraft:nameable": {},
+      "minecraft:nameable": {
+      },
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:polar_bear": "minecraft:polar_bear"
+        }
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:health": {
         "value": 30
       },
@@ -161,7 +167,7 @@
         ]
       },
       "minecraft:collision_box": {
-        "width": 1.3,
+        "width": 1.4,
         "height": 1.4
       },
       "minecraft:movement": {
@@ -174,37 +180,51 @@
         "can_path_over_water": true,
         "avoid_damage_blocks": true
       },
-      "minecraft:movement.basic": {},
-      "minecraft:jump.static": {},
-      "minecraft:can_climb": {},
+      "minecraft:movement.basic": {
+
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:can_climb": {
+      },
       "minecraft:follow_range": {
         "value": 48
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
       },
       "minecraft:behavior.float": {
         "priority": 0
       },
+      "minecraft:behavior.panic": {
+        "priority": 1,
+        "speed_multiplier": 1.25,
+        "damage_sources": [ "campfire", "fire", "fire_tick", "freezing", "lightning", "lava", "magma", "temperature", "soul_campfire" ],
+        "ignore_mob_damage": true
+      },
       "minecraft:behavior.hurt_by_target": {
-        "priority": 1
+        "priority": 2
       },
       "minecraft:behavior.random_stroll": {
         "priority": 5
       },
       "minecraft:behavior.look_at_player": {
         "priority": 6,
-        "target_distance": 6.0,
+        "look_distance": 6.0,
         "probability": 0.02
       },
       "minecraft:behavior.random_look_around": {
         "priority": 7
       },
-      "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
+      "minecraft:physics": {
       },
-      "minecraft:behavior.panic": {
-        "priority": 2,
-        "speed_multiplier": 2.0
+      "minecraft:pushable_by_entity": {},
+      "minecraft:pushable_by_block": {},
+      "minecraft:leashable": {
+      },
+      "minecraft:balloonable": {
+      },
+      "minecraft:conditional_bandwidth_optimization": {
       }
     },
     "events": {
