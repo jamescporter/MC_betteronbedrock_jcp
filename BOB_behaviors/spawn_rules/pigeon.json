@@ -2,7 +2,7 @@
     "format_version": "1.8.0",
     "minecraft:spawn_rules": {
       "description": {
-        "identifier": "minecraft:pigeon",
+        "identifier": "better_on_bedrock:pigeon",
         "population_control": "cat"
       },
       "conditions": [

@@ -929,8 +929,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Genera un manichino con 
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Genera fuoco selvaggio
 item.spawn_egg.entity.better_on_bedrock:willager.name=Genera Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Genera Samurai Avvizzito
-item.spawn_egg.entity.minecraft:pigeon.name=Generare il piccione
-item.spawn_egg.entity.minecraft:piglin_trader.name=Genera il commerciante Piglin
 
 
 tile.better_on_bedrock:taller_grass.name=Erba più alta

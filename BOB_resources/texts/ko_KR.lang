@@ -981,8 +981,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Spawn Weak Point Dummy
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=와일드파이어 생성 알
 item.spawn_egg.entity.better_on_bedrock:willager.name=마민 생성 알
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=위더드 사무라이 생성 알
-item.spawn_egg.entity.minecraft:pigeon.name=비둘기 생성 알
-item.spawn_egg.entity.minecraft:piglin_trader.name=피글린 상인 생성 알
 
 
 ## Blocks

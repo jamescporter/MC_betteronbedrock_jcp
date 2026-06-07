@@ -928,8 +928,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Spawn zwakke punt-dummy
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Wild vuur voortbrengen
 item.spawn_egg.entity.better_on_bedrock:willager.name=Spawn Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Spawn verdorde samoerai
-item.spawn_egg.entity.minecraft:pigeon.name=Broedduif
-item.spawn_egg.entity.minecraft:piglin_trader.name=Spawn Piglin-handelaar
 
 
 tile.better_on_bedrock:taller_grass.name=Hoger gras

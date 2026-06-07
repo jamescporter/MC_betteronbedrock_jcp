@@ -929,8 +929,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Generar muñeco de punto
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Generar fuego salvaje
 item.spawn_egg.entity.better_on_bedrock:willager.name=Engendrar Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Engendrar samuráis marchitos
-item.spawn_egg.entity.minecraft:pigeon.name=Paloma de engendro
-item.spawn_egg.entity.minecraft:piglin_trader.name=Comerciante Piglin engendrado
 
 
 tile.better_on_bedrock:taller_grass.name=Hierba más alta

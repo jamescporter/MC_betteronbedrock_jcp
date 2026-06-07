@@ -929,8 +929,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Apparition d'un mannequi
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Générer un feu sauvage
 item.spawn_egg.entity.better_on_bedrock:willager.name=Villageois d'apparition
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Faire apparaître un samouraï flétri
-item.spawn_egg.entity.minecraft:pigeon.name=Pigeon d'apparition
-item.spawn_egg.entity.minecraft:piglin_trader.name=Marchand de piglins d'apparition
 
 
 tile.better_on_bedrock:taller_grass.name=Herbe plus haute
