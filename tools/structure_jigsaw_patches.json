@@ -1,0 +1,89 @@
+{
+  "description": "Text-only source of truth for jigsaw target_pool fixes that must be applied to binary .mcstructure exports outside PRs.",
+  "patches": [
+    {
+      "structure": "BOB_behaviors/structures/king/end.mcstructure",
+      "jigsaw": {
+        "name": "king:end",
+        "x": -1011,
+        "y": 73,
+        "z": -331
+      },
+      "set": {
+        "target": "minecraft:empty",
+        "target_pool": "pog:empty"
+      },
+      "reason": "Terminal connector; route it to the shared empty pool rather than leaving target_pool blank."
+    },
+    {
+      "structure": "BOB_behaviors/structures/mesa_village/buildings/small_house.mcstructure",
+      "jigsaw": {
+        "name": "pog:building",
+        "target": "pog:building",
+        "x": -34,
+        "y": -60,
+        "z": 33
+      },
+      "set": {
+        "target_pool": "pog:mesa_village/buildings"
+      },
+      "reason": "Building connector should continue mesa village building generation."
+    },
+    {
+      "structure": "BOB_behaviors/structures/mesa_village/buildings/small_house.mcstructure",
+      "jigsaw": {
+        "name": "pog:path",
+        "target": "pog:path",
+        "x": -34,
+        "y": -60,
+        "z": 34
+      },
+      "set": {
+        "target_pool": "pog:mesa_village/roads"
+      },
+      "reason": "Path connector should continue into the mesa village road pool."
+    },
+    {
+      "structure": "BOB_behaviors/structures/mesa_village/buildings/small_house_02.mcstructure",
+      "jigsaw": {
+        "name": "pog:path",
+        "target": "pog:path",
+        "x": -21,
+        "y": -60,
+        "z": 34
+      },
+      "set": {
+        "target_pool": "pog:mesa_village/roads"
+      },
+      "reason": "Path connector should continue into the mesa village road pool."
+    },
+    {
+      "structure": "BOB_behaviors/structures/mesa_village/buildings/librarian.mcstructure",
+      "jigsaw": {
+        "name": "pog:building",
+        "target": "pog:building",
+        "x": -40,
+        "y": -60,
+        "z": 49
+      },
+      "set": {
+        "target_pool": "pog:mesa_village/buildings"
+      },
+      "reason": "Building connector should continue mesa village building generation."
+    },
+    {
+      "structure": "BOB_behaviors/structures/mesa_village/buildings/librarian.mcstructure",
+      "jigsaw": {
+        "name": "pog:path",
+        "target": "pog:path",
+        "x": -39,
+        "y": -60,
+        "z": 49
+      },
+      "set": {
+        "target_pool": "pog:mesa_village/roads"
+      },
+      "reason": "Path connector should continue into the mesa village road pool."
+    }
+  ]
+}
