@@ -14,6 +14,7 @@ const activeBackpackEntityIdsByPlayer = new Map()
 const backpackInventoryState = new Map()
 const portalNearbyCache = new Map()
 const backpackOperationLocks = new Set()
+const failedAtomicSaveBackpackIds = new Set()
 
 function warnBackpack(message) {
     console.warn(`[BOB Backpacks] ${message}`)
@@ -129,6 +130,13 @@ class structure_Manager {
     static load(ID, location, dimension) {
         return dimension.runCommand("structure load " + ID + " " + location.x + " " + location.y + " " + location.z)
     }
+    /**
+     * @param {string} ID
+     * @param {import("@minecraft/server").Dimension} dimension
+     */
+    static delete(ID, dimension) {
+        return dimension.runCommand("structure delete " + ID)
+    }
 }
 
 class block_Manager {
@@ -196,8 +204,14 @@ function saveBackpack(entity) {
     const data = backpackData[entity.typeId]
     if (id == undefined || !data) return false
     const maxCount = data.count
+    const playerId = entity.getDynamicProperty("playerID") ?? "unknown"
+    const baseStructureId = "backpack" + id
+    const upperStructureId = "backpack" + id + "_2"
     const stagingBasePos = toBlockPos({ x: entityLoc.x, y: 100, z: entityLoc.z })
     const stagingUpperPos = toBlockPos({ x: entityLoc.x, y: 101, z: entityLoc.z })
+    const backupSuffix = `${globalTick}_${Math.floor(Math.random() * 1000000)}`
+    const baseBackupStructureId = `bob_bp_tmp_${backupSuffix}`
+    const upperBackupStructureId = `bob_bp_tmp_${backupSuffix}_2`
     const block = dim.getBlock(stagingBasePos)
     if (!block) return false
     const originalBasePermutation = block.permutation
@@ -210,12 +224,24 @@ function saveBackpack(entity) {
         originalUpperPermutation = block2.permutation
     }
 
-    let baseChanged = false
-    let upperChanged = false
-    let saveSucceeded = false
-    const playerId = entity.getDynamicProperty("playerID") ?? "unknown"
     const logStructureFailure = (operation, structureId, position, successCount) => {
         warnBackpack(`Failed to ${operation} structure ${structureId} for backpack ${id}, player ${playerId}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): successCount=${successCount}.`)
+    }
+    const tryLoadStructure = (structureId, position, loadDimension, logFailure = true) => {
+        try {
+            const result = structure_Manager.load(structureId, position, loadDimension)
+            if (result.successCount < 1) {
+                if (logFailure) logStructureFailure("load", structureId, position, result.successCount)
+                return false
+            }
+            return true
+        } catch (e) {
+            if (logFailure) {
+                const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+                warnBackpack(`Exception loading structure ${structureId} for backpack ${id}, player ${playerId}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): ${failureReason}`)
+            }
+            return false
+        }
     }
     const trySaveStructure = (structureId, position, fromPos, toPos, saveDimension, options) => {
         try {
@@ -231,33 +257,106 @@ function saveBackpack(entity) {
             return false
         }
     }
+    const tryDeleteStructure = (structureId) => {
+        try {
+            const result = structure_Manager.delete(structureId, dim)
+            return result.successCount >= 1
+        } catch (e) {
+            return false
+        }
+    }
+    const rollbackSavedStructure = (structureId, backupStructureId, existedBefore, position) => {
+        warnBackpack(`Rolling back failed atomic save for backpack ${id}, player ${playerId}: restoring prior structure ${structureId}.`)
+        if (existedBefore) {
+            if (!tryLoadStructure(backupStructureId, position, dim)) {
+                warnBackpack(`Atomic save rollback failed for backpack ${id}: backup structure ${backupStructureId} could not be loaded; ${structureId} may have been partially saved.`)
+                return false
+            }
+            if (!trySaveStructure(structureId, position, position, position, dim, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) {
+                warnBackpack(`Atomic save rollback failed for backpack ${id}: prior structure ${structureId} could not be restored from ${backupStructureId}.`)
+                return false
+            }
+            return true
+        }
+        if (!tryDeleteStructure(structureId)) {
+            warnBackpack(`Atomic save rollback warning for backpack ${id}: new partial structure ${structureId} could not be deleted after a failed save.`)
+            return false
+        }
+        return true
+    }
+
+    let baseChanged = false
+    let upperChanged = false
+    let baseExistedBefore = false
+    let upperExistedBefore = false
+    let basePersistedThisAttempt = false
+    let upperPersistedThisAttempt = false
+    let saveSucceeded = false
+    let entityContainerForRollback = undefined
+    let entitySnapshotForRollback = undefined
 
     try {
-        if (block2 != undefined) {
-            block2.setPermutation(BlockPermutation.resolve("barrel"))
-            upperChanged = true
+        const entityInv = entity.getComponent(EntityInventoryComponent.componentId)
+        if (!entityInv?.container) return false
+        entityContainerForRollback = entityInv.container
+        const entitySnapshot = snapshotInventory(entityInv.container)
+        entitySnapshotForRollback = entitySnapshot
+        const stagedInventory = stageBackpackInventory(entitySnapshot, maxCount)
+        if (!stagedInventory) return false
+
+        baseExistedBefore = tryLoadStructure(baseStructureId, stagingBasePos, dim, false)
+        if (baseExistedBefore) baseChanged = true
+        if (baseExistedBefore && !trySaveStructure(baseBackupStructureId, stagingBasePos, stagingBasePos, stagingBasePos, dim, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
+
+        if (maxCount > 1) {
+            upperExistedBefore = tryLoadStructure(upperStructureId, stagingUpperPos, dim, false)
+            if (upperExistedBefore) upperChanged = true
+            if (upperExistedBefore && !trySaveStructure(upperBackupStructureId, stagingUpperPos, stagingUpperPos, stagingUpperPos, dim, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
         }
 
         block.setPermutation(BlockPermutation.resolve("barrel"))
         baseChanged = true
-
-        const entityInv = entity.getComponent(EntityInventoryComponent.componentId)
         const blockInv = block.getComponent(BlockInventoryComponent.componentId)
-        if (!entityInv?.container || !blockInv?.container) return false
+        if (!blockInv?.container) return false
+        emptyInventory(blockInv.container)
+        if (!writeStagedItems(blockInv.container, stagedInventory.baseItems)) return false
 
         if (block2 != undefined) {
+            block2.setPermutation(BlockPermutation.resolve("barrel"))
+            upperChanged = true
             const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
             if (!blockInv2?.container) return false
-            if (!transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)) return false
-            if (!trySaveStructure("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
-            emptyInventory(blockInv2)
+            emptyInventory(blockInv2.container)
+            if (!writeStagedItems(blockInv2.container, stagedInventory.upperItems)) return false
         }
 
-        if (!transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)) return false
-        if (!trySaveStructure("backpack" + id, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
-        emptyInventory(blockInv)
+        if (!trySaveStructure(baseStructureId, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
+        basePersistedThisAttempt = true
+        if (block2 != undefined) {
+            if (!trySaveStructure(upperStructureId, stagingUpperPos, stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
+            upperPersistedThisAttempt = true
+        }
+
+        if (!restoreInventory(entityInv.container, stagedInventory.emptyEntityItems)) return false
+        for (const droppedItem of stagedInventory.droppedItems) spawnItemAnywhere(droppedItem, entityLoc, dim)
+        emptyInventory(blockInv.container)
+        if (block2 != undefined) {
+            const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
+            if (blockInv2?.container) emptyInventory(blockInv2.container)
+        }
         saveSucceeded = true
+        failedAtomicSaveBackpackIds.delete(id)
     } finally {
+        if (!saveSucceeded) {
+            failedAtomicSaveBackpackIds.add(id)
+            warnBackpack(`Atomic save failed for backpack ${id}, player ${playerId}; restoring entity inventory and rolling back any persisted structure writes.`)
+            if (entityContainerForRollback && entitySnapshotForRollback && !restoreInventory(entityContainerForRollback, entitySnapshotForRollback)) {
+                warnBackpack(`Atomic save rollback failed for backpack ${id}: entity inventory could not be restored completely.`)
+            }
+            if (upperPersistedThisAttempt) rollbackSavedStructure(upperStructureId, upperBackupStructureId, upperExistedBefore, stagingUpperPos)
+            if (basePersistedThisAttempt) rollbackSavedStructure(baseStructureId, baseBackupStructureId, baseExistedBefore, stagingBasePos)
+        }
+
         if (upperChanged && originalUpperPermutation != undefined) {
             const stagingUpperBlock = dim.getBlock(stagingUpperPos)
             if (stagingUpperBlock) stagingUpperBlock.setPermutation(originalUpperPermutation)
@@ -267,6 +366,9 @@ function saveBackpack(entity) {
             const stagingBaseBlock = dim.getBlock(stagingBasePos)
             if (stagingBaseBlock) stagingBaseBlock.setPermutation(originalBasePermutation)
         }
+
+        tryDeleteStructure(baseBackupStructureId)
+        if (maxCount > 1) tryDeleteStructure(upperBackupStructureId)
     }
 
     if (!saveSucceeded) return false
@@ -321,7 +423,9 @@ function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTic
     if (!entity?.isValid()) return
     const resolvedPlayerId = playerId ?? entity.getDynamicProperty("playerID")
     if (resolvedPlayerId == undefined) return
-    const key = entity.id
+    const backpackIdForSaveQueue = entity.getDynamicProperty("backpack_id")
+    const key = backpackIdForSaveQueue != undefined ? `backpack:${backpackIdForSaveQueue}` : `entity:${entity.id}`
+    const entityId = entity.id
     const delay = delayOverrideTicks != undefined ? Math.max(1, delayOverrideTicks) : (immediate ? 0 : SAVE_DEBOUNCE_TICKS)
     const dueTick = globalTick + delay
     const existing = pendingBackpackSaves.get(key)
@@ -361,7 +465,7 @@ function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTic
             const previousSignature = backpackId != undefined ? backpackInventoryState.get(backpackId) : undefined
             if (backpackId != undefined && previousSignature == currentSignature) {
                 // Unchanged backpacks still need a safe close path; direct removal can drop items.
-                warnBackpack(`Closing unchanged backpack entity ${key} for player ${resolvedPlayerId} (${backpackId}).`)
+                warnBackpack(`Closing unchanged backpack entity ${entityId} for player ${resolvedPlayerId} (${backpackId}).`)
                 closeBackpackEntityWithoutSave(entity)
                 return
             }
@@ -369,7 +473,7 @@ function queueSaveBackpack(entity, playerId, immediate = false, delayOverrideTic
             const saved = saveBackpack(entity)
             if (saved) {
                 if (backpackId != undefined) backpackInventoryState.set(backpackId, currentSignature)
-                untrackActiveBackpackEntity(resolvedPlayerId, key)
+                untrackActiveBackpackEntity(resolvedPlayerId, entityId)
             }
         } finally {
             unlockBackpackOperation(backpackId)
@@ -561,27 +665,46 @@ function loadBackpack(entityTypeID, player, item) {
         if (maxCount > 1) block2 = dim.getBlock(stagingUpperPos)
         const lastBlock = block.permutation
         let lastBlock2 = undefined
+        const baseStructureId = "backpack" + id
+        const upperStructureId = "backpack" + id + "_2"
+        const initialBaseLoad = tryLoadStructure(baseStructureId, stagingBasePos, dim)
+        let initialUpperLoad = undefined
+
         if (maxCount > 1) {
             if (!block2) {
                 warnBackpack(`Failed to load backpack ${id} for player ${player.id}: second staging block at y=101 was unavailable.`)
                 return undefined
             }
             lastBlock2 = block2.permutation
-            const upperStructureId = "backpack" + id + "_2"
-            const initialUpperLoad = tryLoadStructure(upperStructureId, stagingUpperPos, dim)
-            if (!initialUpperLoad) {
-                block2.setPermutation(BlockPermutation.resolve("barrel"))
-                if (!trySaveStructure(upperStructureId, stagingUpperPos, stagingUpperPos, stagingUpperPos, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
-            }
-            if (!tryLoadStructure(upperStructureId, stagingUpperPos, dim)) return undefined
+            initialUpperLoad = tryLoadStructure(upperStructureId, stagingUpperPos, dim)
         }
-        const baseStructureId = "backpack" + id
-        const initialBaseLoad = tryLoadStructure(baseStructureId, stagingBasePos, dim)
-        if (!initialBaseLoad) {
+
+        const baseExists = initialBaseLoad != undefined
+        const upperExists = maxCount > 1 ? initialUpperLoad != undefined : true
+        if (!baseExists || !upperExists) {
+            const canInitialiseEmptyStructures = !failedAtomicSaveBackpackIds.has(id) && !baseExists && (maxCount <= 1 || !upperExists)
+            if (!canInitialiseEmptyStructures) {
+                warnBackpack(`Refusing to initialise missing backpack structure(s) for backpack ${id}, player ${player.id}; an existing or failed atomic save state may be present.`)
+                block.setPermutation(lastBlock)
+                if (block2 && lastBlock2 != undefined) block2.setPermutation(lastBlock2)
+                return undefined
+            }
+
             block.setPermutation(BlockPermutation.resolve("barrel"))
             if (!trySaveStructure(baseStructureId, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
+            if (maxCount > 1) {
+                block2.setPermutation(BlockPermutation.resolve("barrel"))
+                if (!trySaveStructure(upperStructureId, stagingUpperPos, stagingUpperPos, stagingUpperPos, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) {
+                    warnBackpack(`Initial empty-structure save failed for backpack ${id}; deleting newly-created base structure to avoid a partial initialisation.`)
+                    try { structure_Manager.delete(baseStructureId, dim) } catch (e) {}
+                    failedAtomicSaveBackpackIds.add(id)
+                    return undefined
+                }
+            }
         }
+
         if (!tryLoadStructure(baseStructureId, stagingBasePos, dim)) return undefined
+        if (maxCount > 1 && !tryLoadStructure(upperStructureId, stagingUpperPos, dim)) return undefined
         const backPack = spawnEntityAnywhere(entityTypeID, getBackpackFollowLocation(player), dim)
         if (!backPack?.isValid()) return undefined
         const entityInv = backPack.getComponent(EntityInventoryComponent.componentId)
@@ -633,6 +756,77 @@ function loadBackpack(entityTypeID, player, item) {
         warnBackpack(`Failed to load backpack ${id} for player ${player.id}: ${failureReason}`)
         return undefined
     }
+}
+
+function snapshotInventory(container) {
+    const items = []
+    for (let i = 0; i < container.size; i++) {
+        try {
+            items.push(container.getItem(i))
+        } catch (e) {
+            const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+            warnBackpack(`Failed snapshotting backpack inventory slot ${i}: ${failureReason}`)
+            return undefined
+        }
+    }
+    return items
+}
+
+function restoreInventory(container, items) {
+    if (!items || container.size < items.length) return false
+    for (let i = 0; i < items.length; i++) {
+        try {
+            container.setItem(i, items[i])
+        } catch (e) {
+            const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+            warnBackpack(`Failed restoring backpack inventory slot ${i}: ${failureReason}`)
+            return false
+        }
+    }
+    return true
+}
+
+function stageBackpackInventory(sourceItems, maxCount) {
+    if (!sourceItems) return undefined
+    const baseItems = new Array(27).fill(undefined)
+    const upperItems = new Array(27).fill(undefined)
+    const emptyEntityItems = new Array(sourceItems.length).fill(undefined)
+    const droppedItems = []
+    const persistedSlots = maxCount > 1 ? 54 : 27
+
+    for (let sourceSlot = 0; sourceSlot < sourceItems.length; sourceSlot++) {
+        const item = sourceItems[sourceSlot]
+        if (!item) continue
+
+        if (unallowedItems.includes(item.typeId) || sourceSlot >= persistedSlots) {
+            if (!unallowedItems.includes(item.typeId)) {
+                warnBackpack(`Backpack staged save slot ${sourceSlot} is outside persisted capacity ${persistedSlots}; dropping ${item.typeId} safely instead of deleting it.`)
+            }
+            droppedItems.push(item)
+            continue
+        }
+
+        if (sourceSlot < 27) {
+            baseItems[sourceSlot] = item
+        } else {
+            upperItems[sourceSlot - 27] = item
+        }
+    }
+
+    return { baseItems, upperItems, emptyEntityItems, droppedItems }
+}
+
+function writeStagedItems(container, items) {
+    for (let i = 0; i < items.length; i++) {
+        try {
+            container.setItem(i, items[i])
+        } catch (e) {
+            const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+            warnBackpack(`Failed writing staged backpack item to slot ${i}: ${failureReason}`)
+            return false
+        }
+    }
+    return true
 }
 
 /**
