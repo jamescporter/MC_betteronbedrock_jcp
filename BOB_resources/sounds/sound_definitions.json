@@ -1152,7 +1152,7 @@
             "sounds": [
                 {
                     "load_on_low_memory": true,
-                    "name": "sounds/entity/boss/enchanter/magic",
+                    "name": "sounds/entity/boss/enchanter/iceologer_magic",
                     "volume": 1
                 }
             ]
@@ -1232,7 +1232,7 @@
                 },
                 {
                     "load_on_low_memory": true,
-                    "name": "sounds/entity/flender/call",
+                    "name": "sounds/entity/flender/call1",
                     "volume": 0.2
                 }
             ]
@@ -1407,8 +1407,8 @@
         "mob.quiet": {
             "category": "player",
             "sounds": [
-                "sounds/inferno/idlse1",
-                "sounds/inferno/idsle2"
+                "sounds/entity/idle1",
+                "sounds/entity/idle2"
             ]
         },
         "mob.seeker.beam": {
@@ -1530,7 +1530,7 @@
             "sounds": [
                 {
                     "load_on_low_memory": true,
-                    "name": "sounds/entity/samurai/fire_wisp_shoot",
+                    "name": "sounds/entity/samurai/withered_samurai_shoot",
                     "volume": 1
                 }
             ]
@@ -1580,7 +1580,7 @@
                 },
                 {
                     "load_on_low_memory": true,
-                    "name": "sound/entity/samurai/withered_samurai_speak1",
+                    "name": "sounds/entity/samurai/withered_samurai_speak1",
                     "volume": 1
                 }
             ]
