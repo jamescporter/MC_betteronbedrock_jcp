@@ -5,7 +5,7 @@
         "description": "BetterOnBedrock",
         "uuid": "e0992d5f-e7d3-4260-abba-2da0d6015c05",
         "pack_scope": "world",
-        "version": [ 1, 2, 3 ],
+        "version": [ 1, 2, 4 ],
         "min_engine_version": [ 1, 21, 120 ]
     },
     "metadata": {
@@ -17,13 +17,13 @@
         {
             "type": "resources",
             "uuid": "3e70576a-0352-4ddd-9b19-2110b8f3f25c",
-            "version": [ 1, 2, 3 ]
+            "version": [ 1, 2, 4 ]
         }
     ],
     "dependencies": [
         {
             "uuid": "40d18d86-f454-4361-bbcf-b118274dec17",
-            "version": [ 1, 2, 3 ]
+            "version": [ 1, 2, 4 ]
         }
     ]
 }

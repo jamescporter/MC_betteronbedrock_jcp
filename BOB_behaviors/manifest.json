@@ -4,7 +4,7 @@
         "name": "pack.name",
         "description": "pack.description",
         "uuid": "40d18d86-f454-4361-bbcf-b118274dec17",
-        "version": [ 1, 2, 3 ],
+        "version": [ 1, 2, 4 ],
         "min_engine_version": [ 1, 21, 120 ]
     },
     "metadata": {
@@ -17,13 +17,13 @@
             "language": "javascript",
             "uuid": "16b646cb-98eb-41b2-a9e0-dd7f088caab4",
             "entry": "scripts/main.js",
-            "version": [ 1, 2, 3 ]
+            "version": [ 1, 2, 4 ]
         }
     ],
     "dependencies": [
         {
             "uuid": "e0992d5f-e7d3-4260-abba-2da0d6015c05",
-            "version": [ 1, 2, 3 ]
+            "version": [ 1, 2, 4 ]
         },
         {
             "module_name": "@minecraft/server",
