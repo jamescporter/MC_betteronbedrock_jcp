@@ -933,8 +933,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Spawn-Schwachpunkt-Dummy
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Spawn Wild Fire
 item.spawn_egg.entity.better_on_bedrock:willager.name=Spawne Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Bringe verwelkte Samurai hervor
-item.spawn_egg.entity.minecraft:pigeon.name=Laichtaube
-item.spawn_egg.entity.minecraft:piglin_trader.name=Spawn Piglin-Händler
 
 tile.end_portal.name=Portal beenden
 tile.brewing_stand.name=Braustand

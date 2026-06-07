@@ -950,8 +950,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Spawn Weak Point Dummy
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Spawn Wild Fire
 item.spawn_egg.entity.better_on_bedrock:willager.name=Spawn Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Spawn Withered Samurai
-item.spawn_egg.entity.minecraft:pigeon.name=Spawn Pigeon
-item.spawn_egg.entity.minecraft:piglin_trader.name=Spawn Piglin Trader
 
 
 tile.better_on_bedrock:taller_grass.name=Taller Grass

@@ -940,8 +940,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Яйцо призыва 
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Яйцо призыва Яростного Огня
 item.spawn_egg.entity.better_on_bedrock:willager.name=Яйцо призыва Вайладжера
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Яйцо призыва Иссушённого Самурая
-item.spawn_egg.entity.minecraft:pigeon.name=Яйцо призыва Голубя
-item.spawn_egg.entity.minecraft:piglin_trader.name=Яйцо призыва Пиглина Торговца
 
 
 tile.better_on_bedrock:taller_grass.name=Высокая Трава

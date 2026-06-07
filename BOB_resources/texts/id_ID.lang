@@ -929,8 +929,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Memunculkan Dummy Titik 
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Memunculkan Api Liar
 item.spawn_egg.entity.better_on_bedrock:willager.name=Memunculkan Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Memunculkan Samurai yang Layu
-item.spawn_egg.entity.minecraft:pigeon.name=Memunculkan Merpati
-item.spawn_egg.entity.minecraft:piglin_trader.name=Memunculkan Pedagang Piglin
 
 
 tile.better_on_bedrock:taller_grass.name=Rumput Lebih Tinggi

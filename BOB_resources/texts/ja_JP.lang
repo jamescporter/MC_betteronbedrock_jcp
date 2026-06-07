@@ -929,8 +929,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=スポーン弱点ダミ
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=ワイルドファイアをスポーンする
 item.spawn_egg.entity.better_on_bedrock:willager.name=ウィラガーをスポーンする
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=枯れた侍をスポーンする
-item.spawn_egg.entity.minecraft:pigeon.name=産卵鳩
-item.spawn_egg.entity.minecraft:piglin_trader.name=ピグリントレーダーをスポーンする
 
 
 tile.better_on_bedrock:taller_grass.name=背の高い草
