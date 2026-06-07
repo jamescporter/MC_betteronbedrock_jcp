@@ -10,7 +10,9 @@ world.afterEvents.entityHitEntity.subscribe(
         if (!damagingEntity?.isValid() || !hitEntity?.isValid())
             return;
 
-        applyEnchantments(damagingEntity, hitEntity);
+        try {
+            applyEnchantments(damagingEntity, hitEntity);
+        } catch {};
 
         if (damagingEntity instanceof Player) {
             corpse(damagingEntity, hitEntity);
