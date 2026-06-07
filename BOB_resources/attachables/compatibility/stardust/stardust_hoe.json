@@ -20,10 +20,7 @@
             },
 
             "scripts": {
-                "parent_setup": "
-                    c.item_slot == 'main_hand' ? { v.oreville_mainhand_custom_pos = 1; v.oreville_mainhand_visible  = 1;};
-                    c.item_slot == 'off_hand' ? { v.oreville_offhand_custom_pos = 1; v.oreville_offhand_visible  = 1;};
-                "
+                "parent_setup": "c.item_slot == 'main_hand' ? { v.oreville_mainhand_custom_pos = 1; v.oreville_mainhand_visible = 1;};c.item_slot == 'off_hand' ? { v.oreville_offhand_custom_pos = 1; v.oreville_offhand_visible = 1;};"
             },
             "render_controllers": [ "controller.render.item_sprite" ]
         }

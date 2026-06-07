@@ -18,7 +18,7 @@ tips.game.13=Stitch: "Now the pings can end!"
 
 
 ## Messages
-bob.message.welcome=Thanks for playing §7Better on Bedrock§r! Be sure to read the info book to get started on what to expect and how some things work!
+bob.message.welcome=Thanks for playing §7Better on Bedrock§r! Be sure to read the Guide book to get started on what to expect and how some things work! §7(If you ever lose the book, you can get it using /guidebook)§r
 
 bob.message.dimensionLocation=§6%1§7, §6%2§7, §6%3§7, §rin %4§r
 bob.message.youDiedAt=You died at: 
