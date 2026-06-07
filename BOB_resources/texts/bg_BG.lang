@@ -928,8 +928,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Спаун манеке�
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Спаун див огън
 item.spawn_egg.entity.better_on_bedrock:willager.name=Spawn Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Спаун Изсъхнал самурай
-item.spawn_egg.entity.minecraft:pigeon.name=Spawn Pigeon
-item.spawn_egg.entity.minecraft:piglin_trader.name=Спаун Piglin Trader
 
 
 tile.better_on_bedrock:taller_grass.name=По-висока трева

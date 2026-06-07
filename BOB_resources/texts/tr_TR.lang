@@ -929,8 +929,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Spawn Zayıf Nokta Kukla
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Vahşi Ateş doğur
 item.spawn_egg.entity.better_on_bedrock:willager.name=Spawn Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Solmuş Samuray Doğur
-item.spawn_egg.entity.minecraft:pigeon.name=Güvercin Yumurtlama
-item.spawn_egg.entity.minecraft:piglin_trader.name=Doğmuş Piglin Tüccarı
 
 
 tile.better_on_bedrock:taller_grass.name=Uzun Çim

@@ -929,8 +929,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=Gerar boneco de ponto fr
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=Gerar Fogo Selvagem
 item.spawn_egg.entity.better_on_bedrock:willager.name=Gerar Willager
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=Gerar Samurai Murchado
-item.spawn_egg.entity.minecraft:pigeon.name=Pombo Spawn
-item.spawn_egg.entity.minecraft:piglin_trader.name=Gerar Comerciante Piglin
 
 
 tile.better_on_bedrock:taller_grass.name=Grama mais alta

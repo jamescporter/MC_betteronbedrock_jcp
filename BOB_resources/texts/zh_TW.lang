@@ -887,8 +887,6 @@ item.spawn_egg.entity.better_on_bedrock:weak_point.name=弱點假人生成蛋
 item.spawn_egg.entity.better_on_bedrock:wild_fire.name=野火生成蛋
 item.spawn_egg.entity.better_on_bedrock:willager.name=威拉格生成蛋
 item.spawn_egg.entity.better_on_bedrock:withered_samurai.name=枯萎武士生成蛋
-item.spawn_egg.entity.minecraft:pigeon.name=鴿生成蛋
-item.spawn_egg.entity.minecraft:piglin_trader.name=豬靈商人生成蛋
 
 tile.end_portal.name=末地傳送門
 tile.brewing_stand.name=釀酒台
