@@ -41,7 +41,7 @@
             },
             "minecraft:hand_equipped": true,
             "minecraft:can_destroy_in_creative": false,
-            "minecraft:custom_components": [ "pog:tool_durability" ],
+            "pog:tool_durability": {},
             "minecraft:tags": {
                 "tags": [
                     "minecraft:is_sword",

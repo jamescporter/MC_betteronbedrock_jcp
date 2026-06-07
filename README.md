@@ -44,8 +44,14 @@ From the manifests in this repo:
 
 This fork mainly focuses on reliability and performance.
 
+#### Bedrock 1.26.21.1 compatibility notes
 
-V1.2.1-JCP
+- Stardust tools now use flattened custom component syntax, e.g. `"pog:tool_durability": {}`, rather than deprecated `"minecraft:custom_components"`.
+- The Guide Book command avoids importing `CommandPermissionLevel` and `CustomCommandStatus` directly because those exports are not available under the currently pinned `@minecraft/server` dependency.
+- The behaviour pack intentionally keeps the current `@minecraft/server` manifest dependency for now. A future Scripting V2 migration should be handled as a separate compatibility pass, because it may require wider API changes across entity validity checks, custom commands, and script component registration.
+
+
+#### V1.2.1-JCP
 - **Direct v1.2.1 behaviour ports:** Copied the low-risk 1.2.1 behaviour data updates into the main BOB pack, including the guidebook recipe, crop/farmable tags, the local pedestal selector, the void-block tick interval, and small orange-tree/goblin/well-dungeon worldgen template tweaks.
 - **Manifest/version alignment:** Updated behaviour and resource manifests to version `1.2.1` and aligned their pack dependency versions while keeping the current branch's script API dependencies.
 - **Fire-resistant material items:** Added fire resistance to Stardust/Corstinite material items so they match the intent of the existing fire-resistant armour/tool tier.
@@ -63,7 +69,7 @@ V1.2.1-JCP
 - **Repo wiki started:** Added an initial single-page wiki (`wiki.md`) containing the first Guide Book entry (description, purpose, behaviour, and obtainment routes).
 - **Resin Candy boots note (non-applicable):** Verified across both JCP pack paths and `v1.2.1_src_only` source paths that no wearable/attachable **Resin Candy boots** item exists (only `better_on_bedrock:resin_candy` food plus non-wearable Resin items such as shard/dagger), so the related 1.2.1 texture-binding release note is non-applicable to this fork.
 
-V1.2.0-JCP
+#### V1.2.0-JCP
 - **Performance and scalability:** per-tick and high-frequency scripts were refactored to reduce repeated work, improve caching, and lower runtime overhead.
 - **Bug fixes and hardening:** Lots of defensive fixes addressung malformed data handling, null/unsafe state access, duplicate triggers, and cleanup edge cases.
 - **Item/combat system stability:** backpacks, staffs, spear/trident logic, strip-block interactions, and related item systems were made more robust while preserving existing functionality.

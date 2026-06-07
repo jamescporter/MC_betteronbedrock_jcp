@@ -3,20 +3,22 @@ import {
     Player,
     ItemStack,
     EntityInventoryComponent,
-    CommandPermissionLevel,
-    CustomCommandStatus,
 } from "@minecraft/server";
+
+const COMMAND_PERMISSION_ANY = 0;
+const CUSTOM_COMMAND_SUCCESS = 0;
+const CUSTOM_COMMAND_FAILURE = 1;
 
 export default class GuideBookCommand {
     name = "better_on_bedrock:guidebook";
     description = "command.better_on_bedrock.common.guidebook.description";
-    permissionLevel = CommandPermissionLevel.Any;
+    permissionLevel = COMMAND_PERMISSION_ANY;
     cheatsRequired = false;
 
     static execute(origin) {
         if (!(origin.sourceEntity instanceof Player)) {
             return {
-                status: CustomCommandStatus.Failure,
+                status: CUSTOM_COMMAND_FAILURE,
                 message: "commands.generic.noTargetMatch",
             };
         }
@@ -36,6 +38,6 @@ export default class GuideBookCommand {
                 player.dimension.spawnItem(overflow, player.location);
         });
 
-        return { status: CustomCommandStatus.Success };
+        return { status: CUSTOM_COMMAND_SUCCESS };
     }
 }

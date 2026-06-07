@@ -44,7 +44,7 @@
                 "value": true
             },
             "minecraft:hand_equipped": true,
-            "minecraft:custom_components": [ "pog:tool_durability" ],
+            "pog:tool_durability": {},
             "minecraft:tags": {
                 "tags": [
                     "minecraft:is_shovel",
