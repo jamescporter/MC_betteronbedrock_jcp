@@ -49,16 +49,7 @@
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
                 }
-            }/*,
-            {
-                "weight": 3,
-                "element": {
-                    "location": "minecraft:empty",
-                    "processors": "better_on_bedrock:empty",
-                    "element_type": "minecraft:single_pool_element",
-                    "projection": "rigid"
-                }
-            }*/
+            }
         ]
     }
 }

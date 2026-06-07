@@ -358,28 +358,19 @@ export function useStaff(itemStack, player) {
     const specialCooldowns = {
         "better_on_bedrock:staff": {
             cooldownItem: "better_on_bedrock:staff",
-            requiredSeconds: 0.95,
         },
         "better_on_bedrock:flame_staff": {
             cooldownItem: "better_on_bedrock:staff",
-            requiredSeconds: 9.9,
-        },
-        "better_on_bedrock:ice_staff": {
-            cooldownItem: "better_on_bedrock:staff",
-            requiredSeconds: 0,
-        },
-        "better_on_bedrock:flender_staff": {
-            cooldownItem: "better_on_bedrock:staff",
-            requiredSeconds: 0,
         },
     };
 
     function isSpecialOnCooldown(staffTypeId) {
         const cooldownData = specialCooldowns[staffTypeId];
-        if (!cooldownData || cooldownData.requiredSeconds <= 0)
+        if (!cooldownData)
             return false;
 
-        return (player.getItemCooldown(cooldownData.cooldownItem) / TicksPerSecond) < cooldownData.requiredSeconds;
+        const cooldownSeconds = player.getItemCooldown(cooldownData.cooldownItem) / TicksPerSecond;
+        return cooldownSeconds > 0;
     };
 
     if (isSpecialOnCooldown(itemStack.typeId))
