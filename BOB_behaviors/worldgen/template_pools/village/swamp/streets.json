@@ -4,7 +4,6 @@
     "description": {
       "identifier": "pog:village/swamp/streets"
     },
-        //"fallback": "minecraft:village/swamp/terminators",
         "elements": [
     {
       "element": {

@@ -1,4 +1,3 @@
-/*This processor changes the wheat crop insdie of villgrowth farms to any crop listed in here randomly*/
 {
   "format_version": "1.21.20",
   "minecraft:processor_list": {
