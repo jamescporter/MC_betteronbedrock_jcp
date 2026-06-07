@@ -1,0 +1,200 @@
+{
+  "format_version": "1.20.60",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "better_on_bedrock:poggy",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false,
+      "properties": {
+        "pog:is_on_ground": {
+          "type": "bool",
+          "default": false,
+          "client_sync": true
+        }
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "poggy",
+          "boss",
+          "monster",
+          "mob"
+        ]
+      },
+      "minecraft:health": {
+        "value": 100,
+        "max": 100
+      },
+      "minecraft:collision_box": {
+        "width": 1.8,
+        "height": 2.6
+      },
+      "minecraft:physics": {
+        "has_gravity": false,
+        "has_collision": true
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:knockback_resistance": {
+        "value": 1.0
+      },
+      "minecraft:movement": {
+        "value": 0.12
+      },
+      "minecraft:flying_speed": {
+        "value": 0.12
+      },
+      "minecraft:can_fly": {},
+      "minecraft:navigation.float": {
+        "can_path_over_water": true
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:variant": {
+        "value": 0
+      },
+      "minecraft:mark_variant": {
+        "value": 100
+      },
+      "minecraft:boss": {
+        "hud_range": 64,
+        "name": "Poggy",
+        "should_darken_sky": true
+      },
+      "minecraft:attack": {
+        "damage": 6
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 2,
+        "must_see": true,
+        "reselect_targets": true,
+        "entity_types": [
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "player"
+            },
+            "max_dist": 48
+          }
+        ]
+      },
+      "minecraft:behavior.melee_attack": {
+        "priority": 3,
+        "track_target": true,
+        "speed_multiplier": 1.0
+      },
+      "minecraft:behavior.float_wander": {
+        "priority": 5,
+        "xz_dist": 8,
+        "y_dist": 4,
+        "y_offset": 0.0
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 6,
+        "look_distance": 12.0,
+        "probability": 0.05
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {
+          "min_distance": 64,
+          "max_distance": 128
+        },
+        "despawn_from_inactivity": false,
+        "despawn_from_chance": false
+      }
+    },
+    "events": {
+      "phase_1_fail": {
+        "add": {
+          "component_groups": [
+            "bob:phase_1_grounded"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "bob:phase_2_grounded",
+            "bob:move_up"
+          ]
+        },
+        "set_property": {
+          "pog:is_on_ground": true
+        }
+      },
+      "phase_2_fail": {
+        "add": {
+          "component_groups": [
+            "bob:phase_2_grounded"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "bob:phase_1_grounded",
+            "bob:move_up"
+          ]
+        },
+        "set_property": {
+          "pog:is_on_ground": true
+        }
+      },
+      "phase_2_move_up": {
+        "add": {
+          "component_groups": [
+            "bob:move_up"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "bob:phase_1_grounded",
+            "bob:phase_2_grounded"
+          ]
+        },
+        "set_property": {
+          "pog:is_on_ground": false
+        }
+      },
+      "phase_3_move_up": {
+        "add": {
+          "component_groups": [
+            "bob:move_up"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "bob:phase_1_grounded",
+            "bob:phase_2_grounded"
+          ]
+        },
+        "set_property": {
+          "pog:is_on_ground": false
+        }
+      }
+    },
+    "component_groups": {
+      "bob:phase_1_grounded": {
+        "minecraft:mark_variant": {
+          "value": 10
+        },
+        "minecraft:variant": {
+          "value": 4
+        }
+      },
+      "bob:phase_2_grounded": {
+        "minecraft:mark_variant": {
+          "value": 1
+        },
+        "minecraft:variant": {
+          "value": 4
+        }
+      },
+      "bob:move_up": {
+        "minecraft:variant": {
+          "value": 13
+        }
+      }
+    }
+  }
+}
