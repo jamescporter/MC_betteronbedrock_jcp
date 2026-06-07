@@ -4,7 +4,6 @@
         "description": {
             "identifier": "pog:common/trial_spawner"
         },
-         //"fallback": "pog:common/trial_spawner",
         "elements": [
             {
                 "element": {
