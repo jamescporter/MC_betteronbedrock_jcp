@@ -1,32 +1,42 @@
 {
-  "format_version": "1.8.0",
-  "render_controllers": {
-    "controller.render.cow.v2": {
-      "arrays": {
-        "textures": {
-          "Array.textures": [
-            "Texture.default",
-            "Texture.warm",
-            "Texture.cold"
-          ]
-        },
-        "geometries": {
-          "Array.geos": [
-            "Geometry.default",
-            "Geometry.warm",
-            "Geometry.cold"
-          ]
+    "format_version": "1.8.0",
+    "render_controllers": {
+        "controller.render.cow.v3": {
+            "arrays": {
+                "textures": {
+                    "Array.textures": [
+                        "Texture.default",
+                        "Texture.warm",
+                        "Texture.cold"
+                    ],
+                    "Array.baby_textures": [
+                        "Texture.baby_default",
+                        "Texture.baby_warm",
+                        "Texture.baby_cold"
+                    ]
+                },
+                "geometries": {
+                    "Array.geos": [
+                        "Geometry.default",
+                        "Geometry.warm",
+                        "Geometry.cold"
+                    ]
+                }
+            },
+            "geometry": "query.is_baby ? Geometry.baby : Array.geos[v.index]",
+            "materials": [
+                { "*": "q.property('better_on_bedrock:enchanted') ? Material.enchanted_rtx : (v.is_cold ? Material.cold : Material.default)" }
+            ],
+            "textures": [
+                "query.is_baby ? Array.baby_textures[v.index] : Array.textures[v.index]",
+                "Texture.enchanted"
+            ],
+            "overlay_color": {
+                "r": 1.0,
+                "g": 0.0,
+                "b": 0.957,
+                "a": "q.property('better_on_bedrock:enchanted') ? 0.25 : 0.0"
+            }
         }
-      },
-      "geometry": "Array.geos[v.index]",
-      "materials": [ { "*": "q.property('better_on_bedrock:enchanted') ? Material.enchanted_rtx : (v.is_cold ? Material.cold : Material.default)" } ],
-      "textures": [ "Array.textures[v.index]", "Texture.enchanted" ],
-      "overlay_color": {
-        "r": 1.0,
-        "g": 0.0,
-        "b": 0.957,
-        "a": "q.property('better_on_bedrock:enchanted') ? 0.25 : 0.0"
-      }
     }
-  }
 }
