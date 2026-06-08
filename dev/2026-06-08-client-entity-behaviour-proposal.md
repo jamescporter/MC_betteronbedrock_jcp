@@ -50,7 +50,7 @@ The original audit target was custom `better_on_bedrock:*` client entities under
 | Add/restore behaviour for `cured_villager` | Probably | Confirm whether it should be a real villager, conversion reward, or visual-only state. |
 | Add/restore behaviour for `test_piglin` | Unclear | Decide whether this is player-facing, test-only, or should be removed/documented. |
 | Add behaviour for `cow` | Unclear | Determine whether this custom `better_on_bedrock:cow` is still used or should be replaced by vanilla/custom cow override logic. |
-| Add behaviour for `geomancer` | Unclear | Resolve duplicate client identifiers first, then determine the correct boss/misc behaviour source. |
+| Add behaviour for `geomancer` | Partly resolved | The boss-side placeholder now uses `better_on_bedrock:geomancer_boss_placeholder` with a non-spawnable behaviour stub, leaving the real misc `better_on_bedrock:geomancer` client entity untouched pending its gameplay source review. |
 | Add behaviour for `hollow` | Unclear | Confirm whether this mob is intended for current gameplay or is a leftover asset. |
 | Add behaviour for `illusioner` | Unclear | Confirm whether this should be restored as a full hostile mob or left disabled. |
 | Add behaviour for `poggy` | Unclear/high risk | Do not add a stub; restore the real boss behaviour or leave documented pending review. |

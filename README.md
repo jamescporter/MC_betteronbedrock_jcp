@@ -69,6 +69,7 @@ This fork mainly focuses on reliability and performance.
 - **End Seeker placeholder isolated:** The old End-mobs Seeker duplicate is now a disabled `better_on_bedrock:end_seeker` placeholder, keeping `better_on_bedrock:seeker` reserved for the boss encounter.
 - **Repo wiki started:** Added an initial single-page wiki (`wiki.md`) containing the first Guide Book entry (description, purpose, behaviour, and obtainment routes).
 - **Resin Candy boots note (non-applicable):** Verified across both JCP pack paths and `v1.2.1_src_only` source paths that no wearable/attachable **Resin Candy boots** item exists (only `better_on_bedrock:resin_candy` food plus non-wearable Resin items such as shard/dagger), so the related 1.2.1 texture-binding release note is non-applicable to this fork.
+- **Geomancer boss placeholder isolated:** Renamed the boss-side Geomancer placeholder to `better_on_bedrock:geomancer_boss_placeholder`, backed it with a non-spawnable behaviour stub, and pointed its client resource at defined placeholder-safe assets so it cannot override the real misc Geomancer client entity.
 
 #### V1.2.0-JCP
 - **Performance and scalability:** per-tick and high-frequency scripts were refactored to reduce repeated work, improve caching, and lower runtime overhead.
