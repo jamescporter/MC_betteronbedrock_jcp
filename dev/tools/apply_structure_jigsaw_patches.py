@@ -2,7 +2,7 @@
 """Apply text-defined jigsaw target_pool fixes to Bedrock .mcstructure NBT files.
 
 The repository avoids committing binary .mcstructure edits.  Keep the desired
-changes in tools/structure_jigsaw_patches.json and run this tool in an export
+changes in dev/tools/structure_jigsaw_patches.json and run this tool in an export
 workspace to produce patched binary structures for Bedrock testing/release.
 """
 from __future__ import annotations
@@ -241,7 +241,7 @@ def scan_blank_target_pools(path: Path) -> list[dict[str, Any]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root")
-    parser.add_argument("--patches", type=Path, default=Path("tools/structure_jigsaw_patches.json"))
+    parser.add_argument("--patches", type=Path, default=Path("dev/tools/structure_jigsaw_patches.json"))
     parser.add_argument("--output-root", type=Path, help="Write patched structures under this root instead of editing in place")
     parser.add_argument("--in-place", action="store_true", help="Edit the binary .mcstructure files in place")
     parser.add_argument("--check", action="store_true", help="Validate patched output has no blank target_pool values in the patched structures")
