@@ -1,86 +1,67 @@
-# Better on Bedrock (Modified) - Based on v1.2.0 with selected v1.2.1 ports
+# Better on Bedrock (Modified)
 
-This repository contains a **modified version** of the original **Better on Bedrock** add-on for Minecraft Bedrock Edition, based on **version 1.2.0** with selected **v1.2.1** behaviour/resource updates ported forward.
+This repository contains a **modified version** of the original **Better on Bedrock** add-on for Minecraft Bedrock Edition. It is based on **version 1.2.0** with selected **v1.2.1** behaviour/resource updates ported forward for this JCP-maintained fork.
 
 ## Original project
+
 **Copyright © 2024-present Poggy MIT License.**
+
 - Official site: https://poggy.org/
 - CurseForge page: https://www.curseforge.com/minecraft-bedrock/addons/better-on-bedrock
 - Modder: maintained/modified by *James C. Porter*.
 
-### Repository structure
-- `BOB_behaviors/` — Behavior Pack
+## Repository structure
+
+- `BOB_behaviors/` — Behaviour Pack
 - `BOB_resources/` — Resource Pack
+- `RELEASE_NOTES.md` — release history and compatibility notes for this fork
+- `wiki.md` — player/developer-facing wiki notes
+- `DEVELOPMENT_INDEX.md` — index of partial, disabled, deferred, or development-only areas
 
 Both packs are required for proper gameplay.
 
-### Version and compatibility
+## Version and compatibility
+
 From the manifests in this repo:
+
 - Add-on version: `1.2.1-0.9`
 - Minimum Bedrock engine version: `1.21.120`
 
-### Installation (manual)
+See `RELEASE_NOTES.md` for detailed compatibility notes, including the Bedrock `1.26.21.1` compatibility work.
+
+## Installation (manual)
+
 1. Download or clone this repository.
 2. Copy both folders into your Minecraft Bedrock development packs directory:
-   - `BOB_behaviors` → behavior packs folder
+   - `BOB_behaviors` → behaviour packs folder
    - `BOB_resources` → resource packs folder
 3. Open/create a world in Minecraft Bedrock.
 4. Enable both packs in that world:
-   - Behavior Packs: **Better on Bedrock - Behavior Pack**
+   - Behaviour Packs: **Better on Bedrock - Behavior Pack**
    - Resource Packs: **Better on Bedrock - Resource Pack**
 5. Enter the world.
 
+## Current fork focus
 
-### Notes
-- This repo is a custom/modified distribution and does differ from the upstream release.
+This fork mainly focuses on reliability, compatibility, and performance while keeping gameplay changes reviewable. Current work includes:
+
+- porting selected low-risk v1.2.1 behaviour/resource updates,
+- keeping custom scripts/components working on newer Bedrock builds without an unplanned full Scripting V2 migration,
+- reducing duplicate identifiers and stale entity/resource definitions,
+- documenting unfinished or deferred areas so future work is easier to audit.
+
+## Documentation
+
+- For release history, see `RELEASE_NOTES.md`.
+- For gameplay/wiki notes, see `wiki.md`.
+- For partially made, disabled, or development-only areas, see `DEVELOPMENT_INDEX.md`.
+
+## Notes
+
+- This repo is a custom/modified distribution and differs from the upstream release.
 - Please keep attribution to the original author when redistributing forks or edits.
-- This has basically been vibe-coded as an experiment. I've been going over codex changes with multiple iterations to catch introduced bugs/hallucinations and cross-checking.
-- Currently untested.
+- The fork is still under active review and should be treated as currently untested unless a specific build has been smoke-tested.
 
-### Future changes
+## Future changes
+
 - Rename all remaining references to `poggy` to a replacement identifier/name once the new naming is decided.
-
-## Overview of changes in this mod:
-
-This fork mainly focuses on reliability and performance.
-
-#### Bedrock 1.26.21.1 compatibility notes
-
-- Stardust tools now use flattened custom component syntax, e.g. `"pog:tool_durability": {}`, rather than deprecated `"minecraft:custom_components"`.
-- The Guide Book command avoids importing `CommandPermissionLevel` and `CustomCommandStatus` directly because those exports are not available under the currently pinned `@minecraft/server` dependency.
-- The behaviour pack intentionally keeps the current `@minecraft/server` manifest dependency for now. A future Scripting V2 migration should be handled as a separate compatibility pass, because it may require wider API changes across entity validity checks, custom commands, and script component registration.
-
-
-#### V1.2.1-JCP
-- **Direct v1.2.1 behaviour ports:** Copied the low-risk 1.2.1 behaviour data updates into the main BOB pack, including the guidebook recipe, crop/farmable tags, the local pedestal selector, the void-block tick interval, and small orange-tree/goblin/well-dungeon worldgen template tweaks.
-- **Manifest/version alignment:** Updated behaviour and resource manifests to version `1.2.1` and aligned their pack dependency versions while keeping the current branch's script API dependencies.
-- **Fire-resistant material items:** Added fire resistance to Stardust/Corstinite material items so they match the intent of the existing fire-resistant armour/tool tier.
-- **Stardust/Corstinite item schema alignment:** Ported v1.2.1 item format/menu-group metadata for armour and Stardust tools while preserving the current branch's custom tool durability component wiring.
-- **Hit-event safety guards:** Adapted the 1.2.1 invalid-entity guards for the current branch's `isValid()` API style in entity hit/hurt event handling.
-- **Still deferred:** Broad script rewrites, entity rewrites, binary structures, goblin-trader economy changes, the Enderman/Shulker source-only overrides, and the Stardust Block item remain review-only because the current branch has divergent fixes or gameplay decisions.
-- **WAWLA growth accuracy fix:** Crop growth stage is now clamped to the configured max before calculating the displayed growth percentage, preventing out-of-range values from producing incorrect percentages.
-- **WAWLA harvestability display fix:** Fully grown crops are now treated as harvestable in the WAWLA display branch even when other farmability heuristics do not flag them.
-- **WAWLA farmable tag fallback:** The `better_on_bedrock:is_farmable` block tag is now honoured as a fallback harvestability signal.
-- **WAWLA wording update:** The user-facing `bob.gui.wawla.canHarvest` text now reads **“Ready to Harvest”** (key wiring kept stable).
-- **Guidebook command ported from v1.2.1 source:** Added runtime custom command registration for `/guidebook` via `customCommandRegistry` during world initialisation.
-- **Survival-safe command behaviour:** `/guidebook` is available at permission level `Any` with `cheatsRequired = false`, and grants one `better_on_bedrock:guide_book` to the executing player (dropping overflow at player location if inventory is full).
-- **Command localisation:** Added `command.better_on_bedrock.common.guidebook.description` in active English language files so command help/description resolves correctly.
-- **Guide Book purpose:** The Guide Book is the in-game onboarding/reference item for Better on Bedrock systems, intended to help players understand mechanics, progression, and general add-on usage.
-- **End Seeker placeholder isolated:** The old End-mobs Seeker duplicate is now a disabled `better_on_bedrock:end_seeker` placeholder, keeping `better_on_bedrock:seeker` reserved for the boss encounter.
-- **Repo wiki started:** Added an initial single-page wiki (`wiki.md`) containing the first Guide Book entry (description, purpose, behaviour, and obtainment routes).
-- **Resin Candy boots note (non-applicable):** Verified across both JCP pack paths and `v1.2.1_src_only` source paths that no wearable/attachable **Resin Candy boots** item exists (only `better_on_bedrock:resin_candy` food plus non-wearable Resin items such as shard/dagger), so the related 1.2.1 texture-binding release note is non-applicable to this fork.
-- **Geomancer boss placeholder isolated:** Renamed the boss-side Geomancer placeholder to `better_on_bedrock:geomancer_boss_placeholder`, backed it with a non-spawnable behaviour stub, and pointed its client resource at defined placeholder-safe assets so it cannot override the real misc Geomancer client entity.
-
-#### V1.2.0-JCP
-- **Performance and scalability:** per-tick and high-frequency scripts were refactored to reduce repeated work, improve caching, and lower runtime overhead.
-- **Bug fixes and hardening:** Lots of defensive fixes addressung malformed data handling, null/unsafe state access, duplicate triggers, and cleanup edge cases.
-- **Item/combat system stability:** backpacks, staffs, spear/trident logic, strip-block interactions, and related item systems were made more robust while preserving existing functionality.
-- **Quest flow:** regular, bounty, and bought-quest paths were tightened with safer parsing/selection logic, better reconciliation, and duplicate-state normalisation.
-- **Entity and ambience updates:** Seeker/Inferior and supporting end-mob logic were adjusted, alongside ambient and fog behaviour refinements for more consistent world state transitions.
-- **Goblin Trader balance:** trader values received light balance tuning so he's not as OP.
-- **Fire Wisps size:** Fire Wisps now have a ~33% larger custom hitbox and a slight scale increase, making them less frustrating to hit without changing their core behaviour.
-- **Bassalt Crobbers:** Bassalt Crobbers now prioritise targeting and attack goals above idle wandering to improve combat responsiveness. Updated delayed attack path requirements (`require_complete_path: false`) and added conservative Nether navigation flags (`can_path_over_water: false`, `avoid_damage_blocks: true`) while keeping existing water avoidance and attack timing/damage unchanged.
-- **JSON validity hotfix (Piglin behaviour):** Fixed an invalid inline comment in `BOB_behaviors/entities/nether_mobs/piglin.json` that broke JSON parsing, and completed `broadcast_targets` with both `"piglin"` and `"piglin_brute"` as originally intended.
-
-**Bugs:**
-- Currently the back packs don't work properly and duplicate items
