@@ -960,6 +960,7 @@ item.spawn_egg.entity.better_on_bedrock:fireorb.name=Spawn Fireorb
 item.spawn_egg.entity.better_on_bedrock:flasp.name=Spawn Flasp
 item.spawn_egg.entity.better_on_bedrock:flender.name=Spawn Flender
 item.spawn_egg.entity.better_on_bedrock:geomancer.name=Geomancer
+item.spawn_egg.entity.better_on_bedrock:geomancer_boss_placeholder.name=Geomancer Boss Placeholder
 item.spawn_egg.entity.better_on_bedrock:goblin_trader.name=Spawn Goblin Trader
 item.spawn_egg.entity.better_on_bedrock:golem_trader.name=Spawn Golem Trader
 item.spawn_egg.entity.better_on_bedrock:groohog.name=Spawn Groohog

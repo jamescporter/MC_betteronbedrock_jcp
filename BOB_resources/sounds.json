@@ -758,6 +758,31 @@
                     }
                 }
             },
+            "better_on_bedrock:geomancer_boss_placeholder": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.geomancer.ambient",
+                    "celebrate": "mob.geomancer.attack",
+                    "death": "mob.geomancer.death",
+                    "hurt": "mob.geomancer.hurt",
+                    "cast.spell": "mob.geomancer.attack",
+                    "prepare.attack": "mob.geomancer.attack",
+                    "prepare.summon": "mob.geomancer.attack",
+                    "prepare.wololo": "mob.geomancer.attack",
+                    "ambient.in.raid": {
+                        "sound": "mob.geomancer.ambient",
+                        "volume": 3,
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ]
+                    }
+                }
+            },
             "better_on_bedrock:corrupted_villager": {
                 "volume": 1,
                 "pitch": [
