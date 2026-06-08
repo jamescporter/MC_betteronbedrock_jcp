@@ -1,6 +1,10 @@
 # Release notes
 
-### Bedrock 1.26.21.1 compatibility
+## Poison ball canonical behaviour (2026-06-08)
+
+- Kept `BOB_behaviors/entities/projectiles/poison_ball.behavior.json` as the canonical poison ball projectile behaviour and removed the duplicate end-mobs behaviour file.
+
+## Bedrock 1.26.21.1 compatibility fix
 
 BOB now registers custom block/item components through a startup compatibility bridge. The bridge first uses `system.beforeEvents.startup` when available, and falls back to `world.beforeEvents.worldInitialize` on the currently pinned script API. This avoids forcing a full Scripting V2 migration while preserving custom component registration on newer Bedrock Dedicated Server builds.
 
