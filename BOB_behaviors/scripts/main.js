@@ -303,10 +303,27 @@ function getSlotSignature(itemStack) {
 }
 
 // Custom Components
-system.beforeEvents.startup.subscribe(
-    ({ blockComponentRegistry, itemComponentRegistry, customCommandRegistry }) => {
-        registerBlockComponents(blockComponentRegistry);
-        registerItemComponents(itemComponentRegistry);
-        registerCustomCommands(customCommandRegistry);
-    },
-);
+function registerBobStartup(initEvent) {
+    const blockRegistry = initEvent?.blockComponentRegistry;
+    const itemRegistry = initEvent?.itemComponentRegistry;
+    const commandRegistry = initEvent?.customCommandRegistry;
+
+    if (blockRegistry)
+        registerBlockComponents(blockRegistry);
+
+    if (itemRegistry)
+        registerItemComponents(itemRegistry);
+
+    if (commandRegistry?.registerCommand)
+        registerCustomCommands(commandRegistry);
+}
+
+if (system.beforeEvents?.startup?.subscribe) {
+    system.beforeEvents.startup.subscribe(registerBobStartup);
+}
+else if (world.beforeEvents?.worldInitialize?.subscribe) {
+    world.beforeEvents.worldInitialize.subscribe(registerBobStartup);
+}
+else {
+    console.warn("[BOB] No compatible startup event found for custom component registration.");
+}
