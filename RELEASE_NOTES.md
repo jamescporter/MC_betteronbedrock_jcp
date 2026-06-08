@@ -1,5 +1,9 @@
 # Release notes
 
+## Poison ball canonical behaviour (2026-06-08)
+
+- Kept `BOB_behaviors/entities/projectiles/poison_ball.behavior.json` as the canonical poison ball projectile behaviour and removed the duplicate end-mobs behaviour file.
+
 ## Sound reference fixes (2026-06-07)
 
 - Corrected missing custom sound references for the enchanter, flender, quiet ambient hook, and withered samurai definitions.
