@@ -2,7 +2,7 @@
 	"format_version": "1.20.30",
 	"minecraft:entity": {
 		"description": {
-			"identifier": "better_on_bedrock:fire_place",
+			"identifier": "better_on_bedrock:fire_places",
 			"is_spawnable": false,
 			"is_summonable": true,
 			"is_experimental": false
