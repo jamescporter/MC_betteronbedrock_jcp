@@ -50,7 +50,7 @@
         },
         {
           "type": "item",
-          "name": "better_on_bedrock:fire_rune",
+          "name": "better_on_bedrock:flame_rune",
           "weight": 1,
           "functions": [
             {

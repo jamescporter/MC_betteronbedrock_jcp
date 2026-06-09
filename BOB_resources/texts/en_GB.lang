@@ -16,7 +16,7 @@ tips.game.12=Why are they here??
 tips.game.13=Stitch: "Now the pings can end!"
 
 
-bob.message.welcome=Thanks for playing §7Better on Bedrock§r! Be sure to read the Guide book to get started on what to expect and how some things work! §7(If you ever lose the book, you can get it using /guidebook)§r
+bob.message.welcome=Thanks for playing §7Better on Bedrock§r! Be sure to read the Guide book to get started on what to expect and how some things work! §7(If you ever lose the book, use /better_on_bedrock:guidebook or /scriptevent better_on_bedrock:guidebook)§r
 
 bob.message.dimensionLocation=§6%1§7, §6%2§7, §6%3§7, §rin %4§r
 bob.message.youDiedAt=You died at: 
@@ -860,7 +860,7 @@ item.better_on_bedrock.eyes=§7Used to craft Eyes of Ender§r
 item.better_on_bedrock.runes=§7Can be traded for a staff from the wizard§r
 item.better_on_bedrock.shulker_armor=§7Pacifies Enderman and Shulkers§r
 item.better_on_bedrock.amethyst_armor.desc=§7Full Set Deals Knockback To Any Attacking Mob.
-item.better_on_bedrock.stardust_armor.desc=§7Full Set Grants Bonus Effects.
+item.better_on_bedrock.stardust_armor.desc=§7Full set: Health Boost III and Resistance III§r
 
 
 item.record_balloonpop.desc=J. Rivers - Travelers
@@ -1274,8 +1274,8 @@ tile.better_on_bedrock:wild_carrot.name=Wild Carrot
 tile.better_on_bedrock:wildflower.name=WildFlower
 tile.better_on_bedrock:willager_hat.name=§eWillager Hat§r
 tile.better_on_bedrock:willager_plushie.name=Willager Plushie
-tile.better_on_bedrock:willager_statue.name=Willager Statue [Trophy]
+tile.better_on_bedrock:willager_statue.name=Willager Trophy
 tile.better_on_bedrock:withered_samurai_trophy.name=Withered Samurai Trophy
 
 
-command.better_on_bedrock.common.guidebook.description=Gives the player a Better on Bedrock guide book.
+command.better_on_bedrock.common.guidebook.description=Gives the player a Better on Bedrock guide book. Fallback: /scriptevent better_on_bedrock:guidebook

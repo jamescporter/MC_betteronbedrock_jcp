@@ -2,7 +2,6 @@ import { world } from "@minecraft/server";
 
 import { configScreen } from "../../functionality/items/addon-config";
 import { creditScreen, lostJournal } from "../../functionality/items/lost-journal";
-import { beginnerPage } from "../../functionality/items/lost-journal";
 import { lootbags } from "../../functionality/items/lootbags";
 import { netherAmulet } from "../../functionality/items/nether-amulet";
 import { useStaff } from "../../functionality/items/staffs";
@@ -13,10 +12,10 @@ world.afterEvents.itemUse.subscribe(
         configScreen(itemStack, source);
         switch (itemStack.typeId) {
             case "better_on_bedrock:guide_book": {
-                if (!source.isSneaking)
-                    return;
-
-                creditScreen(source);
+                if (source.isSneaking)
+                    creditScreen(source);
+                else
+                    lostJournal(source);
                 break;
             };
             case "better_on_bedrock:lost_journal": {
