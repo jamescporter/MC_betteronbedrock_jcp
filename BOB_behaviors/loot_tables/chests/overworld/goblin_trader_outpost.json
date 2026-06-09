@@ -78,7 +78,7 @@
         },
         {
           "type": "item",
-          "name": "better_on_bedrock:stone_dagger",
+          "name": "better_on_bedrock:dagger",
           "weight": 1,
           "functions": [
             {

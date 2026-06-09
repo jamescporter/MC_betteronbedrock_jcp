@@ -355,27 +355,6 @@ export function useStaff(itemStack, player) {
     if (!player?.isValid() || !itemStack?.hasTag("better_on_bedrock:staff") || !player.isSneaking)
         return;
 
-    const specialCooldowns = {
-        "better_on_bedrock:staff": {
-            cooldownItem: "better_on_bedrock:staff",
-        },
-        "better_on_bedrock:flame_staff": {
-            cooldownItem: "better_on_bedrock:staff",
-        },
-    };
-
-    function isSpecialOnCooldown(staffTypeId) {
-        const cooldownData = specialCooldowns[staffTypeId];
-        if (!cooldownData)
-            return false;
-
-        const cooldownSeconds = player.getItemCooldown(cooldownData.cooldownItem) / TicksPerSecond;
-        return cooldownSeconds > 0;
-    };
-
-    if (isSpecialOnCooldown(itemStack.typeId))
-        return;
-
     const headLocation = player.getHeadLocation();
     const viewDirection = player.getViewDirection();
     const spawnLocation = {

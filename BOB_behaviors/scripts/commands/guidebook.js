@@ -9,6 +9,22 @@ const COMMAND_PERMISSION_ANY = 0;
 const CUSTOM_COMMAND_SUCCESS = 0;
 const CUSTOM_COMMAND_FAILURE = 1;
 
+export function giveGuideBook(player) {
+    if (!player?.isValid())
+        return false;
+
+    const inventory = player.getComponent(EntityInventoryComponent.componentId)?.container;
+    if (!inventory)
+        return false;
+
+    const itemStack = new ItemStack("better_on_bedrock:guide_book", 1);
+    const overflow = inventory.addItem(itemStack);
+    if (overflow)
+        player.dimension.spawnItem(overflow, player.location);
+
+    return true;
+}
+
 export default class GuideBookCommand {
     name = "better_on_bedrock:guidebook";
     description = "command.better_on_bedrock.common.guidebook.description";
@@ -23,20 +39,7 @@ export default class GuideBookCommand {
             };
         }
 
-        system.run(() => {
-            const player = origin.sourceEntity;
-            if (!player?.isValid())
-                return;
-
-            const inventory = player.getComponent(EntityInventoryComponent.componentId)?.container;
-            if (!inventory)
-                return;
-
-            const itemStack = new ItemStack("better_on_bedrock:guide_book", 1);
-            const overflow = inventory.addItem(itemStack);
-            if (overflow)
-                player.dimension.spawnItem(overflow, player.location);
-        });
+        system.run(() => giveGuideBook(origin.sourceEntity));
 
         return { status: CUSTOM_COMMAND_SUCCESS };
     }

@@ -185,6 +185,85 @@ const backpackData = {
         name: "Large Backpack"
     }
 }
+
+const BACKPACK_STORAGE_ID_LENGTH = 22
+const BACKPACK_STORAGE_ID_PATTERN = /^[A-Za-z0-9]+$/
+const BACKPACK_STRUCTURE_PREFIX = "bob_bp_"
+const BACKPACK_STAGING_Y = {
+    [MinecraftDimensionTypes.nether]: 120,
+    [MinecraftDimensionTypes.overworld]: 318,
+    [MinecraftDimensionTypes.theEnd]: 318
+}
+
+function isSafeBackpackStorageId(value) {
+    return typeof value == "string"
+        && value.length > 0
+        && value.length <= BACKPACK_STORAGE_ID_LENGTH
+        && BACKPACK_STORAGE_ID_PATTERN.test(value)
+}
+
+function getBackpackStructureId(storageId, part = "") {
+    if (!isSafeBackpackStorageId(storageId)) return undefined
+    return `${BACKPACK_STRUCTURE_PREFIX}${storageId}${part}`
+}
+
+function getBackpackStagingPositions(dimension, location) {
+    const y = BACKPACK_STAGING_Y[dimension.id] ?? 120
+    const base = toBlockPos({ x: location.x, y, z: location.z })
+    return {
+        base,
+        upper: { x: base.x, y: base.y + 1, z: base.z }
+    }
+}
+
+function getBackpackStorageIdFromEntity(entity) {
+    const storageId = entity.getDynamicProperty("backpack_storage_id")
+    const backpackId = entity.getDynamicProperty("backpack_id")
+    if (isSafeBackpackStorageId(storageId)) return storageId
+    if (isSafeBackpackStorageId(backpackId)) return backpackId
+    return undefined
+}
+
+function getBackpackStorageIdFromItem(item) {
+    const storageId = item.getDynamicProperty("backpack_storage_id")
+    const backpackId = item.getDynamicProperty("backpack_id")
+    if (isSafeBackpackStorageId(storageId)) return storageId
+    if (isSafeBackpackStorageId(backpackId)) return backpackId
+    return undefined
+}
+
+function getBackpackStructureCandidates(item) {
+    const candidates = []
+    const storageId = item.getDynamicProperty("backpack_storage_id")
+    const legacyStorageId = item.getDynamicProperty("backpack_legacy_storage_id")
+    const backpackId = item.getDynamicProperty("backpack_id")
+
+    for (const candidate of [storageId, legacyStorageId, backpackId]) {
+        if (!isSafeBackpackStorageId(candidate) || candidates.includes(candidate)) continue
+        candidates.push(candidate)
+    }
+
+    return candidates
+}
+
+function ensureBackpackItemIds(item, slot) {
+    let backpackId = item.getDynamicProperty("backpack_id")
+    if (!isSafeBackpackStorageId(backpackId)) {
+        const legacyId = typeof backpackId == "string" && backpackId.length ? backpackId : undefined
+        backpackId = generateRandomID(BACKPACK_STORAGE_ID_LENGTH)
+        item.setDynamicProperty("backpack_id", backpackId)
+        if (legacyId != undefined) item.setDynamicProperty("backpack_legacy_storage_id", legacyId)
+    }
+
+    let storageId = item.getDynamicProperty("backpack_storage_id")
+    if (!isSafeBackpackStorageId(storageId)) {
+        storageId = isSafeBackpackStorageId(backpackId) ? backpackId : generateRandomID(BACKPACK_STORAGE_ID_LENGTH)
+        item.setDynamicProperty("backpack_storage_id", storageId)
+    }
+
+    slot.setItem(item)
+    return backpackId
+}
 /**
  * @param {import("@minecraft/server").Entity} entity
  */
@@ -193,11 +272,13 @@ function saveBackpack(entity) {
     const dim = entity.dimension
     const entityLoc = entity.location
     const id = entity.getDynamicProperty("backpack_id")
+    const storageId = getBackpackStorageIdFromEntity(entity)
     const data = backpackData[entity.typeId]
-    if (id == undefined || !data) return false
+    if (id == undefined || storageId == undefined || !data) return false
     const maxCount = data.count
-    const stagingBasePos = toBlockPos({ x: entityLoc.x, y: 100, z: entityLoc.z })
-    const stagingUpperPos = toBlockPos({ x: entityLoc.x, y: 101, z: entityLoc.z })
+    const stagingPositions = getBackpackStagingPositions(dim, entityLoc)
+    const stagingBasePos = stagingPositions.base
+    const stagingUpperPos = stagingPositions.upper
     const block = dim.getBlock(stagingBasePos)
     if (!block) return false
     const originalBasePermutation = block.permutation
@@ -249,12 +330,12 @@ function saveBackpack(entity) {
             const blockInv2 = block2.getComponent(BlockInventoryComponent.componentId)
             if (!blockInv2?.container) return false
             if (!transferInventory(entityInv.container, blockInv2.container, dim, entityLoc, 27, 0, entityInv.container.size)) return false
-            if (!trySaveStructure("backpack" + id + "_2", stagingUpperPos, stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
+            if (!trySaveStructure(getBackpackStructureId(storageId, "_2"), stagingUpperPos, stagingUpperPos, stagingUpperPos, block2.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
             emptyInventory(blockInv2)
         }
 
         if (!transferInventory(entityInv.container, blockInv.container, dim, entityLoc, 0, 0, 27)) return false
-        if (!trySaveStructure("backpack" + id, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
+        if (!trySaveStructure(getBackpackStructureId(storageId), stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeEntities: false, saveLocation: "disk", includeBlocks: true })) return false
         emptyInventory(blockInv)
         saveSucceeded = true
     } finally {
@@ -515,9 +596,11 @@ function getBackpackSignature(entity) {
 function loadBackpack(entityTypeID, player, item) {
     const dim = player.dimension
     const id = item.getDynamicProperty("backpack_id")
+    const storageId = getBackpackStorageIdFromItem(item)
     const data = backpackData[entityTypeID]
-    if (id == undefined || !data) return undefined
+    if (id == undefined || storageId == undefined || !data) return undefined
     const maxCount = data.count
+    const structureCandidates = getBackpackStructureCandidates(item)
     try {
         const logStructureFailure = (operation, structureId, position, successCount) => {
             warnBackpack(`Failed to ${operation} structure ${structureId} for backpack ${id}, player ${player.id}, dimension ${dim.id} at (${position.x}, ${position.y}, ${position.z}): successCount=${successCount}.`)
@@ -551,11 +634,12 @@ function loadBackpack(entityTypeID, player, item) {
             }
         }
         let block2 = undefined
-        const stagingBasePos = toBlockPos({ x: player.location.x, y: 100, z: player.location.z })
-        const stagingUpperPos = toBlockPos({ x: player.location.x, y: 101, z: player.location.z })
+        const stagingPositions = getBackpackStagingPositions(dim, player.location)
+        const stagingBasePos = stagingPositions.base
+        const stagingUpperPos = stagingPositions.upper
         const block = dim.getBlock(stagingBasePos)
         if (!block) {
-            warnBackpack(`Failed to load backpack ${id} for player ${player.id}: staging block at y=100 was unavailable.`)
+            warnBackpack(`Failed to load backpack ${id} for player ${player.id}: primary backpack staging block was unavailable.`)
             return undefined
         }
         if (maxCount > 1) block2 = dim.getBlock(stagingUpperPos)
@@ -563,25 +647,27 @@ function loadBackpack(entityTypeID, player, item) {
         let lastBlock2 = undefined
         if (maxCount > 1) {
             if (!block2) {
-                warnBackpack(`Failed to load backpack ${id} for player ${player.id}: second staging block at y=101 was unavailable.`)
+                warnBackpack(`Failed to load backpack ${id} for player ${player.id}: second backpack staging block was unavailable.`)
                 return undefined
             }
             lastBlock2 = block2.permutation
-            const upperStructureId = "backpack" + id + "_2"
-            const initialUpperLoad = tryLoadStructure(upperStructureId, stagingUpperPos, dim)
-            if (!initialUpperLoad) {
+            const upperStructureIds = structureCandidates.map((candidate) => getBackpackStructureId(candidate, "_2")).filter((structureId) => structureId != undefined)
+            let loadedUpperStructure = upperStructureIds.find((structureId) => tryLoadStructure(structureId, stagingUpperPos, dim))
+            if (!loadedUpperStructure) {
+                loadedUpperStructure = getBackpackStructureId(storageId, "_2")
                 block2.setPermutation(BlockPermutation.resolve("barrel"))
-                if (!trySaveStructure(upperStructureId, stagingUpperPos, stagingUpperPos, stagingUpperPos, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
+                if (!trySaveStructure(loadedUpperStructure, stagingUpperPos, stagingUpperPos, stagingUpperPos, dim, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
             }
-            if (!tryLoadStructure(upperStructureId, stagingUpperPos, dim)) return undefined
+            if (!tryLoadStructure(loadedUpperStructure, stagingUpperPos, dim)) return undefined
         }
-        const baseStructureId = "backpack" + id
-        const initialBaseLoad = tryLoadStructure(baseStructureId, stagingBasePos, dim)
-        if (!initialBaseLoad) {
+        const baseStructureIds = structureCandidates.map((candidate) => getBackpackStructureId(candidate)).filter((structureId) => structureId != undefined)
+        let loadedBaseStructure = baseStructureIds.find((structureId) => tryLoadStructure(structureId, stagingBasePos, dim))
+        if (!loadedBaseStructure) {
+            loadedBaseStructure = getBackpackStructureId(storageId)
             block.setPermutation(BlockPermutation.resolve("barrel"))
-            if (!trySaveStructure(baseStructureId, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
+            if (!trySaveStructure(loadedBaseStructure, stagingBasePos, stagingBasePos, stagingBasePos, block.dimension, { includeBlocks: true, includeEntities: false, saveLocation: "disk" })) return undefined
         }
-        if (!tryLoadStructure(baseStructureId, stagingBasePos, dim)) return undefined
+        if (!tryLoadStructure(loadedBaseStructure, stagingBasePos, dim)) return undefined
         const backPack = spawnEntityAnywhere(entityTypeID, getBackpackFollowLocation(player), dim)
         if (!backPack?.isValid()) return undefined
         const entityInv = backPack.getComponent(EntityInventoryComponent.componentId)
@@ -623,6 +709,7 @@ function loadBackpack(entityTypeID, player, item) {
             block.setPermutation(lastBlock)
         }, 1)
         backPack.setDynamicProperty("backpack_id", id)
+        backPack.setDynamicProperty("backpack_storage_id", storageId)
         backPack.setDynamicProperty("playerID", player.id)
         backpackInventoryState.set(id, getBackpackSignature(backPack))
         backPack.nameTag = backpackData[backPack.typeId].name
@@ -802,13 +889,7 @@ function transitionToPortalBlocked(player) {
 function transitionToHoldingBackpack(player, item, slot) {
     player.removeTag("!holding")
 
-    let id = item.getDynamicProperty("backpack_id")
-    if (id == undefined) {
-        const random = generateRandomID(100)
-        item.setDynamicProperty("backpack_id", random)
-        slot.setItem(item)
-        id = random
-    }
+    const id = ensureBackpackItemIds(item, slot)
 
     const tag = "holdingbackpack." + id
     if (safeHasTag(player, tag)) return
