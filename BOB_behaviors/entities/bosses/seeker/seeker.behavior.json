@@ -440,7 +440,7 @@
 					}
 				}
 			},
-			"charge_beam_initiate": { //charge beam beam
+			"charge_beam_initiate": {
 				"minecraft:variant": {
 					"value": 5
 				},
@@ -558,7 +558,6 @@
 			},
 			"projectiles": {
 				"minecraft:shooter": {
-					"type": "ShulkerBullet",
 					"def": "minecraft:shulker_bullet"
 				},
 				"minecraft:timer": {
