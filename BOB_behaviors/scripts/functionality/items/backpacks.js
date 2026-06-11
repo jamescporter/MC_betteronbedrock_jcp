@@ -429,7 +429,7 @@ function saveBackpack(entity) {
             }
 
             diagBackpack(`${opId} secondary barrel before emptyInventory: ${containerSummary(blockInv2.container)}`)
-            emptyInventory(blockInv2)
+            clearBlockInventory(block2, "save secondary barrel", opId)
             diagBackpack(`${opId} secondary barrel after emptyInventory: ${containerSummary(blockInv2.container)}`)
         }
 
@@ -448,7 +448,7 @@ function saveBackpack(entity) {
         }
 
         diagBackpack(`${opId} primary barrel before emptyInventory: ${containerSummary(blockInv.container)}`)
-        emptyInventory(blockInv)
+        clearBlockInventory(block, "save primary barrel", opId)
         diagBackpack(`${opId} primary barrel after emptyInventory: ${containerSummary(blockInv.container)}`)
 
         diagBackpack(`${opId} entity inventory before final emptyInventory: ${containerSummary(entityInv.container)}`)
@@ -460,20 +460,20 @@ function saveBackpack(entity) {
     } finally {
         if (secondChanged && lastBlock2 != undefined) {
             const inv2 = block2?.getComponent(BlockInventoryComponent.componentId)
-            diagBackpack(`${opId} FINALLY secondary before restore: block=${blockText(block2)}, inv=${containerSummary(inv2?.container)}, saved=${saved}`)
-            dumpContainerSlots("FINALLY secondary before restore", inv2?.container, opId)
-            block_Manager.setBlock(dim, block2.location, "air")
-            block2.setPermutation(lastBlock2)
-            diagBackpack(`${opId} FINALLY secondary restored to previous permutation`)
+			diagBackpack(`${opId} FINALLY secondary before restore: block=${blockText(block2)}, inv=${containerSummary(inv2?.container)}, saved=${saved}`)
+			dumpContainerSlots("FINALLY secondary before restore", inv2?.container, opId)
+			clearBlockInventory(block2, "FINALLY secondary safety clear", opId)
+			block_Manager.setBlock(dim, block2.location, "air")
+			block2.setPermutation(lastBlock2)
         }
 
         if (baseChanged) {
             const inv1 = block?.getComponent(BlockInventoryComponent.componentId)
-            diagBackpack(`${opId} FINALLY primary before restore: block=${blockText(block)}, inv=${containerSummary(inv1?.container)}, saved=${saved}`)
-            dumpContainerSlots("FINALLY primary before restore", inv1?.container, opId)
-            block_Manager.setBlock(dim, block.location, "air")
-            block.setPermutation(lastBlock)
-            diagBackpack(`${opId} FINALLY primary restored to previous permutation`)
+			diagBackpack(`${opId} FINALLY primary before restore: block=${blockText(block)}, inv=${containerSummary(inv1?.container)}, saved=${saved}`)
+			dumpContainerSlots("FINALLY primary before restore", inv1?.container, opId)
+			clearBlockInventory(block, "FINALLY primary safety clear", opId)
+			block_Manager.setBlock(dim, block.location, "air")
+			block.setPermutation(lastBlock)
         }
     }
 
@@ -527,10 +527,11 @@ function loadBackpack(entityTypeID, player, item) {
     }
 
     const lastBlock = block.permutation
-    let lastBlock2 = undefined
-    let baseChanged = false
-    let secondChanged = false
-    let backPack = undefined
+	let lastBlock2 = undefined
+	let baseChanged = false
+	let secondChanged = false
+	let backPack = undefined
+	let loaded = false
 
     try {
         if (maxCount > 1) {
@@ -619,7 +620,7 @@ function loadBackpack(entityTypeID, player, item) {
 
             diagBackpack(`${opId} spawned backpack inventory after secondary transfer: ${containerSummary(entityInv.container)}`)
             diagBackpack(`${opId} secondary barrel before emptyInventory: ${containerSummary(blockInv2.container)}`)
-            emptyInventory(blockInv2)
+            clearBlockInventory(block2, "load secondary barrel", opId)
             diagBackpack(`${opId} secondary barrel after emptyInventory: ${containerSummary(blockInv2.container)}`)
         }
 
@@ -643,7 +644,7 @@ function loadBackpack(entityTypeID, player, item) {
 
         diagBackpack(`${opId} spawned backpack inventory after primary transfer: ${containerSummary(entityInv.container)}`)
         diagBackpack(`${opId} primary barrel before emptyInventory: ${containerSummary(blockInv.container)}`)
-        emptyInventory(blockInv)
+        clearBlockInventory(block, "load primary barrel", opId)
         diagBackpack(`${opId} primary barrel after emptyInventory: ${containerSummary(blockInv.container)}`)
 
         backPack.setDynamicProperty("backpack_id", id)
@@ -651,9 +652,10 @@ function loadBackpack(entityTypeID, player, item) {
         backPack.nameTag = backpackData[backPack.typeId].name
 
         diagBackpack(`${opId} loadBackpack end: success, final entity inventory=${containerSummary(entityInv.container)}`)
-        dumpContainerSlots("final loaded backpack entity inventory", entityInv.container, opId)
+		dumpContainerSlots("final loaded backpack entity inventory", entityInv.container, opId)
 
-        return backPack
+		loaded = true
+		return backPack
     } catch (e) {
         const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
         warnBackpack(`Failed to load ${context}: ${failureReason}`)
@@ -664,20 +666,20 @@ function loadBackpack(entityTypeID, player, item) {
     } finally {
         if (secondChanged && block2 != undefined && lastBlock2 != undefined) {
             const inv2 = block2?.getComponent(BlockInventoryComponent.componentId)
-            diagBackpack(`${opId} FINALLY secondary before restore: block=${blockText(block2)}, inv=${containerSummary(inv2?.container)}`)
-            dumpContainerSlots("FINALLY load secondary before restore", inv2?.container, opId)
-            block_Manager.setBlock(dim, block2.location, "air")
-            block2.setPermutation(lastBlock2)
-            diagBackpack(`${opId} FINALLY secondary restored to previous permutation`)
+			diagBackpack(`${opId} FINALLY secondary before restore: block=${blockText(block2)}, inv=${containerSummary(inv2?.container)}, loaded=${loaded}`)
+			dumpContainerSlots("FINALLY secondary before restore", inv2?.container, opId)
+			clearBlockInventory(block2, "FINALLY secondary safety clear", opId)
+			block_Manager.setBlock(dim, block2.location, "air")
+			block2.setPermutation(lastBlock2)
         }
 
         if (baseChanged) {
             const inv1 = block?.getComponent(BlockInventoryComponent.componentId)
-            diagBackpack(`${opId} FINALLY primary before restore: block=${blockText(block)}, inv=${containerSummary(inv1?.container)}`)
-            dumpContainerSlots("FINALLY load primary before restore", inv1?.container, opId)
-            block_Manager.setBlock(dim, block.location, "air")
-            block.setPermutation(lastBlock)
-            diagBackpack(`${opId} FINALLY primary restored to previous permutation`)
+			diagBackpack(`${opId} FINALLY primary before restore: block=${blockText(block)}, inv=${containerSummary(inv1?.container)}, loaded=${loaded}`)
+			dumpContainerSlots("FINALLY primary before restore", inv1?.container, opId)
+			clearBlockInventory(block, "FINALLY primary safety clear", opId)
+			block_Manager.setBlock(dim, block.location, "air")
+			block.setPermutation(lastBlock)
         }
     }
 }
@@ -759,6 +761,26 @@ function emptyInventory(container) {
     for (let i = 0; i < container.size; i++) {
         container.setItem(i, undefined)
     }
+}
+
+function clearBlockInventory(block, label, opId) {
+    const inv = block?.getComponent(BlockInventoryComponent.componentId)
+    const container = inv?.container
+
+    diagBackpack(`${opId} clearBlockInventory ${label} before: block=${blockText(block)}, inv=${containerSummary(container)}`)
+
+    if (!container) {
+        diagBackpack(`${opId} clearBlockInventory ${label} failed: missing container`)
+        return false
+    }
+
+    emptyInventory(container)
+
+    const invAfter = block?.getComponent(BlockInventoryComponent.componentId)
+    diagBackpack(`${opId} clearBlockInventory ${label} after: block=${blockText(block)}, inv=${containerSummary(invAfter?.container)}`)
+    dumpContainerSlots(`clearBlockInventory ${label} after`, invAfter?.container, opId)
+
+    return true
 }
 
 function spawnItemAnywhere(item, location, dimension) {
@@ -856,7 +878,7 @@ system.runInterval(() => {
                 const item = slot.getItem()
 
                 if (item && backpackIDs.includes(item.typeId)) {
-                    diagBackpack(`player loop: player=${player.id}, holding=${item.typeId}, backpack_id=${item.getDynamicProperty("backpack_id") ?? "missing"}, tags=${JSON.stringify(player.getTags().filter(tag => tag.startsWith("holdingbackpack.") || tag == "!holding"))}`)
+                    //diagBackpack(`player loop: player=${player.id}, holding=${item.typeId}, backpack_id=${item.getDynamicProperty("backpack_id") ?? "missing"}, tags=${JSON.stringify(player.getTags().filter(tag => tag.startsWith("holdingbackpack.") || tag == "!holding"))}`)
 
                     if (portalNearby(player) == false) {
                         player.removeTag("!holding")
@@ -898,7 +920,7 @@ system.runInterval(() => {
                         player.addTag("!holding")
                     }
                 } else if (!player.hasTag("!holding")) {
-                    diagBackpack(`player loop: player no longer holding backpack. player=${player.id}, held=${item?.typeId ?? "empty"}`)
+                    //diagBackpack(`player loop: player no longer holding backpack. player=${player.id}, held=${item?.typeId ?? "empty"}`)
                     removeAllIDTags(player, "")
                     savePlayerBackpacks(player)
                     player.addTag("!holding")
@@ -942,19 +964,19 @@ system.runInterval(() => {
             const dim = world.getDimension(dimension.typeId)
             const backpacks = dim.getEntities({ tags: ["backpack"] })
 
-            if (backpacks.length > 0) diagBackpack(`watchdog loop: dimension=${dimension.typeId}, backpackEntities=${backpacks.length}`)
+            //if (backpacks.length > 0) diagBackpack(`watchdog loop: dimension=${dimension.typeId}, backpackEntities=${backpacks.length}`)
 
             for (const backpack of backpacks) {
                 const itemid = backpack.getDynamicProperty("backpack_id")
                 const id = backpack.getDynamicProperty("playerID")
 
-                diagBackpack(`watchdog loop: backpack type=${backpack.typeId}, backpack_id=${itemid ?? "missing"}, playerID=${id ?? "missing"}, valid=${validText(backpack)}, loc=${locText(backpack.location)}`)
+                //diagBackpack(`watchdog loop: backpack type=${backpack.typeId}, backpack_id=${itemid ?? "missing"}, playerID=${id ?? "missing"}, valid=${validText(backpack)}, loc=${locText(backpack.location)}`)
 
                 if (id != undefined) {
                     const player = world.getEntity(id)
                     const playerHasTag = player != undefined && player.hasTag("holdingbackpack." + itemid)
 
-                    diagBackpack(`watchdog loop: playerValid=${validText(player)}, expectedTag=holdingbackpack.${itemid}, playerHasTag=${playerHasTag}`)
+                    //diagBackpack(`watchdog loop: playerValid=${validText(player)}, expectedTag=holdingbackpack.${itemid}, playerHasTag=${playerHasTag}`)
 
                     if (player == undefined || !player.hasTag("holdingbackpack." + itemid)) {
                         diagBackpack(`watchdog loop: saving orphan/mismatched backpack id=${itemid ?? "missing"}`)
