@@ -2,6 +2,7 @@ import { system } from "@minecraft/server";
 
 import GuideBookCommand, { giveGuideBook } from "./guidebook.js";
 
+const GUIDEBOOK_COMMAND_NAMES = ["guidebook", "better_on_bedrock:guidebook"];
 const GUIDEBOOK_SCRIPT_EVENT = "better_on_bedrock:guidebook";
 
 export function registerCustomCommands(registry) {
@@ -10,7 +11,14 @@ export function registerCustomCommands(registry) {
         return;
     }
 
-    registry.registerCommand(new GuideBookCommand, GuideBookCommand.execute);
+    for (const commandName of GUIDEBOOK_COMMAND_NAMES) {
+        try {
+            registry.registerCommand(new GuideBookCommand(commandName), GuideBookCommand.execute);
+        }
+        catch (error) {
+            console.warn(`[BOB] Could not register /${commandName}: ${error}`);
+        }
+    }
 }
 
 if (system.afterEvents?.scriptEventReceive?.subscribe) {
