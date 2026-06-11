@@ -14,20 +14,6 @@
         }
       },
       "def": {
-        "minecraft:interact": {
-          "interactions": [
-            {
-              "on_interact": {
-                "filters": {
-                  "test": "has_equipment",
-                  "subject": "other",
-                  "operator": "!=",
-                  "value": "better_on_bedrock:backpack_large"
-                }
-              }
-            }
-          ]
-        },
         "minecraft:inventory": {
           "additional_slots_per_strength": 0,
           "can_be_siphoned_from": false,
@@ -60,20 +46,6 @@
         "has_collision": true
       },
       "minecraft:persistent": {},
-      "minecraft:interact": {
-        "interactions": [
-          {
-            "on_interact": {
-              "filters": {
-                "test": "has_equipment",
-                "subject": "other",
-                "operator": "!=",
-                "value": "better_on_bedrock:backpack_large"
-              }
-            }
-          }
-        ]
-      },
       "minecraft:pushable": {
         "is_pushable": false
       },
