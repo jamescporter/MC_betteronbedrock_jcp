@@ -2,22 +2,6 @@
 
 This wiki is a lightweight reference for the JCP-maintained Better on Bedrock fork. For release history and detailed compatibility notes, see `RELEASE_NOTES.md`. For unfinished or development-only areas, see `DEVELOPMENT_INDEX.md`.
 
-## Installation and pack enabling
-
-Better on Bedrock needs both packs enabled in the same world:
-
-- `BOB_behaviors/` — behaviour pack folder
-- `BOB_resources/` — resource pack folder
-
-From the current manifests, the add-on version is `1.2.4` and the minimum Bedrock engine version is `1.21.120`.
-
-Manual setup summary:
-
-1. Copy `BOB_behaviors` into the Minecraft Bedrock behaviour packs folder.
-2. Copy `BOB_resources` into the Minecraft Bedrock resource packs folder.
-3. Enable **Better on Bedrock - Behavior Pack** and **Better on Bedrock - Resource Pack** in the target world.
-4. Enter the world and verify that custom items/entities load as expected.
-
 ## Guide Book and guide command
 
 ### What it is
@@ -55,7 +39,7 @@ The custom Eyes of Ender recipe uses one Ender Pearl plus five boss eyes and ret
 | `better_on_bedrock:willager_eye` | Willager | Willager Arena structures in Overworld biomes tagged `plains`, `forest`, or `birch_forest`. | Random-spread structure set with `spacing: 76` chunks and `separation: 8`; roughly one placement candidate per 76×76 chunk grid, or about 1,216×1,216 blocks, before biome filtering. |
 | `better_on_bedrock:flender_eye` | Flender | Flender Tower structures in Overworld biomes tagged `plains`, `forest`, or `birch_forest`. | Random-spread structure set with `spacing: 50` chunks and `separation: 4`; roughly one placement candidate per 50×50 chunk grid, or about 800×800 blocks, before biome filtering. |
 | `better_on_bedrock:enchanter_eye` | Enchantaegis | Underground Enchantaegis dungeon structures in Overworld biomes tagged `plains`, `forest`, or `birch_forest`. | Random-spread structure set with `spacing: 124` chunks and `separation: 8`; roughly one placement candidate per 124×124 chunk grid, or about 1,984×1,984 blocks, before biome filtering. |
-| `better_on_bedrock:samurai_eye` | Withered Samurai | Spawned by `functions/summon_samurai.mcfunction`; no natural biome/worldgen source is currently evident in the pack files. | Future work: define and document a survival discovery route/biome if this boss is meant to spawn naturally. |
+| `better_on_bedrock:samurai_eye` | Withered Samurai | Nether Blackstone Castle structures. The castle contains a command block that runs `function summon_samurai`, and that function summons the Withered Samurai at the function location. | Guaranteed boss-eye drop once defeated. |
 | `better_on_bedrock:armored_pyroclast_eye` | Shielded Pyroclast/Inferior | Nether Inferior boss arena feature. | Feature rule has `scatter_chance` 1/22, approximately **4.55%** per placement attempt, in Nether biomes at y 32–80. |
 
 ## Nether Amulet
@@ -197,9 +181,9 @@ See `DEVELOPMENT_INDEX.md` before changing Geomancer boss files so the placehold
 - The fork is still under active review and should be treated as currently untested unless a specific build has been smoke-tested.
 - Plushie survival acquisition is future work.
 - Stone Dagger progression/source design is future work.
-- Withered Samurai has a summon function and drops a required boss eye, but no natural biome/worldgen route was evident during this pass.
 - `better_on_bedrock:end_seeker` is a disabled placeholder, not a finished End mob.
 - `better_on_bedrock:geomancer_boss_placeholder` is a development placeholder, not a complete boss encounter.
+- Installation/setup documentation should live outside this player-facing wiki.
 - The full Scripting V2 migration remains deferred and should not be mixed into unrelated changes.
 
 ## Compatibility notes
