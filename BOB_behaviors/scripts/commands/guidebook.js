@@ -26,7 +26,10 @@ export function giveGuideBook(player) {
 }
 
 export default class GuideBookCommand {
-    name = "better_on_bedrock:guidebook";
+    constructor(name = "guidebook") {
+        this.name = name;
+    }
+
     description = "command.better_on_bedrock.common.guidebook.description";
     permissionLevel = COMMAND_PERMISSION_ANY;
     cheatsRequired = false;

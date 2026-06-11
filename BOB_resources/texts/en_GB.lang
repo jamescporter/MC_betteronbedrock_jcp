@@ -16,7 +16,7 @@ tips.game.12=Why are they here??
 tips.game.13=Stitch: "Now the pings can end!"
 
 
-bob.message.welcome=Thanks for playing §7Better on Bedrock§r! Be sure to read the Guide book to get started on what to expect and how some things work! §7(If you ever lose the book, use /better_on_bedrock:guidebook or /scriptevent better_on_bedrock:guidebook)§r
+bob.message.welcome=Thanks for playing §7Better on Bedrock§r! Be sure to read the Guide book to get started on what to expect and how some things work! §7(If you ever lose the book, use /guidebook, /better_on_bedrock:guidebook, or /scriptevent better_on_bedrock:guidebook)§r
 
 bob.message.dimensionLocation=§6%1§7, §6%2§7, §6%3§7, §rin %4§r
 bob.message.youDiedAt=You died at: 
@@ -1278,4 +1278,4 @@ tile.better_on_bedrock:willager_statue.name=Willager Trophy
 tile.better_on_bedrock:withered_samurai_trophy.name=Withered Samurai Trophy
 
 
-command.better_on_bedrock.common.guidebook.description=Gives the player a Better on Bedrock guide book. Fallback: /scriptevent better_on_bedrock:guidebook
+command.better_on_bedrock.common.guidebook.description=Gives the player a Better on Bedrock guide book. Aliases: /guidebook or /better_on_bedrock:guidebook. Fallback: /scriptevent better_on_bedrock:guidebook
