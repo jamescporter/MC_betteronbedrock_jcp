@@ -859,6 +859,23 @@ function removeAllIDTags(player, besidesTag = "") {
     if (removed.length > 0) diagBackpack(`removeAllIDTags: player=${player.id}, besidesTag=${besidesTag}, removed=${JSON.stringify(removed)}`)
 }
 
+
+function getActiveBackpackForPlayer(player, backpackId) {
+    if (!player?.isValid() || typeof backpackId != "string" || backpackId.length < 1) return undefined
+
+    const backpacks = player.dimension.getEntities({ tags: [player.id, "backpack"] })
+
+    for (const backpack of backpacks) {
+        if (backpack?.isValid() && backpack.getDynamicProperty("backpack_id") === backpackId) return backpack
+    }
+
+    return undefined
+}
+
+function playerHasActiveBackpack(player, backpackId) {
+    return getActiveBackpackForPlayer(player, backpackId) != undefined
+}
+
 function savePlayerBackpacks(player) {
     const backpacks = player.dimension.getEntities({ tags: [player.id, "backpack"] })
     diagBackpack(`savePlayerBackpacks: player=${player.id}, found=${backpacks.length}`)
@@ -893,19 +910,25 @@ system.runInterval(() => {
 
                         const tag = "holdingbackpack." + id
 
-                        if (!player.hasTag(tag)) {
+                        if (!player.hasTag(tag) || !playerHasActiveBackpack(player, id)) {
+                            if (player.hasTag(tag)) {
+                                diagBackpack(`player loop: stale backpack tag detected; reloading active backpack. player=${player.id}, tag=${tag}`)
+                                player.removeTag(tag)
+                            }
+
                             diagBackpack(`player loop: switching/loading backpack. player=${player.id}, newTag=${tag}`)
                             savePlayerBackpacks(player)
                             removeAllIDTags(player, tag)
-                            player.addTag(tag)
 
                             const backpack = loadBackpack(item.typeId, player, item)
 
                             if (backpack?.isValid()) {
                                 diagBackpack(`player loop: loadBackpack succeeded. player=${player.id}, id=${id}, entity=${backpack.typeId}, entityValid=${validText(backpack)}`)
-                                backpackTick(backpack, player)
                                 backpack.addTag(player.id)
                                 backpack.addTag("backpack")
+                                player.addTag(tag)
+                                player.removeTag("!holding")
+                                backpackTick(backpack, player)
                                 diagBackpack(`player loop: added backpack tags. player=${player.id}, entityID=${id}`)
                             } else {
                                 diagBackpack(`player loop: loadBackpack FAILED. player=${player.id}, id=${id}`)
