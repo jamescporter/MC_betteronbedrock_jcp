@@ -17,14 +17,7 @@
         "minecraft:interact": {
           "interactions": [
             {
-              "on_interact": {
-                "filters": {
-                  "test": "has_equipment",
-                  "subject": "other",
-                  "operator": "!=",
-                  "value": "better_on_bedrock:backpack_large"
-                }
-              }
+              "on_interact": {}
             }
           ]
         },
@@ -63,14 +56,7 @@
       "minecraft:interact": {
         "interactions": [
           {
-            "on_interact": {
-              "filters": {
-                "test": "has_equipment",
-                "subject": "other",
-                "operator": "!=",
-                "value": "better_on_bedrock:backpack_large"
-              }
-            }
+            "on_interact": {}
           }
         ]
       },
