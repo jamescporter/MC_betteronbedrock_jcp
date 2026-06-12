@@ -1,0 +1,751 @@
+```
+NO LOG FILE! - [2026-06-12 20:53:51:721 WARN] [Scripting] [BOB Backpacks:DIAG] playerJoin: playerId=-8589934591, playerValid=true
+
+NO LOG FILE! - [2026-06-12 20:53:52:141 INFO] Player Spawned: d4rkfi3nd xuid: 2533274804750866, pfid: 2CAD358D651EAA2
+```
+
+New large backpack on hotbar, hovered over
+```
+NO LOG FILE! - [2026-06-12 20:54:36:897 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: assigned new backpack_id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4 to held item type=better_on_bedrock:backpack_large, player=-8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:897 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: switching/loading backpack. player=-8589934591, newTag=holdingbackpack.cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+NO LOG FILE! - [2026-06-12 20:54:36:898 WARN] [Scripting] [BOB Backpacks:DIAG] savePlayerBackpacks: player=-8589934591, found=0
+
+NO LOG FILE! - [2026-06-12 20:54:36:898 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta loadBackpack begin: entityTypeID=better_on_bedrock:backpack_large, itemType=better_on_bedrock:backpack_large, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player=-8589934591, playerLoc=x=-168.08,y=63.00,z=99.51, maxCount=2
+
+NO LOG FILE! - [2026-06-12 20:54:36:898 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary staging block before load: minecraft:air@x=-169.00,y=100.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:36:898 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary staging block before load: minecraft:air@x=-169.00,y=101.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:36:898 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary structure candidates: ["backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2","bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2"]
+
+NO LOG FILE! - [2026-06-12 20:54:36:899 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, location=x=-169.00,y=101.00,z=99.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:904 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, successCount=0, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:904 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, location=x=-169.00,y=101.00,z=99.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:908 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, successCount=0, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:909 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary loaded structure id: none
+
+NO LOG FILE! - [2026-06-12 20:54:36:910 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary fallback: created empty barrel and saving new structure id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2
+
+NO LOG FILE! - [2026-06-12 20:54:36:911 WARN] [Scripting] [BOB Backpacks:DIAG] structure save begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, from=x=-169.00,y=101.00,z=99.00, to=x=-169.00,y=101.00,z=99.00, options={"includeBlocks":true,"includeEntities":false,"saveLocation":"disk"}, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:912 WARN] [Scripting] [BOB Backpacks:DIAG] structure save end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:912 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary barrel after structure load/fallback: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:912 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary barrel after structure load/fallback: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:913 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary structure candidates: ["backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4","bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4"]
+
+NO LOG FILE! - [2026-06-12 20:54:36:914 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, location=x=-169.00,y=100.00,z=99.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:919 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, successCount=0, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:919 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, location=x=-169.00,y=100.00,z=99.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:924 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, successCount=0, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:925 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary loaded structure id: none
+
+NO LOG FILE! - [2026-06-12 20:54:36:926 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary fallback: created empty barrel and saving new structure id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+NO LOG FILE! - [2026-06-12 20:54:36:927 WARN] [Scripting] [BOB Backpacks:DIAG] structure save begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, from=x=-169.00,y=100.00,z=99.00, to=x=-169.00,y=100.00,z=99.00, options={"includeBlocks":true,"includeEntities":false,"saveLocation":"disk"}, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:927 WARN] [Scripting] [BOB Backpacks:DIAG] structure save end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:36:928 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary barrel after structure load/fallback: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:928 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary barrel after structure load/fallback: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:929 WARN] [Scripting] [BOB Backpacks:DIAG] spawnEntityAnywhere begin: entityID=better_on_bedrock:backpack_large, stagingLoc=x=-167.10,y=100,z=99.48, finalLoc=x=-167.10,y=64.31,z=99.48
+
+NO LOG FILE! - [2026-06-12 20:54:36:930 WARN] [Scripting] [BOB Backpacks:DIAG] spawnEntityAnywhere end: entityID=better_on_bedrock:backpack_large, entityValid=true, finalLoc=x=-167.10,y=64.31,z=99.48
+```
+
+
+Moved 4 diamonds into the backpack, went off the backpack on the hotbar then back on it to open it.
+```
+NO LOG FILE! - [2026-06-12 20:54:36:930 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta spawned backpack entity: valid=true, type=better_on_bedrock:backpack_large, loc=x=-167.10,y=64.31,z=99.48
+
+NO LOG FILE! - [2026-06-12 20:54:36:931 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta spawned backpack inventory before load transfer: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:932 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary barrel before load transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:933 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary barrel before load transfer: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:933 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary transfer begin: barrel_2 -> entity
+
+NO LOG FILE! - [2026-06-12 20:54:36:934 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-2-inventory begin: fromStart=0, toStart=27, maxSlot=54, source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[], fromLoc=x=-169.00,y=101.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:36:934 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-2-inventory end: source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:935 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta spawned backpack inventory after secondary transfer: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:936 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary barrel before emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:936 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory load secondary barrel before: block=minecraft:barrel@x=-169.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:937 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory load secondary barrel after: block=minecraft:barrel@x=-169.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:940 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory load secondary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:941 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta secondary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:942 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary barrel before load transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:943 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary barrel before load transfer: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:943 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary transfer begin: barrel -> entity
+
+NO LOG FILE! - [2026-06-12 20:54:36:944 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-3-inventory begin: fromStart=0, toStart=0, maxSlot=27, source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[], fromLoc=x=-169.00,y=100.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:36:945 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-3-inventory end: source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:946 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta spawned backpack inventory after primary transfer: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:946 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary barrel before emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:947 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory load primary barrel before: block=minecraft:barrel@x=-169.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:948 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory load primary barrel after: block=minecraft:barrel@x=-169.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:948 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory load primary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:949 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta primary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:949 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta loadBackpack end: success, final entity inventory=size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:950 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta final loaded backpack entity inventory: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:950 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta FINALLY secondary before restore: block=minecraft:barrel@x=-169.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[], loaded=true
+
+NO LOG FILE! - [2026-06-12 20:54:36:951 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta FINALLY secondary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:952 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear before: block=minecraft:barrel@x=-169.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:952 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: block=minecraft:barrel@x=-169.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:953 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:956 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta FINALLY primary before restore: block=minecraft:barrel@x=-169.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[], loaded=true
+
+NO LOG FILE! - [2026-06-12 20:54:36:957 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta FINALLY primary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:958 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear before: block=minecraft:barrel@x=-169.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:958 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: block=minecraft:barrel@x=-169.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:36:959 WARN] [Scripting] [BOB Backpacks:DIAG] load-1-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:36:960 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: loadBackpack succeeded. player=-8589934591, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, entity=better_on_bedrock:backpack_large, entityValid=true
+
+NO LOG FILE! - [2026-06-12 20:54:36:961 WARN] [Scripting] [BOB Backpacks:DIAG] backpackTick start: entity=better_on_bedrock:backpack_large, entityValid=true, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player=-8589934591, playerValid=true
+
+NO LOG FILE! - [2026-06-12 20:54:36:961 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: added backpack tags. player=-8589934591, entityID=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+
+NO LOG FILE! - [2026-06-12 20:54:44:554 ERROR] Unknown command: . Please check that the command exists and that you have permission to use it.
+NO LOG FILE! - [2026-06-12 20:54:54:398 WARN] [Scripting] [BOB Backpacks:DIAG] removeAllIDTags: player=-8589934591, besidesTag=, removed=["holdingbackpack.cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4"]
+
+NO LOG FILE! - [2026-06-12 20:54:54:398 WARN] [Scripting] [BOB Backpacks:DIAG] savePlayerBackpacks: player=-8589934591, found=1
+
+NO LOG FILE! - [2026-06-12 20:54:54:400 WARN] [Scripting] [BOB Backpacks:DIAG] savePlayerBackpacks: saving entity type=better_on_bedrock:backpack_large, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, valid=true, loc=x=-167.11,y=64.26,z=99.51
+
+NO LOG FILE! - [2026-06-12 20:54:54:400 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta saveBackpack begin: type=better_on_bedrock:backpack_large, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, playerID=-8589934591, loc=x=-167.11,y=64.26,z=99.51, valid=true, maxCount=2
+
+NO LOG FILE! - [2026-06-12 20:54:54:401 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory at save start: size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:54:54:402 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory at save start: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:402 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory at save start: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:403 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory at save start: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:403 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory at save start: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:404 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary staging block before save: minecraft:air@x=-168.00,y=100.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:54:405 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary staging block before save: minecraft:air@x=-168.00,y=101.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:54:405 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary staging block set to barrel: minecraft:barrel@x=-168.00,y=101.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:54:406 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary staging block set to barrel: minecraft:barrel@x=-168.00,y=100.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:54:54:407 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory before save transfer: size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:54:54:407 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel inventory before save transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:408 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary barrel inventory before save transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:408 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary transfer begin: entity -> barrel_2
+
+NO LOG FILE! - [2026-06-12 20:54:54:412 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-5-inventory begin: fromStart=27, toStart=0, maxSlot=54, source=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=27,occupied=0,totalItems=0,types=[], fromLoc=x=-167.11,y=64.26,z=99.51
+
+NO LOG FILE! - [2026-06-12 20:54:54:413 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-5-inventory end: source=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:413 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary barrel after transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:414 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary barrel after transfer: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:54:414 WARN] [Scripting] [BOB Backpacks:DIAG] structure save begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, from=x=-168.00,y=101.00,z=99.00, to=x=-168.00,y=101.00,z=99.00, options={"includeEntities":false,"saveLocation":"disk","includeBlocks":true}, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:54:415 WARN] [Scripting] [BOB Backpacks:DIAG] structure save end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:54:415 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary barrel before emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:415 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory save secondary barrel before: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:416 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory save secondary barrel after: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:416 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory save secondary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:54:417 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta secondary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:418 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary transfer begin: entity -> barrel
+
+NO LOG FILE! - [2026-06-12 20:54:54:418 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory begin: fromStart=0, toStart=0, maxSlot=27, source=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=27,occupied=0,totalItems=0,types=[], fromLoc=x=-167.11,y=64.26,z=99.51
+
+NO LOG FILE! - [2026-06-12 20:54:54:419 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory sourceSlot=0, destinationSlot=0, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 20:54:54:420 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory copied item to destinationSlot=0: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:420 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory sourceSlot=1, destinationSlot=1, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 20:54:54:421 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory copied item to destinationSlot=1: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:421 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory sourceSlot=2, destinationSlot=2, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 20:54:54:422 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory copied item to destinationSlot=2: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:423 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory sourceSlot=3, destinationSlot=3, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 20:54:54:423 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory copied item to destinationSlot=3: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:424 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-6-inventory end: source=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:54:54:428 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel after transfer: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:54:54:429 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel after transfer: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:429 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel after transfer: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:430 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel after transfer: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:431 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel after transfer: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:54:54:432 WARN] [Scripting] [BOB Backpacks:DIAG] structure save begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, from=x=-168.00,y=100.00,z=99.00, to=x=-168.00,y=100.00,z=99.00, options={"includeEntities":false,"saveLocation":"disk","includeBlocks":true}, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:54:432 WARN] [Scripting] [BOB Backpacks:DIAG] structure save end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:54:54:433 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel before emptyInventory: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:54:54:433 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory save primary barrel before: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:54:54:434 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory save primary barrel after: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:434 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory save primary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:54:435 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta primary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:436 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory before final emptyInventory: size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:54:54:436 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta entity inventory after final emptyInventory: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:437 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta saveBackpack marked saved=true
+
+NO LOG FILE! - [2026-06-12 20:54:54:438 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta FINALLY secondary before restore: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[], saved=true
+
+NO LOG FILE! - [2026-06-12 20:54:54:439 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta FINALLY secondary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:54:439 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear before: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:443 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:444 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:54:445 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta FINALLY primary before restore: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[], saved=true
+
+NO LOG FILE! - [2026-06-12 20:54:54:445 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta FINALLY primary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:54:446 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear before: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:447 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:54:54:448 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:54:54:448 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta saveBackpack removing entity after successful save
+
+NO LOG FILE! - [2026-06-12 20:54:54:449 WARN] [Scripting] [BOB Backpacks:DIAG] save-4-cUeFr7NgQ0ta saveBackpack end: saved=true
+```
+
+Picking up this backpack containing the 4 diamonds
+```
+NO LOG FILE! - [2026-06-12 20:57:47:658 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: switching/loading backpack. player=-8589934591, newTag=holdingbackpack.cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+NO LOG FILE! - [2026-06-12 20:57:47:659 WARN] [Scripting] [BOB Backpacks:DIAG] savePlayerBackpacks: player=-8589934591, found=0
+
+NO LOG FILE! - [2026-06-12 20:57:47:660 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta loadBackpack begin: entityTypeID=better_on_bedrock:backpack_large, itemType=better_on_bedrock:backpack_large, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player=-8589934591, playerLoc=x=-167.78,y=63.00,z=99.81, maxCount=2
+
+NO LOG FILE! - [2026-06-12 20:57:47:661 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary staging block before load: minecraft:air@x=-168.00,y=100.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:57:47:662 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary staging block before load: minecraft:air@x=-168.00,y=101.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:57:47:662 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary structure candidates: ["backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2","bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2"]
+
+NO LOG FILE! - [2026-06-12 20:57:47:663 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, location=x=-168.00,y=101.00,z=99.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:57:47:664 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:57:47:664 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary loaded structure id: backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2
+
+NO LOG FILE! - [2026-06-12 20:57:47:665 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary barrel after structure load/fallback: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:665 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary barrel after structure load/fallback: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:666 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary structure candidates: ["backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4","bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4"]
+
+NO LOG FILE! - [2026-06-12 20:57:47:667 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, location=x=-168.00,y=100.00,z=99.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:57:47:668 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 20:57:47:669 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary loaded structure id: backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+NO LOG FILE! - [2026-06-12 20:57:47:669 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel after structure load/fallback: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:57:47:669 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:670 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:671 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:672 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:673 WARN] [Scripting] [BOB Backpacks:DIAG] spawnEntityAnywhere begin: entityID=better_on_bedrock:backpack_large, stagingLoc=x=-167.12,y=100,z=100.49, finalLoc=x=-167.12,y=64.18,z=100.49
+
+NO LOG FILE! - [2026-06-12 20:57:47:673 WARN] [Scripting] [BOB Backpacks:DIAG] spawnEntityAnywhere end: entityID=better_on_bedrock:backpack_large, entityValid=true, finalLoc=x=-167.12,y=64.18,z=100.49
+
+NO LOG FILE! - [2026-06-12 20:57:47:674 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta spawned backpack entity: valid=true, type=better_on_bedrock:backpack_large, loc=x=-167.12,y=64.18,z=100.49
+
+NO LOG FILE! - [2026-06-12 20:57:47:675 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta spawned backpack inventory before load transfer: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:676 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary barrel before load transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:676 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary barrel before load transfer: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:677 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary transfer begin: barrel_2 -> entity
+
+NO LOG FILE! - [2026-06-12 20:57:47:678 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-14-inventory begin: fromStart=0, toStart=27, maxSlot=54, source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[], fromLoc=x=-168.00,y=101.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:57:47:679 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-14-inventory end: source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:679 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta spawned backpack inventory after secondary transfer: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:679 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary barrel before emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:681 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory load secondary barrel before: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:681 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory load secondary barrel after: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:682 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory load secondary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:683 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta secondary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:683 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel before load transfer: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:57:47:687 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel before load transfer: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:688 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel before load transfer: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:688 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel before load transfer: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:689 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel before load transfer: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:689 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary transfer begin: barrel -> entity
+
+NO LOG FILE! - [2026-06-12 20:57:47:690 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory begin: fromStart=0, toStart=0, maxSlot=27, source=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=54,occupied=0,totalItems=0,types=[], fromLoc=x=-168.00,y=100.00,z=99.00
+
+NO LOG FILE! - [2026-06-12 20:57:47:691 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory sourceSlot=0, destinationSlot=0, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 20:57:47:691 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory copied item to destinationSlot=0: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:692 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory sourceSlot=1, destinationSlot=1, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 20:57:47:693 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory copied item to destinationSlot=1: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:694 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory sourceSlot=2, destinationSlot=2, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 20:57:47:694 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory copied item to destinationSlot=2: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:695 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory sourceSlot=3, destinationSlot=3, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 20:57:47:695 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory copied item to destinationSlot=3: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:696 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-15-inventory end: source=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:57:47:696 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta spawned backpack inventory after primary transfer: size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:57:47:697 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel before emptyInventory: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:57:47:698 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory load primary barrel before: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:57:47:699 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory load primary barrel after: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:702 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory load primary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:703 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta primary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:704 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta loadBackpack end: success, final entity inventory=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 20:57:47:704 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:705 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:706 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:707 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 20:57:47:707 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta FINALLY secondary before restore: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[], loaded=true
+
+NO LOG FILE! - [2026-06-12 20:57:47:708 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta FINALLY secondary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:709 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear before: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:710 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: block=minecraft:barrel@x=-168.00,y=101.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:710 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:711 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta FINALLY primary before restore: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[], loaded=true
+
+NO LOG FILE! - [2026-06-12 20:57:47:711 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta FINALLY primary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:712 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear before: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:713 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: block=minecraft:barrel@x=-168.00,y=100.00,z=99.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 20:57:47:714 WARN] [Scripting] [BOB Backpacks:DIAG] load-13-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 20:57:47:714 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: loadBackpack succeeded. player=-8589934591, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, entity=better_on_bedrock:backpack_large, entityValid=true
+
+NO LOG FILE! - [2026-06-12 20:57:47:717 WARN] [Scripting] [BOB Backpacks:DIAG] backpackTick start: entity=better_on_bedrock:backpack_large, entityValid=true, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player=-8589934591, playerValid=true
+
+NO LOG FILE! - [2026-06-12 20:57:47:718 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: added backpack tags. player=-8589934591, entityID=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+```
+
+There is no log debug prints for actually opening the backpack.
+Items are still in the backpack!
+
+Putting a medium and regular backpack inside the large one and dropping it on the ground. This causes the two inner backpacks to be dropped on the ground but all contents stays in their respective backpacks.
+```
+NO LOG FILE! - [2026-06-12 21:00:59:411 WARN] [Scripting] [BOB Backpacks:DIAG] removeAllIDTags: player=-8589934591, besidesTag=, removed=["holdingbackpack.cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4"]
+
+NO LOG FILE! - [2026-06-12 21:00:59:412 WARN] [Scripting] [BOB Backpacks:DIAG] savePlayerBackpacks: player=-8589934591, found=1
+
+NO LOG FILE! - [2026-06-12 21:00:59:413 WARN] [Scripting] [BOB Backpacks:DIAG] savePlayerBackpacks: saving entity type=better_on_bedrock:backpack_large, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, valid=true, loc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:00:59:414 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta saveBackpack begin: type=better_on_bedrock:backpack_large, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, playerID=-8589934591, loc=x=-164.92,y=64.09,z=98.75, valid=true, maxCount=2
+
+NO LOG FILE! - [2026-06-12 21:00:59:414 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory at save start: size=54,occupied=6,totalItems=6,types=[minecraft:diamondx4, better_on_bedrock:backpack_mediumx1, better_on_bedrock:backpackx1]
+
+NO LOG FILE! - [2026-06-12 21:00:59:415 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory at save start: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:416 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory at save start: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:417 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory at save start: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:418 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory at save start: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:419 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory at save start: slot=4, item=better_on_bedrock:backpack_mediumx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:419 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory at save start: slot=5, item=better_on_bedrock:backpackx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:420 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary staging block before save: minecraft:air@x=-165.00,y=100.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:00:59:420 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary staging block before save: minecraft:air@x=-165.00,y=101.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:00:59:421 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary staging block set to barrel: minecraft:barrel@x=-165.00,y=101.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:00:59:421 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary staging block set to barrel: minecraft:barrel@x=-165.00,y=100.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:00:59:425 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory before save transfer: size=54,occupied=6,totalItems=6,types=[minecraft:diamondx4, better_on_bedrock:backpack_mediumx1, better_on_bedrock:backpackx1]
+
+NO LOG FILE! - [2026-06-12 21:00:59:425 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel inventory before save transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:426 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary barrel inventory before save transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:426 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary transfer begin: entity -> barrel_2
+
+NO LOG FILE! - [2026-06-12 21:00:59:427 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-91-inventory begin: fromStart=27, toStart=0, maxSlot=54, source=size=54,occupied=6,totalItems=6,types=[minecraft:diamondx4, better_on_bedrock:backpack_mediumx1, better_on_bedrock:backpackx1], destination=size=27,occupied=0,totalItems=0,types=[], fromLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:00:59:428 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-91-inventory end: source=size=54,occupied=6,totalItems=6,types=[minecraft:diamondx4, better_on_bedrock:backpack_mediumx1, better_on_bedrock:backpackx1], destination=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:428 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary barrel after transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:428 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary barrel after transfer: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:00:59:429 WARN] [Scripting] [BOB Backpacks:DIAG] structure save begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, from=x=-165.00,y=101.00,z=98.00, to=x=-165.00,y=101.00,z=98.00, options={"includeEntities":false,"saveLocation":"disk","includeBlocks":true}, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:00:59:430 WARN] [Scripting] [BOB Backpacks:DIAG] structure save end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:00:59:430 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary barrel before emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:431 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory save secondary barrel before: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:432 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory save secondary barrel after: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:433 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory save secondary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:00:59:434 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta secondary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:434 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary transfer begin: entity -> barrel
+
+NO LOG FILE! - [2026-06-12 21:00:59:435 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory begin: fromStart=0, toStart=0, maxSlot=27, source=size=54,occupied=6,totalItems=6,types=[minecraft:diamondx4, better_on_bedrock:backpack_mediumx1, better_on_bedrock:backpackx1], destination=size=27,occupied=0,totalItems=0,types=[], fromLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:00:59:436 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory sourceSlot=0, destinationSlot=0, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 21:00:59:436 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory copied item to destinationSlot=0: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:437 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory sourceSlot=1, destinationSlot=1, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 21:00:59:440 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory copied item to destinationSlot=1: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:441 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory sourceSlot=2, destinationSlot=2, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 21:00:59:441 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory copied item to destinationSlot=2: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:442 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory sourceSlot=3, destinationSlot=3, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 21:00:59:443 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory copied item to destinationSlot=3: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:443 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory sourceSlot=4, destinationSlot=4, item=better_on_bedrock:backpack_mediumx1, disallowed=true, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 21:00:59:444 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory SPAWNING ITEM: sourceSlot=4, destinationSlot=4, destinationSize=27, item=better_on_bedrock:backpack_mediumx1, reason=disallowed
+
+NO LOG FILE! - [2026-06-12 21:00:59:445 WARN] [Scripting] [BOB Backpacks:DIAG] spawnItemAnywhere begin: item=better_on_bedrock:backpack_mediumx1, stagingLoc=x=-164.92,y=100,z=98.75, finalLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:00:59:446 WARN] [Scripting] [BOB Backpacks:DIAG] spawnItemAnywhere end: item=better_on_bedrock:backpack_mediumx1, entityValid=true, finalLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:00:59:447 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory cleared sourceSlot=4 after spawn
+
+NO LOG FILE! - [2026-06-12 21:00:59:448 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory sourceSlot=5, destinationSlot=5, item=better_on_bedrock:backpackx1, disallowed=true, destinationSlotValid=true, destinationSize=27
+
+NO LOG FILE! - [2026-06-12 21:00:59:448 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory SPAWNING ITEM: sourceSlot=5, destinationSlot=5, destinationSize=27, item=better_on_bedrock:backpackx1, reason=disallowed
+
+NO LOG FILE! - [2026-06-12 21:00:59:449 WARN] [Scripting] [BOB Backpacks:DIAG] spawnItemAnywhere begin: item=better_on_bedrock:backpackx1, stagingLoc=x=-164.92,y=100,z=98.75, finalLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:00:59:449 WARN] [Scripting] [BOB Backpacks:DIAG] spawnItemAnywhere end: item=better_on_bedrock:backpackx1, entityValid=true, finalLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:00:59:449 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory cleared sourceSlot=5 after spawn
+
+NO LOG FILE! - [2026-06-12 21:00:59:450 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-92-inventory end: source=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:00:59:450 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel after transfer: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:00:59:451 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel after transfer: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:452 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel after transfer: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:455 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel after transfer: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:455 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel after transfer: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:00:59:456 WARN] [Scripting] [BOB Backpacks:DIAG] structure save begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, from=x=-165.00,y=100.00,z=98.00, to=x=-165.00,y=100.00,z=98.00, options={"includeEntities":false,"saveLocation":"disk","includeBlocks":true}, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:00:59:456 WARN] [Scripting] [BOB Backpacks:DIAG] structure save end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:00:59:457 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel before emptyInventory: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:00:59:457 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory save primary barrel before: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:00:59:458 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory save primary barrel after: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:459 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory save primary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:00:59:460 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta primary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:460 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory before final emptyInventory: size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:00:59:461 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta entity inventory after final emptyInventory: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:461 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta saveBackpack marked saved=true
+
+NO LOG FILE! - [2026-06-12 21:00:59:462 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta FINALLY secondary before restore: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[], saved=true
+
+NO LOG FILE! - [2026-06-12 21:00:59:463 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta FINALLY secondary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:00:59:463 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear before: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:464 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:465 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:00:59:465 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta FINALLY primary before restore: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[], saved=true
+
+NO LOG FILE! - [2026-06-12 21:00:59:465 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta FINALLY primary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:00:59:466 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear before: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:467 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:00:59:470 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:00:59:471 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta saveBackpack removing entity after successful save
+
+NO LOG FILE! - [2026-06-12 21:00:59:472 WARN] [Scripting] [BOB Backpacks:DIAG] save-90-cUeFr7NgQ0ta saveBackpack end: saved=true
+
+NO LOG FILE! - [2026-06-12 21:01:01:908 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: switching/loading backpack. player=-8589934591, newTag=holdingbackpack.cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+NO LOG FILE! - [2026-06-12 21:01:01:908 WARN] [Scripting] [BOB Backpacks:DIAG] savePlayerBackpacks: player=-8589934591, found=0
+
+NO LOG FILE! - [2026-06-12 21:01:01:910 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta loadBackpack begin: entityTypeID=better_on_bedrock:backpack_large, itemType=better_on_bedrock:backpack_large, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player=-8589934591, playerLoc=x=-164.26,y=63.00,z=98.13, maxCount=2
+
+NO LOG FILE! - [2026-06-12 21:01:01:910 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary staging block before load: minecraft:air@x=-165.00,y=100.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:01:01:911 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary staging block before load: minecraft:air@x=-165.00,y=101.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:01:01:911 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary structure candidates: ["backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2","bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2"]
+
+NO LOG FILE! - [2026-06-12 21:01:01:912 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, location=x=-165.00,y=101.00,z=98.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:01:01:913 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:01:01:914 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary loaded structure id: backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4_2
+
+NO LOG FILE! - [2026-06-12 21:01:01:914 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary barrel after structure load/fallback: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:915 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary barrel after structure load/fallback: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:915 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary structure candidates: ["backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4","bob_bp_cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4"]
+
+NO LOG FILE! - [2026-06-12 21:01:01:916 WARN] [Scripting] [BOB Backpacks:DIAG] structure load begin: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, location=x=-165.00,y=100.00,z=98.00, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:01:01:917 WARN] [Scripting] [BOB Backpacks:DIAG] structure load end: id=backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, successCount=1, context=backpack cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player -8589934591
+
+NO LOG FILE! - [2026-06-12 21:01:01:920 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary loaded structure id: backpackcUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+NO LOG FILE! - [2026-06-12 21:01:01:921 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel after structure load/fallback: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:01:01:921 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:922 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:923 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:924 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel after structure load/fallback: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:924 WARN] [Scripting] [BOB Backpacks:DIAG] spawnEntityAnywhere begin: entityID=better_on_bedrock:backpack_large, stagingLoc=x=-164.92,y=100,z=98.75, finalLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:01:01:925 WARN] [Scripting] [BOB Backpacks:DIAG] spawnEntityAnywhere end: entityID=better_on_bedrock:backpack_large, entityValid=true, finalLoc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:01:01:926 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta spawned backpack entity: valid=true, type=better_on_bedrock:backpack_large, loc=x=-164.92,y=64.09,z=98.75
+
+NO LOG FILE! - [2026-06-12 21:01:01:926 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta spawned backpack inventory before load transfer: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:926 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary barrel before load transfer: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:927 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary barrel before load transfer: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:928 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary transfer begin: barrel_2 -> entity
+
+NO LOG FILE! - [2026-06-12 21:01:01:928 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-94-inventory begin: fromStart=0, toStart=27, maxSlot=54, source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[], fromLoc=x=-165.00,y=101.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:01:01:929 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-94-inventory end: source=size=27,occupied=0,totalItems=0,types=[], destination=size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:930 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta spawned backpack inventory after secondary transfer: size=54,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:930 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary barrel before emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:931 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory load secondary barrel before: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:932 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory load secondary barrel after: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:932 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory load secondary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:936 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta secondary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:936 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel before load transfer: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:01:01:937 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel before load transfer: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:937 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel before load transfer: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:938 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel before load transfer: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:938 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel before load transfer: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:939 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary transfer begin: barrel -> entity
+
+NO LOG FILE! - [2026-06-12 21:01:01:940 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory begin: fromStart=0, toStart=0, maxSlot=27, source=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=54,occupied=0,totalItems=0,types=[], fromLoc=x=-165.00,y=100.00,z=98.00
+
+NO LOG FILE! - [2026-06-12 21:01:01:940 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory sourceSlot=0, destinationSlot=0, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 21:01:01:941 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory copied item to destinationSlot=0: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:942 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory sourceSlot=1, destinationSlot=1, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 21:01:01:942 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory copied item to destinationSlot=1: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:943 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory sourceSlot=2, destinationSlot=2, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 21:01:01:943 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory copied item to destinationSlot=2: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:944 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory sourceSlot=3, destinationSlot=3, item=minecraft:diamondx1, disallowed=false, destinationSlotValid=true, destinationSize=54
+
+NO LOG FILE! - [2026-06-12 21:01:01:944 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory copied item to destinationSlot=3: minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:945 WARN] [Scripting] [BOB Backpacks:DIAG] transfer-95-inventory end: source=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4], destination=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:01:01:946 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta spawned backpack inventory after primary transfer: size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:01:01:947 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel before emptyInventory: size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:01:01:947 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory load primary barrel before: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:01:01:948 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory load primary barrel after: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:949 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory load primary barrel after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:952 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta primary barrel after emptyInventory: size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:953 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta loadBackpack end: success, final entity inventory=size=54,occupied=4,totalItems=4,types=[minecraft:diamondx4]
+
+NO LOG FILE! - [2026-06-12 21:01:01:953 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=0, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:954 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=1, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:954 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=2, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:955 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta final loaded backpack entity inventory: slot=3, item=minecraft:diamondx1
+
+NO LOG FILE! - [2026-06-12 21:01:01:956 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta FINALLY secondary before restore: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[], loaded=true
+
+NO LOG FILE! - [2026-06-12 21:01:01:957 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta FINALLY secondary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:957 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear before: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:958 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: block=minecraft:barrel@x=-165.00,y=101.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:958 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory FINALLY secondary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:959 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta FINALLY primary before restore: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[], loaded=true
+
+NO LOG FILE! - [2026-06-12 21:01:01:959 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta FINALLY primary before restore: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:960 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear before: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:961 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: block=minecraft:barrel@x=-165.00,y=100.00,z=98.00, inv=size=27,occupied=0,totalItems=0,types=[]
+
+NO LOG FILE! - [2026-06-12 21:01:01:961 WARN] [Scripting] [BOB Backpacks:DIAG] load-93-cUeFr7NgQ0ta clearBlockInventory FINALLY primary safety clear after: no occupied slots
+
+NO LOG FILE! - [2026-06-12 21:01:01:962 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: loadBackpack succeeded. player=-8589934591, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, entity=better_on_bedrock:backpack_large, entityValid=true
+
+NO LOG FILE! - [2026-06-12 21:01:01:962 WARN] [Scripting] [BOB Backpacks:DIAG] backpackTick start: entity=better_on_bedrock:backpack_large, entityValid=true, id=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4, player=-8589934591, playerValid=true
+
+NO LOG FILE! - [2026-06-12 21:01:01:963 WARN] [Scripting] [BOB Backpacks:DIAG] player loop: added backpack tags. player=-8589934591, entityID=cUeFr7NgQ0taJSqu4xgVEus68S4FQc5lkBcV29HJOyqv6BSIJ8LZFUtkEZIOZ0F4sWHqhNUhxYsHVUyyCznfFttLf0T0tYjXpNq4
+
+```
