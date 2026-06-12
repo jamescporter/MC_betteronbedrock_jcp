@@ -5,8 +5,9 @@ function warnBackpack(message) {
 }
 
 const BACKPACK_DIAGNOSTICS = true
-const BACKPACK_DIAG_DUMP_SLOTS = true
-const BACKPACK_DIAG_MAX_SLOT_LINES = 100
+const BACKPACK_DIAG_DUMP_SLOTS = false
+const BACKPACK_DIAG_MAX_SLOT_LINES = 12
+const BACKPACK_PLAYER_LOOP_INTERVAL_TICKS = 1
 
 let backpackDiagSeq = 0
 
@@ -860,6 +861,26 @@ function removeAllIDTags(player, besidesTag = "") {
 }
 
 
+function getHeldBackpackItem(player) {
+    try {
+        const equipment = player.getComponent(EntityEquippableComponent.componentId)
+        const slot = equipment?.getEquipmentSlot(EquipmentSlot.Mainhand)
+        const item = slot?.getItem()
+        if (item && backpackIDs.includes(item.typeId)) return item
+    } catch (e) {
+        const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+        diagBackpack(`getHeldBackpackItem failed for player=${player?.id ?? "missing"}: ${failureReason}`)
+    }
+
+    return undefined
+}
+
+function getHeldBackpackId(player) {
+    const item = getHeldBackpackItem(player)
+    const id = item?.getDynamicProperty("backpack_id")
+    return typeof id == "string" && id.length > 0 ? id : undefined
+}
+
 function getActiveBackpackForPlayer(player, backpackId) {
     if (!player?.isValid() || typeof backpackId != "string" || backpackId.length < 1) return undefined
 
@@ -876,15 +897,43 @@ function playerHasActiveBackpack(player, backpackId) {
     return getActiveBackpackForPlayer(player, backpackId) != undefined
 }
 
-function savePlayerBackpacks(player) {
+function savePlayerBackpacks(player, reason = "unspecified") {
     const backpacks = player.dimension.getEntities({ tags: [player.id, "backpack"] })
-    diagBackpack(`savePlayerBackpacks: player=${player.id}, found=${backpacks.length}`)
+    diagBackpack(`savePlayerBackpacks: player=${player.id}, reason=${reason}, found=${backpacks.length}`)
 
     for (const backpack of backpacks) {
         diagBackpack(`savePlayerBackpacks: saving entity type=${backpack.typeId}, id=${backpack.getDynamicProperty("backpack_id") ?? "missing"}, valid=${validText(backpack)}, loc=${locText(backpack.location)}`)
         saveBackpack(backpack)
     }
 }
+
+
+world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
+    const { player, target } = event
+
+    if (!target || !backpackIDs.includes(target.typeId)) return
+
+    const targetId = target.getDynamicProperty("backpack_id")
+    const ownerId = target.getDynamicProperty("playerID")
+    const heldBackpackId = getHeldBackpackId(player)
+    const allowed = ownerId === player.id && typeof targetId == "string" && heldBackpackId === targetId
+
+    diagBackpack(`interact before: player=${player.id}, target=${target.typeId}, targetId=${targetId ?? "missing"}, owner=${ownerId ?? "missing"}, heldBackpackId=${heldBackpackId ?? "none"}, allowed=${allowed}`)
+
+    if (!allowed) {
+        event.cancel = true
+        diagBackpack(`interact before: cancelled backpack interaction because the matching backpack is not held. player=${player.id}, targetId=${targetId ?? "missing"}, heldBackpackId=${heldBackpackId ?? "none"}`)
+    }
+})
+
+world.afterEvents.playerInteractWithEntity.subscribe(({ player, target }) => {
+    if (!target || !backpackIDs.includes(target.typeId)) return
+
+    const targetId = target.getDynamicProperty("backpack_id")
+    const ownerId = target.getDynamicProperty("playerID")
+    const heldBackpackId = getHeldBackpackId(player)
+    diagBackpack(`interact after: player=${player.id}, target=${target.typeId}, targetId=${targetId ?? "missing"}, owner=${ownerId ?? "missing"}, heldBackpackId=${heldBackpackId ?? "none"}`)
+})
 
 system.runInterval(() => {
     system.runJob(function* () {
@@ -917,7 +966,7 @@ system.runInterval(() => {
                             }
 
                             diagBackpack(`player loop: switching/loading backpack. player=${player.id}, newTag=${tag}`)
-                            savePlayerBackpacks(player)
+                            savePlayerBackpacks(player, "switching-to-backpack")
                             removeAllIDTags(player, tag)
 
                             const backpack = loadBackpack(item.typeId, player, item)
@@ -939,13 +988,13 @@ system.runInterval(() => {
                     } else if (!player.hasTag("!holding")) {
                         diagBackpack(`player loop: portal nearby while holding backpack. player=${player.id}`)
                         removeAllIDTags(player, "")
-                        savePlayerBackpacks(player)
+                        savePlayerBackpacks(player, "portal-nearby")
                         player.addTag("!holding")
                     }
                 } else if (!player.hasTag("!holding")) {
                     //diagBackpack(`player loop: player no longer holding backpack. player=${player.id}, held=${item?.typeId ?? "empty"}`)
                     removeAllIDTags(player, "")
-                    savePlayerBackpacks(player)
+                    savePlayerBackpacks(player, "not-holding-backpack")
                     player.addTag("!holding")
                 }
             } catch (e) {
@@ -957,7 +1006,7 @@ system.runInterval(() => {
             yield
         }
     }())
-}, 5)
+}, BACKPACK_PLAYER_LOOP_INTERVAL_TICKS)
 
 world.afterEvents.playerJoin.subscribe((data) => {
     const player = world.getEntity(data.playerId)
