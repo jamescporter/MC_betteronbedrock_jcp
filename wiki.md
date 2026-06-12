@@ -124,6 +124,25 @@ Component sources:
 
 The Stone Dagger is crafted from Cobblestone, String, and a Stick. It is also used as a tool ingredient in raw patty/chop food recipes.
 
+## New ores
+
+Better on Bedrock adds five ore families. Ore generation is controlled by the pack's ore features and feature rules, so the y ranges below describe where each feature is placed when the matching dimension or biome tag is present.
+
+| Ore | Icon | Where to find it | How it is found and mined | Main drop | Smelted form | What the smelted form is used for |
+| --- | --- | --- | --- | --- | --- | --- |
+| Aluminium Ore (`better_on_bedrock:alluminum_ore`) | ![Aluminium Ore](wiki_assets/ore_icons/alluminum_ore.png) | Overworld underground generation in Overworld-tagged biomes, y 0 to 78. | Generates in stone veins of up to 4 blocks, with 16 placement attempts per chunk. Mine it with a pickaxe; the block drops 1-2 Raw Aluminium. | `better_on_bedrock:raw_alluminum` | Aluminium Ingot (`better_on_bedrock:alluminum_ingot`) from smelting Raw Aluminium in a furnace or blast furnace. | Crafting the Forge Table and the Fishing Hook. |
+| Tin Ore (`better_on_bedrock:tin_ore`) | ![Tin Ore](wiki_assets/ore_icons/tin_ore.png) | Overworld underground generation in Overworld-tagged biomes, y 0 to 78. | Generates in stone veins of up to 4 blocks, with 9 placement attempts per chunk. Mine it with a pickaxe; the block drops 1-2 Raw Tin. | `better_on_bedrock:raw_tin` | Tin Ingot (`better_on_bedrock:tin_ingot`) from smelting Raw Tin in a furnace or blast furnace. | Crafting the Enchant Bench and compressing into a Block of Tin, which can be crafted back into 9 Tin Ingots. |
+| Stardust Ore (`better_on_bedrock:stardust_ore`) and Deepslate Stardust Ore (`better_on_bedrock:deepslate_stardust_ore`) | ![Stardust Ore](wiki_assets/ore_icons/stardust_ore.png) ![Deepslate Stardust Ore](wiki_assets/ore_icons/deepslate_stardust_ore.png) | Overworld underground generation in Overworld-tagged biomes, y -64 to 78. Stone becomes Stardust Ore; deepslate becomes Deepslate Stardust Ore. | Generates in veins of up to 4 blocks, with 4 placement attempts per chunk. It requires a diamond, netherite, or Stardust-tier pickaxe and drops 1-2 Stardust Nuggets. | `better_on_bedrock:stardust_nugget` | Stardust (`better_on_bedrock:stardust`) from smelting Stardust Nuggets in a furnace or blast furnace. Stardust can then be crafted with gold ingots and diamonds into Stardust Ingots. | Stardust Ingots make Stardust Upgrade Templates, Blocks of Stardust, the Stardust Spear, Stardust-tier tools and armour through smithing, and Enderite Ingots. |
+| Corstinite Ore (`better_on_bedrock:corstinite_ore`) | ![Corstinite Ore](wiki_assets/ore_icons/corstinite_ore.png) | Nether underground generation in Nether-tagged biomes, y 0 to 150. | Generates in netherrack veins of up to 8 blocks, with 1 placement attempt per chunk. It requires a diamond, netherite, or Stardust-tier pickaxe and drops Corstinite Ingots directly. | `better_on_bedrock:corstinite_ingot` | No separate furnace step: the ore's useful processed form is the Corstinite Ingot dropped from the block. | Crafting Corstinite armour, Blocks of Corstinite, and Fiery Ingots. |
+| Enderium Ore (`better_on_bedrock:ender_ore`) | ![Enderium Ore](wiki_assets/ore_icons/ender_ore.png) | The End in biomes tagged `the_end`, y 0 to 150. | Generates in end stone veins of up to 8 blocks, with 3 placement attempts per chunk. It drops Enderium when mined with a netherite or Stardust-tier pickaxe. | `better_on_bedrock:enderium` | Smelted Enderium (`better_on_bedrock:enderium_smelted`) from smelting Enderium in a furnace or blast furnace. | Crafting Enderite Ingots. Enderite Ingots are used for Enderite tools and the Void Totem; unsmelted Enderium is also part of the Void Totem recipe. |
+
+### Quick ore-processing notes
+
+- Aluminium and Tin follow the familiar raw-ore-to-ingot flow: mine the ore, smelt the raw item, then craft with the ingot.
+- Stardust is a two-step progression material: smelt Stardust Nuggets into Stardust, then craft Stardust Ingots from Stardust, gold ingots, and diamonds.
+- Corstinite currently skips furnace processing because its ore loot table drops Corstinite Ingots directly.
+- Enderium must be smelted before it can become part of an Enderite Ingot, but unsmelted Enderium still has a direct Void Totem use.
+
 ## Stardust armour
 
 Each Stardust armour piece advertises the full-set bonus in its item description:
