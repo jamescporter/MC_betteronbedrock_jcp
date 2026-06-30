@@ -1,6 +1,6 @@
 # Better on Bedrock Wiki
 
-This wiki is a player-facing reference for Better on Bedrock gameplay. It avoids repository setup, porting notes, and placeholder implementation details so players can use it while playing.
+This wiki is a lightweight reference for the JCP-maintained Better on Bedrock fork. For release history and detailed compatibility notes, see `RELEASE_NOTES.md`. For unfinished or development-only areas, see `DEVELOPMENT_INDEX.md`.
 
 ## Guide Book and guide command
 
@@ -38,11 +38,11 @@ Progression to the End has changed. Instead of using the traditional vanilla rou
 
 | Eye | Boss/source | Where to look | Rarity indicator |
 | --- | --- | --- | --- |
-| `better_on_bedrock:willager_eye` | Willager | Willager Arena structures in Overworld plains, forests, or birch forests. | Rare structure; roughly one placement candidate per 1,216×1,216 blocks before biome filtering. |
-| `better_on_bedrock:flender_eye` | Flender | Flender Tower structures in Overworld plains, forests, or birch forests. | Rare structure; roughly one placement candidate per 800×800 blocks before biome filtering. |
-| `better_on_bedrock:enchanter_eye` | Enchantaegis | Underground Enchantaegis dungeon structures in Overworld plains, forests, or birch forests. | Very rare structure; roughly one placement candidate per 1,984×1,984 blocks before biome filtering. |
+| `better_on_bedrock:willager_eye` | Willager | Willager Arena structures in Overworld biomes tagged `plains`, `forest`, or `birch_forest`. | Random-spread structure set with `spacing: 76` chunks and `separation: 8`; roughly one placement candidate per 76×76 chunk grid, or about 1,216×1,216 blocks, before biome filtering. |
+| `better_on_bedrock:flender_eye` | Flender | Flender Tower structures in Overworld biomes tagged `plains`, `forest`, or `birch_forest`. | Random-spread structure set with `spacing: 50` chunks and `separation: 4`; roughly one placement candidate per 50×50 chunk grid, or about 800×800 blocks, before biome filtering. |
+| `better_on_bedrock:enchanter_eye` | Enchantaegis | Underground Enchantaegis dungeon structures in Overworld biomes tagged `plains`, `forest`, or `birch_forest`. | Random-spread structure set with `spacing: 124` chunks and `separation: 8`; roughly one placement candidate per 124×124 chunk grid, or about 1,984×1,984 blocks, before biome filtering. |
 | `better_on_bedrock:samurai_eye` | Withered Samurai | Nether Blackstone Castle structures. The castle contains a command block that runs `function summon_samurai`, and that function summons the Withered Samurai at the function location. | Guaranteed boss-eye drop once defeated. |
-| `better_on_bedrock:armored_pyroclast_eye` | Shielded Pyroclast/Inferior | Nether Inferior boss arena. | Rare Nether arena feature; approximately 4.55% per placement attempt in Nether biomes at y 32–80. |
+| `better_on_bedrock:armored_pyroclast_eye` | Shielded Pyroclast/Inferior | Nether Inferior boss arena feature. | Feature rule has `scatter_chance` 1/22, approximately **4.55%** per placement attempt, in Nether biomes at y 32–80. |
 
 ## Nether Amulet
 
@@ -156,9 +156,46 @@ Each Stardust armour piece advertises the full-set bonus in its item description
 
 The pack currently defines these plushie blocks and creative catalogue entries:
 
-- Willager Plushie
-- Enchanter Plushie
-- Lich Plushie
+- `better_on_bedrock:willager_plushie`
+- `better_on_bedrock:enchanter_plushie`
+- `better_on_bedrock:lich_plushie`
+
+Future work: add and document survival sources for the three plushies, such as boss loot, structure chest loot, trades, recipes, or quest rewards.
+
+## Commands
+
+| Command | Purpose | Permission | Cheats required | Result |
+| --- | --- | --- | --- | --- |
+| `/better_on_bedrock:guidebook` | Restore or obtain the Guide Book | `Any` | `false` | Gives one `better_on_bedrock:guide_book` to the executing player, dropping overflow at the player location if needed. |
+| `/scriptevent better_on_bedrock:guidebook` | Fallback restore path | Command access | Depends on world command settings | Gives one `better_on_bedrock:guide_book` to the executing player, dropping overflow at the player location if needed. |
+
+## Bosses and encounters
+
+### Seeker boss
+
+`better_on_bedrock:seeker` is reserved for the Seeker boss encounter. The old duplicate End-mob Seeker has been separated as the disabled `better_on_bedrock:end_seeker` placeholder so it cannot override the boss definition.
+
+Useful related areas:
+
+- boss behaviour: `BOB_behaviors/entities/bosses/seeker/`
+- client resource: `BOB_resources/entity/boss/seeker.entity.json`
+- arena/worldgen references: `BOB_behaviors/worldgen/`, `BOB_behaviors/features/`, and `BOB_behaviors/structures/` paths containing `seeker`
+
+### Geomancer
+
+`better_on_bedrock:geomancer` remains the real misc Geomancer client entity. The old boss-side duplicate has been isolated as `better_on_bedrock:geomancer_boss_placeholder` until a full boss encounter is designed.
+
+See `DEVELOPMENT_INDEX.md` before changing Geomancer boss files so the placeholder does not become a second conflicting Geomancer identifier again.
+
+## Known limitations and future work
+
+- The fork is still under active review and should be treated as currently untested unless a specific build has been smoke-tested.
+- Plushie survival acquisition is future work.
+- Stone Dagger progression/source design is future work.
+- `better_on_bedrock:end_seeker` is a disabled placeholder, not a finished End mob.
+- `better_on_bedrock:geomancer_boss_placeholder` is a development placeholder, not a complete boss encounter.
+- Installation/setup documentation should live outside this player-facing wiki.
+- The full Scripting V2 migration remains deferred and should not be mixed into unrelated changes.
 
 Survival acquisition for these plushies still needs a clearer route.
 
