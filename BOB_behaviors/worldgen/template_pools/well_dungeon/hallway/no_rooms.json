@@ -53,7 +53,7 @@
             {
                 "element": {
                     "element_type": "minecraft:single_pool_element",
-                    "location": "well_dungeon/traps/hallway_trap_01",
+                    "location": "well_dungeon/traps/hallway_trap_01_empty",
                     "processors": "better_on_bedrock:empty",
                     "projection": "rigid"
                 },
@@ -62,7 +62,7 @@
             {
                 "element": {
                     "element_type": "minecraft:single_pool_element",
-                    "location": "well_dungeon/traps/hallway_trap_02",
+                    "location": "well_dungeon/traps/hallway_trap_02_empty",
                     "processors": "better_on_bedrock:empty",
                     "projection": "rigid"
                 },
@@ -71,7 +71,7 @@
             {
                 "element": {
                     "element_type": "minecraft:single_pool_element",
-                    "location": "well_dungeon/traps/hallway_trap_03",
+                    "location": "well_dungeon/traps/hallway_trap_03_empty",
                     "processors": "better_on_bedrock:empty",
                     "projection": "rigid"
                 },
@@ -80,7 +80,7 @@
             {
                 "element": {
                     "element_type": "minecraft:single_pool_element",
-                    "location": "well_dungeon/traps/hallway_trap_04",
+                    "location": "well_dungeon/traps/hallway_trap_04_empty",
                     "processors": "better_on_bedrock:empty",
                     "projection": "rigid"
                 },
