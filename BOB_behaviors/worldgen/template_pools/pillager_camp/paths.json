@@ -44,7 +44,7 @@
             {
                 "weight": 50,
                 "element": {
-                    "location": "pillager_camp/pillager_camp",
+                    "location": "pillager_camp/pillager_camp_empty",
                     "processors": "better_on_bedrock:empty",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"

@@ -8,7 +8,7 @@
             {
                 "weight": 1,
                 "element": {
-                    "location": "pillager_camp/pillager_camp",
+                    "location": "pillager_camp/pillager_camp_grey",
                     "processors": "better_on_bedrock:pillager_camp/grey_wool",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
@@ -17,7 +17,7 @@
             {
                 "weight": 1,
                 "element": {
-                    "location": "pillager_camp/pillager_camp",
+                    "location": "pillager_camp/pillager_camp_blue",
                     "processors": "better_on_bedrock:pillager_camp/blue_wool",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
@@ -26,7 +26,7 @@
             {
                 "weight": 2,
                 "element": {
-                    "location": "pillager_camp/pillager_camp",
+                    "location": "pillager_camp/pillager_camp_red",
                     "processors": "better_on_bedrock:pillager_camp/red_wool",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
@@ -35,7 +35,7 @@
             {
                 "weight": 1,
                 "element": {
-                    "location": "pillager_camp/pillager_camp",
+                    "location": "pillager_camp/pillager_camp_white",
                     "processors": "better_on_bedrock:pillager_camp/white_wool",
                     "element_type": "minecraft:single_pool_element",
                     "projection": "rigid"
