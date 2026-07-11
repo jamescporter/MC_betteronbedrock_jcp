@@ -1,8 +1,12 @@
-import { world, system, TicksPerSecond, EntityIsTamedComponent } from "@minecraft/server";
+import { world, system, TicksPerSecond, EntityTameableComponent, EntityLeashableComponent } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { dimensionNames } from "../../../functionality/util.js";
 
 const warpRegex = /(?:Warp:)(.*?)-((?:-|)\d+)\|((?:-|)\d+)\|((?:-|)\d+)\|(minecraft:.+)/;
+const DEFAULT_MAX_WARPS = 100;
+const DEFAULT_MAX_GLOBAL_WARPS = 100;
+const TAMED_COMPANION_TELEPORT_RADIUS = 3;
+const LEASHED_COMPANION_TELEPORT_RADIUS = 10;
 
 /**
  * @param { import("@minecraft/server").Player } player 
@@ -14,8 +18,8 @@ function addNew(player, block) {
     const location = { x: x + 0.5, y: isTopBit ? (y - 1) : y, z: z + 0.5 };
     const warps = player.getTags().filter((v) => v.startsWith("Warp:"));
     const globalWarps = world.getDynamicPropertyIds().filter((v) => v.startsWith("Warp:"));
-    const maxWarps = world.getDynamicProperty("maxWarps") ?? 25;
-    const maxGlobalWarps = world.getDynamicProperty("maxGlobalWarps") ?? 14;
+    const maxWarps = world.getDynamicProperty("maxWarps") ?? DEFAULT_MAX_WARPS;
+    const maxGlobalWarps = world.getDynamicProperty("maxGlobalWarps") ?? DEFAULT_MAX_GLOBAL_WARPS;
 
     new ModalFormData()
         .title({ translate: "bob.gui.waystone.add.title" })
@@ -144,6 +148,51 @@ function addNew(player, block) {
 };*/
 
 /**
+ * @param { import("@minecraft/server").Player } player
+ * @returns { { entity: import("@minecraft/server").Entity, wasLeashedToPlayer: boolean }[] }
+ */
+function getWaystoneCompanions(player) {
+    return player.dimension.getEntities({
+        location: player.location,
+        maxDistance: LEASHED_COMPANION_TELEPORT_RADIUS,
+    }).reduce((companions, entity) => {
+        if (entity.id === player.id)
+            return companions;
+
+        const tameable = entity.getComponent(EntityTameableComponent.componentId);
+        const leashable = entity.getComponent(EntityLeashableComponent.componentId);
+        const distanceSquared = (entity.location.x - player.location.x) ** 2
+            + (entity.location.y - player.location.y) ** 2
+            + (entity.location.z - player.location.z) ** 2;
+        let isNearbyTamedToPlayer = false;
+        let wasLeashedToPlayer = false;
+
+        if (tameable !== undefined && distanceSquared <= TAMED_COMPANION_TELEPORT_RADIUS ** 2) {
+            try {
+                isNearbyTamedToPlayer = tameable.isTamed && tameable.tamedToPlayerId === player.id;
+            }
+            catch {
+                isNearbyTamedToPlayer = false;
+            };
+        };
+
+        if (leashable !== undefined) {
+            try {
+                wasLeashedToPlayer = leashable.isLeashed && leashable.leashHolderEntityId === player.id;
+            }
+            catch {
+                wasLeashedToPlayer = false;
+            };
+        };
+
+        if (isNearbyTamedToPlayer || wasLeashedToPlayer)
+            companions.push({ entity, wasLeashedToPlayer });
+
+        return companions;
+    }, []);
+};
+
+/**
  * @param { import("@minecraft/server").Player } player 
  * @param { string } warpTag
  */
@@ -223,22 +272,24 @@ function warpMenu(player, warpTag) {
                 //getBlockDirection(dimension, teleportLocation);
 
                 {
-                    // Get tamed entities and then teleport them
-                    const entities = player.dimension.getEntities({
-                        location: player.location,
-                        maxDistance: 10,
-                    }).filter((entity) => {
-                        const isTamed = entity.getComponent(EntityIsTamedComponent.componentId);
-                        return isTamed != void 0;
-                    });
+                    const entities = getWaystoneCompanions(player);
 
-                    for (let i = 0; i < entities.length; i++) {
-                        const entity = entities[i];
-                        entity.teleport(teleportLocation, { dimension });
-                    };
-
-                    // Teleport the player
+                    // Teleport the player first so leashed mobs can be reattached after arriving.
                     player.teleport(teleportLocation, { dimension });
+
+                    for (const { entity, wasLeashedToPlayer } of entities) {
+                        try {
+                            entity.teleport(teleportLocation, { dimension });
+
+                            if (wasLeashedToPlayer) {
+                                const leashable = entity.getComponent(EntityLeashableComponent.componentId);
+                                leashable?.leashTo(player);
+                            };
+                        }
+                        catch {
+                            continue;
+                        };
+                    };
                 };
                 system.runTimeout(() => player.playSound("block.better_on_bedrock:waystone.teleport"), 2);
                 system.runTimeout(() => player.playAnimation(`animation.waystone_teleport`), 2)
