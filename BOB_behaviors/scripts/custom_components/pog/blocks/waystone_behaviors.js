@@ -156,40 +156,64 @@ function getWaystoneCompanions(player) {
         location: player.location,
         maxDistance: LEASHED_COMPANION_TELEPORT_RADIUS,
     }).reduce((companions, entity) => {
-        if (entity.id === player.id)
-            return companions;
+        try {
+            if (entity.id === player.id)
+                return companions;
 
-        const tameable = entity.getComponent(EntityTameableComponent.componentId);
-        const leashable = entity.getComponent(EntityLeashableComponent.componentId);
-        const distanceSquared = (entity.location.x - player.location.x) ** 2
-            + (entity.location.y - player.location.y) ** 2
-            + (entity.location.z - player.location.z) ** 2;
-        let isNearbyTamedToPlayer = false;
-        let wasLeashedToPlayer = false;
+            const tameable = entity.getComponent(EntityTameableComponent.componentId);
+            const leashable = entity.getComponent(EntityLeashableComponent.componentId);
+            const distanceSquared = (entity.location.x - player.location.x) ** 2
+                + (entity.location.y - player.location.y) ** 2
+                + (entity.location.z - player.location.z) ** 2;
+            let isNearbyTamedToPlayer = false;
+            let wasLeashedToPlayer = false;
 
-        if (tameable !== undefined && distanceSquared <= TAMED_COMPANION_TELEPORT_RADIUS ** 2) {
             try {
-                isNearbyTamedToPlayer = tameable.isTamed && tameable.tamedToPlayerId === player.id;
+                isNearbyTamedToPlayer = tameable !== undefined
+                    && distanceSquared <= TAMED_COMPANION_TELEPORT_RADIUS ** 2
+                    && tameable.isTamed
+                    && tameable.tamedToPlayerId === player.id;
             }
-            catch {
-                isNearbyTamedToPlayer = false;
-            };
-        };
+            catch {};
 
-        if (leashable !== undefined) {
             try {
-                wasLeashedToPlayer = leashable.isLeashed && leashable.leashHolderEntityId === player.id;
+                wasLeashedToPlayer = leashable !== undefined
+                    && leashable.isLeashed
+                    && (leashable.leashHolder?.id === player.id || leashable.leashHolderEntityId === player.id);
             }
-            catch {
-                wasLeashedToPlayer = false;
-            };
-        };
+            catch {};
 
-        if (isNearbyTamedToPlayer || wasLeashedToPlayer)
-            companions.push({ entity, wasLeashedToPlayer });
+            if (isNearbyTamedToPlayer || wasLeashedToPlayer)
+                companions.push({ entity, wasLeashedToPlayer });
+        }
+        catch {
+            // Ignore entities that become invalid while the nearby entity list is processed.
+        };
 
         return companions;
     }, []);
+};
+
+/**
+ * @param { import("@minecraft/server").Player } player
+ * @param { import("@minecraft/server").Entity[] } entities
+ */
+function reattachLeads(player, entities) {
+    system.run(() => {
+        for (const entity of entities) {
+            try {
+                if (entity.dimension.id !== player.dimension.id)
+                    continue;
+
+                const leashable = entity.getComponent(EntityLeashableComponent.componentId);
+                if (leashable?.isLeashed !== true)
+                    leashable?.leashTo(player);
+            }
+            catch {
+                continue;
+            };
+        };
+    });
 };
 
 /**
@@ -273,23 +297,41 @@ function warpMenu(player, warpTag) {
 
                 {
                     const entities = getWaystoneCompanions(player);
+                    const leashedEntities = [];
 
-                    // Teleport the player first so leashed mobs can be reattached after arriving.
-                    player.teleport(teleportLocation, { dimension });
-
+                    // A leashed entity cannot be teleported reliably, so release it before moving either end of the lead.
                     for (const { entity, wasLeashedToPlayer } of entities) {
-                        try {
-                            entity.teleport(teleportLocation, { dimension });
+                        if (!wasLeashedToPlayer)
+                            continue;
 
-                            if (wasLeashedToPlayer) {
-                                const leashable = entity.getComponent(EntityLeashableComponent.componentId);
-                                leashable?.leashTo(player);
-                            };
+                        try {
+                            const leashable = entity.getComponent(EntityLeashableComponent.componentId);
+                            if (leashable === undefined)
+                                continue;
+
+                            leashable.unleash();
+                            leashedEntities.push(entity);
                         }
                         catch {
                             continue;
                         };
                     };
+
+                    // Teleport the player first so leashed mobs can be reattached after arriving.
+                    player.teleport(teleportLocation, { dimension });
+
+                    for (const { entity } of entities) {
+                        try {
+                            entity.teleport(teleportLocation, { dimension });
+                        }
+                        catch {
+                            const index = leashedEntities.indexOf(entity);
+                            if (index !== -1)
+                                leashedEntities.splice(index, 1);
+                        };
+                    };
+
+                    reattachLeads(player, leashedEntities);
                 };
                 system.runTimeout(() => player.playSound("block.better_on_bedrock:waystone.teleport"), 2);
                 system.runTimeout(() => player.playAnimation(`animation.waystone_teleport`), 2)
