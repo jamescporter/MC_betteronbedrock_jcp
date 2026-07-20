@@ -199,20 +199,47 @@ function getWaystoneCompanions(player) {
  * @param { import("@minecraft/server").Entity[] } entities
  */
 function reattachLeads(player, entities) {
+    for (const entity of entities) {
+        try {
+            if (entity.dimension.id !== player.dimension.id)
+                continue;
+
+            const leashable = entity.getComponent(EntityLeashableComponent.componentId);
+            if (leashable?.isLeashed !== true)
+                leashable?.leashTo(player);
+        }
+        catch {
+            continue;
+        };
+    };
+};
+
+/**
+ * Teleports companions only after the player has changed dimension. This gives the
+ * teleporting player's client time to load the destination before receiving the
+ * companion entity update, preventing a leashed mob from becoming invisible locally.
+ *
+ * @param { import("@minecraft/server").Player } player
+ * @param { import("@minecraft/server").Entity[] } entities
+ * @param { import("@minecraft/server").Entity[] } leashedEntities
+ * @param { import("@minecraft/server").Vector3 } location
+ * @param { import("@minecraft/server").Dimension } dimension
+ */
+function teleportCompanionsAfterPlayer(player, entities, leashedEntities, location, dimension) {
     system.run(() => {
         for (const entity of entities) {
             try {
-                if (entity.dimension.id !== player.dimension.id)
-                    continue;
-
-                const leashable = entity.getComponent(EntityLeashableComponent.componentId);
-                if (leashable?.isLeashed !== true)
-                    leashable?.leashTo(player);
+                entity.teleport(location, { dimension });
             }
             catch {
-                continue;
+                const index = leashedEntities.indexOf(entity);
+                if (index !== -1)
+                    leashedEntities.splice(index, 1);
             };
         };
+
+        // Recreate leads on a subsequent tick, once both ends have reached the destination.
+        system.run(() => reattachLeads(player, leashedEntities));
     });
 };
 
@@ -317,21 +344,16 @@ function warpMenu(player, warpTag) {
                         };
                     };
 
-                    // Teleport the player first so leashed mobs can be reattached after arriving.
+                    // Move the player first. Moving companions next tick ensures their client entity
+                    // updates arrive after the teleport destination has loaded for the player.
                     player.teleport(teleportLocation, { dimension });
-
-                    for (const { entity } of entities) {
-                        try {
-                            entity.teleport(teleportLocation, { dimension });
-                        }
-                        catch {
-                            const index = leashedEntities.indexOf(entity);
-                            if (index !== -1)
-                                leashedEntities.splice(index, 1);
-                        };
-                    };
-
-                    reattachLeads(player, leashedEntities);
+                    teleportCompanionsAfterPlayer(
+                        player,
+                        entities.map(({ entity }) => entity),
+                        leashedEntities,
+                        teleportLocation,
+                        dimension,
+                    );
                 };
                 system.runTimeout(() => player.playSound("block.better_on_bedrock:waystone.teleport"), 2);
                 system.runTimeout(() => player.playAnimation(`animation.waystone_teleport`), 2)
