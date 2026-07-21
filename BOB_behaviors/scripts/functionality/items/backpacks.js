@@ -4,7 +4,7 @@ function warnBackpack(message) {
     console.warn(`[BOB Backpacks] ${message}`)
 }
 
-const BACKPACK_DIAGNOSTICS = true
+const BACKPACK_DIAGNOSTICS = false
 const BACKPACK_DIAG_DUMP_SLOTS = false
 const BACKPACK_DIAG_MAX_SLOT_LINES = 12
 const BACKPACK_PLAYER_LOOP_INTERVAL_TICKS = 1
@@ -13,6 +13,10 @@ let backpackDiagSeq = 0
 
 function diagBackpack(message) {
     if (BACKPACK_DIAGNOSTICS) console.warn(`[BOB Backpacks:DIAG] ${message}`)
+}
+
+function logBackpack(message) {
+    console.warn(`[BOB Backpacks] ${message}`)
 }
 
 function nextBackpackDiagOp(prefix, id) {
@@ -333,7 +337,7 @@ function removeBackpackEntityWithoutDrops(entity) {
 /**
  * @param {import("@minecraft/server").Entity} entity
  */
-function saveBackpack(entity) {
+function saveBackpack(entity, reason = "unspecified") {
     if (!entity?.isValid()) return false
 
     const dim = entity.dimension
@@ -349,7 +353,11 @@ function saveBackpack(entity) {
     diagBackpack(`${opId} saveBackpack begin: type=${entity.typeId}, id=${id}, playerID=${entity.getDynamicProperty("playerID") ?? "unknown"}, loc=${locText(entityLoc)}, valid=${validText(entity)}, maxCount=${maxCount}`)
 
     const entityInvAtStart = entity.getComponent(EntityInventoryComponent.componentId)
-    diagBackpack(`${opId} entity inventory at save start: ${containerSummary(entityInvAtStart?.container)}`)
+    const inventoryAtSaveStart = containerSummary(entityInvAtStart?.container)
+    if (inventoryAtSaveStart.includes("occupied=0")) {
+        logBackpack(`Saving EMPTY ${entity.typeId}; id=${id}; reason=${reason}; inventory=${inventoryAtSaveStart}`)
+    }
+    diagBackpack(`${opId} entity inventory at save start: ${inventoryAtSaveStart}`)
     dumpContainerSlots("entity inventory at save start", entityInvAtStart?.container, opId)
 
     const block = getBlockSafely(dim, { x: entityLoc.x, y: BACKPACK_STAGING_BASE_Y, z: entityLoc.z })
@@ -484,6 +492,7 @@ function saveBackpack(entity) {
     }
 
     diagBackpack(`${opId} saveBackpack removing entity after successful save`)
+    logBackpack(`Saved ${entity.typeId}; id=${id}; reason=${reason}; inventory=${inventoryAtSaveStart}`)
     entity.remove()
     diagBackpack(`${opId} saveBackpack end: saved=true`)
     return true
@@ -652,7 +661,9 @@ function loadBackpack(entityTypeID, player, item) {
         backPack.setDynamicProperty("playerID", player.id)
         backPack.nameTag = backpackData[backPack.typeId].name
 
-        diagBackpack(`${opId} loadBackpack end: success, final entity inventory=${containerSummary(entityInv.container)}`)
+        const finalInventory = containerSummary(entityInv.container)
+        logBackpack(`Loaded ${entityTypeID}; id=${id}; inventory=${finalInventory}`)
+        diagBackpack(`${opId} loadBackpack end: success, final entity inventory=${finalInventory}`)
 		dumpContainerSlots("final loaded backpack entity inventory", entityInv.container, opId)
 
 		loaded = true
@@ -828,11 +839,11 @@ function backpackTick(entity, player) {
                 }, 2)
             } else {
                 diagBackpack(`backpackTick: portal nearby, saving backpack type=${entity.typeId}, id=${entity.getDynamicProperty("backpack_id") ?? "missing"}, player=${player.id}`)
-                saveBackpack(entity)
+                saveBackpack(entity, "portal-nearby")
             }
         } else if (entity?.isValid()) {
             diagBackpack(`backpackTick: player invalid/missing, saving backpack type=${entity.typeId}, id=${entity.getDynamicProperty("backpack_id") ?? "missing"}`)
-            saveBackpack(entity)
+            saveBackpack(entity, "player-invalid")
         }
     }
 
@@ -903,7 +914,7 @@ function savePlayerBackpacks(player, reason = "unspecified") {
 
     for (const backpack of backpacks) {
         diagBackpack(`savePlayerBackpacks: saving entity type=${backpack.typeId}, id=${backpack.getDynamicProperty("backpack_id") ?? "missing"}, valid=${validText(backpack)}, loc=${locText(backpack.location)}`)
-        saveBackpack(backpack)
+        saveBackpack(backpack, reason)
     }
 }
 
@@ -1025,7 +1036,7 @@ world.afterEvents.playerLeave.subscribe((data) => {
 
         for (const backpack of backpacks) {
             diagBackpack(`playerLeave: saving backpack type=${backpack.typeId}, id=${backpack.getDynamicProperty("backpack_id") ?? "missing"}, loc=${locText(backpack.location)}`)
-            saveBackpack(backpack)
+            saveBackpack(backpack, "player-leave")
         }
     }
 })
@@ -1052,7 +1063,7 @@ system.runInterval(() => {
 
                     if (player == undefined || !player.hasTag("holdingbackpack." + itemid)) {
                         diagBackpack(`watchdog loop: saving orphan/mismatched backpack id=${itemid ?? "missing"}`)
-                        saveBackpack(backpack)
+                        saveBackpack(backpack, "watchdog-orphaned")
                     }
                 }
 
