@@ -246,6 +246,67 @@ const backpackData = {
 const BACKPACK_ID_LENGTH = 100
 const BACKPACK_STAGING_BASE_Y = 100
 const BACKPACK_STAGING_SECOND_Y = 101
+const activeBackpackInventoryStates = new Map()
+
+function getBackpackInventoryState(container) {
+    if (!container) return undefined
+
+    let occupiedSlots = 0
+    let itemTotal = 0
+
+    try {
+        for (let slot = 0; slot < container.size; slot++) {
+            const item = container.getItem(slot)
+            if (!item) continue
+
+            occupiedSlots++
+            itemTotal += item.amount
+        }
+    } catch (e) {
+        const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
+        diagBackpack(`Could not inspect active backpack inventory: ${failureReason}`)
+        return undefined
+    }
+
+    return { occupiedSlots, itemTotal, summary: containerSummary(container) }
+}
+
+function recordBackpackLifecycle(entity, lifecycle) {
+    if (!entity?.isValid()) return
+
+    const inventory = entity.getComponent(EntityInventoryComponent.componentId)?.container
+    const state = getBackpackInventoryState(inventory)
+    if (!state) return
+
+    activeBackpackInventoryStates.set(entity.id, { ...state, lifecycle, saveDeferred: false })
+}
+
+function watchActiveBackpackInventory(player, backpack) {
+    const inventory = backpack.getComponent(EntityInventoryComponent.componentId)?.container
+    const state = getBackpackInventoryState(inventory)
+    if (!state) return
+
+    const previous = activeBackpackInventoryStates.get(backpack.id)
+    const holdingTag = `holdingbackpack.${backpack.getDynamicProperty("backpack_id") ?? "missing"}`
+    const holdingTagState = `holdingTag=${player.hasTag(holdingTag)},notHolding=${player.hasTag("!holding")}`
+
+    if (
+        previous &&
+        previous.lifecycle !== "Loaded" &&
+        previous.lifecycle !== "Saved" &&
+        !previous.saveDeferred &&
+        previous.occupiedSlots > 0 &&
+        previous.itemTotal > 0 &&
+        (state.occupiedSlots < previous.occupiedSlots || state.itemTotal < previous.itemTotal)
+    ) {
+        const backpackId = backpack.getDynamicProperty("backpack_id") ?? "missing"
+        warnBackpack(`Active backpack inventory shrank without lifecycle event; backpackId=${backpackId}, entityId=${backpack.id}, playerId=${player.id}, old={${previous.summary}}, new={${state.summary}}, ${holdingTagState}. Save will be deferred.`)
+        activeBackpackInventoryStates.set(backpack.id, { ...state, lifecycle: "Observed", saveDeferred: true })
+        return
+    }
+
+    activeBackpackInventoryStates.set(backpack.id, { ...state, lifecycle: "Observed", saveDeferred: previous?.saveDeferred ?? false })
+}
 
 function getBackpackStructureId(id, part = "") {
     if (typeof id != "string" || id.length < 1) return undefined
@@ -347,6 +408,12 @@ function saveBackpack(entity, reason = "unspecified") {
     if (typeof id != "string" || !data) return false
 
     const context = `backpack ${id}, player ${entity.getDynamicProperty("playerID") ?? "unknown"}`
+    const trackedState = activeBackpackInventoryStates.get(entity.id)
+    if (trackedState?.saveDeferred) {
+        logBackpack(`Deferred save for ${context}; entityId=${entity.id}, inventory={${trackedState.summary}}. The active entity was retained after an unexplained inventory reduction.`)
+        return false
+    }
+
     const opId = nextBackpackDiagOp("save", id)
     const maxCount = data.count
 
@@ -493,6 +560,8 @@ function saveBackpack(entity, reason = "unspecified") {
 
     diagBackpack(`${opId} saveBackpack removing entity after successful save`)
     logBackpack(`Saved ${entity.typeId}; id=${id}; reason=${reason}; inventory=${inventoryAtSaveStart}`)
+    recordBackpackLifecycle(entity, "Saved")
+    activeBackpackInventoryStates.delete(entity.id)
     entity.remove()
     diagBackpack(`${opId} saveBackpack end: saved=true`)
     return true
@@ -542,6 +611,7 @@ function loadBackpack(entityTypeID, player, item) {
 	let secondChanged = false
 	let backPack = undefined
 	let loaded = false
+    const deferredSourceItems = []
 
     try {
         if (maxCount > 1) {
@@ -605,7 +675,6 @@ function loadBackpack(entityTypeID, player, item) {
         if (!entityInv?.container) {
             warnBackpack(`Spawned backpack entity without inventory while loading ${context}.`)
             diagBackpack(`${opId} loadBackpack FAILED: spawned backpack entity missing inventory`)
-            removeBackpackEntityWithoutDrops(backPack)
             return undefined
         }
 
@@ -617,21 +686,16 @@ function loadBackpack(entityTypeID, player, item) {
             if (!blockInv2?.container) {
                 warnBackpack(`Secondary barrel inventory was unavailable while loading ${context}.`)
                 diagBackpack(`${opId} loadBackpack FAILED: missing secondary barrel inventory`)
-                removeBackpackEntityWithoutDrops(backPack)
                 return undefined
             }
 
             diagBackpack(`${opId} secondary transfer begin: barrel_2 -> entity`)
-            if (!transferInventory(blockInv2.container, entityInv.container, dim, block2.location, 0, 27, entityInv.container.size)) {
+            if (!transferInventory(blockInv2.container, entityInv.container, dim, block2.location, 0, 27, entityInv.container.size, deferredSourceItems)) {
                 diagBackpack(`${opId} secondary transfer FAILED`)
-                removeBackpackEntityWithoutDrops(backPack)
                 return undefined
             }
 
             diagBackpack(`${opId} spawned backpack inventory after secondary transfer: ${containerSummary(entityInv.container)}`)
-            diagBackpack(`${opId} secondary barrel before emptyInventory: ${containerSummary(blockInv2.container)}`)
-            clearBlockInventory(block2, "load secondary barrel", opId)
-            diagBackpack(`${opId} secondary barrel after emptyInventory: ${containerSummary(blockInv2.container)}`)
         }
 
         const blockInv = getBlockSafely(dim, block.location)?.getComponent(BlockInventoryComponent.componentId)
@@ -641,21 +705,20 @@ function loadBackpack(entityTypeID, player, item) {
         if (!blockInv?.container) {
             warnBackpack(`Primary barrel inventory was unavailable while loading ${context}.`)
             diagBackpack(`${opId} loadBackpack FAILED: missing primary barrel inventory`)
-            removeBackpackEntityWithoutDrops(backPack)
             return undefined
         }
 
         diagBackpack(`${opId} primary transfer begin: barrel -> entity`)
-        if (!transferInventory(blockInv.container, entityInv.container, dim, block.location, 0, 0, 27)) {
+        if (!transferInventory(blockInv.container, entityInv.container, dim, block.location, 0, 0, 27, deferredSourceItems)) {
             diagBackpack(`${opId} primary transfer FAILED`)
-            removeBackpackEntityWithoutDrops(backPack)
             return undefined
         }
 
         diagBackpack(`${opId} spawned backpack inventory after primary transfer: ${containerSummary(entityInv.container)}`)
-        diagBackpack(`${opId} primary barrel before emptyInventory: ${containerSummary(blockInv.container)}`)
-        clearBlockInventory(block, "load primary barrel", opId)
-        diagBackpack(`${opId} primary barrel after emptyInventory: ${containerSummary(blockInv.container)}`)
+
+        for (const disallowedItem of deferredSourceItems) {
+            spawnItemAnywhere(disallowedItem, player.location, dim)
+        }
 
         backPack.setDynamicProperty("backpack_id", id)
         backPack.setDynamicProperty("playerID", player.id)
@@ -667,16 +730,16 @@ function loadBackpack(entityTypeID, player, item) {
 		dumpContainerSlots("final loaded backpack entity inventory", entityInv.container, opId)
 
 		loaded = true
+		recordBackpackLifecycle(backPack, "Loaded")
 		return backPack
     } catch (e) {
         const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
         warnBackpack(`Failed to load ${context}: ${failureReason}`)
         diagBackpack(`${opId} loadBackpack catch: ${failureReason}`)
 
-        if (backPack?.isValid()) removeBackpackEntityWithoutDrops(backPack)
         return undefined
     } finally {
-        if (secondChanged && block2 != undefined && lastBlock2 != undefined) {
+        if (loaded && secondChanged && block2 != undefined && lastBlock2 != undefined) {
             const inv2 = block2?.getComponent(BlockInventoryComponent.componentId)
 			diagBackpack(`${opId} FINALLY secondary before restore: block=${blockText(block2)}, inv=${containerSummary(inv2?.container)}, loaded=${loaded}`)
 			dumpContainerSlots("FINALLY secondary before restore", inv2?.container, opId)
@@ -685,7 +748,7 @@ function loadBackpack(entityTypeID, player, item) {
 			block2.setPermutation(lastBlock2)
         }
 
-        if (baseChanged) {
+        if (loaded && baseChanged) {
             const inv1 = block?.getComponent(BlockInventoryComponent.componentId)
 			diagBackpack(`${opId} FINALLY primary before restore: block=${blockText(block)}, inv=${containerSummary(inv1?.container)}, loaded=${loaded}`)
 			dumpContainerSlots("FINALLY primary before restore", inv1?.container, opId)
@@ -707,7 +770,7 @@ function getBackpackFollowLocation(player) {
  * @param {import("@minecraft/server").Container} container2
  * @param {import("@minecraft/server").Dimension} dimension
  */
-function transferInventory(container1, container2, dimension, fromInvLocation, FromInvStartingSlot, ToInvStartingSlot, maxSlot) {
+function transferInventory(container1, container2, dimension, fromInvLocation, FromInvStartingSlot, ToInvStartingSlot, maxSlot, deferredSourceItems = undefined) {
     const transferOp = nextBackpackDiagOp("transfer", "inventory")
     diagBackpack(`${transferOp} begin: fromStart=${FromInvStartingSlot}, toStart=${ToInvStartingSlot}, maxSlot=${maxSlot}, source=${containerSummary(container1)}, destination=${containerSummary(container2)}, fromLoc=${locText(fromInvLocation)}`)
 
@@ -744,6 +807,13 @@ function transferInventory(container1, container2, dimension, fromInvLocation, F
                     return false
                 }
             } else {
+                if (deferredSourceItems) {
+                    deferredSourceItems.push(item)
+                    diagBackpack(`${transferOp} deferred source item until the complete load transfer succeeds: sourceSlot=${sourceSlot}, item=${itemText(item)}`)
+                    destinationOffset++
+                    continue
+                }
+
                 diagBackpack(`${transferOp} SPAWNING ITEM: sourceSlot=${sourceSlot}, destinationSlot=${destinationSlot}, destinationSize=${container2.size}, item=${itemText(item)}, reason=${isDisallowed ? "disallowed" : "destination-slot-invalid"}`)
                 spawnItemAnywhere(item, fromInvLocation, dimension)
 
@@ -950,6 +1020,9 @@ system.runInterval(() => {
     system.runJob(function* () {
         for (const player of world.getAllPlayers()) {
             try {
+                const activeBackpacks = player.dimension.getEntities({ tags: [player.id, "backpack"] })
+                for (const backpack of activeBackpacks) watchActiveBackpackInventory(player, backpack)
+
                 const equipment = player.getComponent(EntityEquippableComponent.componentId)
                 const slot = equipment.getEquipmentSlot(EquipmentSlot.Mainhand)
                 const item = slot.getItem()
