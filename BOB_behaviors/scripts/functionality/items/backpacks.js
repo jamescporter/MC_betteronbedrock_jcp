@@ -15,10 +15,6 @@ function diagBackpack(message) {
     if (BACKPACK_DIAGNOSTICS) console.warn(`[BOB Backpacks:DIAG] ${message}`)
 }
 
-function logBackpack(message) {
-    console.warn(`[BOB Backpacks] ${message}`)
-}
-
 function nextBackpackDiagOp(prefix, id) {
     backpackDiagSeq++
     const shortId = typeof id == "string" ? id.slice(0, 12) : "no-id"
@@ -246,67 +242,7 @@ const backpackData = {
 const BACKPACK_ID_LENGTH = 100
 const BACKPACK_STAGING_BASE_Y = 100
 const BACKPACK_STAGING_SECOND_Y = 101
-const activeBackpackInventoryStates = new Map()
-
-function getBackpackInventoryState(container) {
-    if (!container) return undefined
-
-    let occupiedSlots = 0
-    let itemTotal = 0
-
-    try {
-        for (let slot = 0; slot < container.size; slot++) {
-            const item = container.getItem(slot)
-            if (!item) continue
-
-            occupiedSlots++
-            itemTotal += item.amount
-        }
-    } catch (e) {
-        const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
-        diagBackpack(`Could not inspect active backpack inventory: ${failureReason}`)
-        return undefined
-    }
-
-    return { occupiedSlots, itemTotal, summary: containerSummary(container) }
-}
-
-function recordBackpackLifecycle(entity, lifecycle) {
-    if (!entity?.isValid()) return
-
-    const inventory = entity.getComponent(EntityInventoryComponent.componentId)?.container
-    const state = getBackpackInventoryState(inventory)
-    if (!state) return
-
-    activeBackpackInventoryStates.set(entity.id, { ...state, lifecycle, saveDeferred: false })
-}
-
-function watchActiveBackpackInventory(player, backpack) {
-    const inventory = backpack.getComponent(EntityInventoryComponent.componentId)?.container
-    const state = getBackpackInventoryState(inventory)
-    if (!state) return
-
-    const previous = activeBackpackInventoryStates.get(backpack.id)
-    const holdingTag = `holdingbackpack.${backpack.getDynamicProperty("backpack_id") ?? "missing"}`
-    const holdingTagState = `holdingTag=${player.hasTag(holdingTag)},notHolding=${player.hasTag("!holding")}`
-
-    if (
-        previous &&
-        previous.lifecycle !== "Loaded" &&
-        previous.lifecycle !== "Saved" &&
-        !previous.saveDeferred &&
-        previous.occupiedSlots > 0 &&
-        previous.itemTotal > 0 &&
-        (state.occupiedSlots < previous.occupiedSlots || state.itemTotal < previous.itemTotal)
-    ) {
-        const backpackId = backpack.getDynamicProperty("backpack_id") ?? "missing"
-        warnBackpack(`Active backpack inventory shrank without lifecycle event; backpackId=${backpackId}, entityId=${backpack.id}, playerId=${player.id}, old={${previous.summary}}, new={${state.summary}}, ${holdingTagState}. Save will be deferred.`)
-        activeBackpackInventoryStates.set(backpack.id, { ...state, lifecycle: "Observed", saveDeferred: true })
-        return
-    }
-
-    activeBackpackInventoryStates.set(backpack.id, { ...state, lifecycle: "Observed", saveDeferred: previous?.saveDeferred ?? false })
-}
+const reportedDuplicateBackpacks = new Set()
 
 function getBackpackStructureId(id, part = "") {
     if (typeof id != "string" || id.length < 1) return undefined
@@ -395,6 +331,51 @@ function removeBackpackEntityWithoutDrops(entity) {
     diagBackpack(`removeBackpackEntityWithoutDrops: entity removed`)
 }
 
+function getMatchingBackpackEntities(playerId, backpackId) {
+    if (typeof playerId != "string" || typeof backpackId != "string") return []
+
+    const matches = []
+    for (const dimension of dimensions) {
+        const dim = world.getDimension(dimension.typeId)
+        for (const entity of dim.getEntities({ families: ["backpack"] })) {
+            if (
+                entity?.isValid() &&
+                backpackIDs.includes(entity.typeId) &&
+                entity.getDynamicProperty("playerID") === playerId &&
+                entity.getDynamicProperty("backpack_id") === backpackId
+            ) matches.push(entity)
+        }
+    }
+
+    return matches
+}
+
+function getBackpackEntities(dimension, playerId = undefined) {
+    return dimension.getEntities({ families: ["backpack"] }).filter(entity => (
+        backpackIDs.includes(entity.typeId) &&
+        (playerId == undefined || entity.getDynamicProperty("playerID") === playerId)
+    ))
+}
+
+function quarantineDuplicateBackpacks(playerId, backpackId) {
+    const matches = getMatchingBackpackEntities(playerId, backpackId)
+    if (matches.length < 2) return false
+
+    for (const entity of matches) entity.setDynamicProperty("backpack_quarantined", true)
+
+    const player = world.getEntity(playerId)
+    if (player?.isValid() && getHeldBackpackId(player) === backpackId) player.addTag(`holdingbackpack.${backpackId}`)
+
+    const key = `${playerId}:${backpackId}`
+    if (!reportedDuplicateBackpacks.has(key)) {
+        reportedDuplicateBackpacks.add(key)
+        const entityIds = matches.map(entity => entity.id).join(",")
+        warnBackpack(`Duplicate active backpacks require recovery; playerId=${playerId}, backpackId=${backpackId}, entityIds=${entityIds}. No duplicate was saved or removed.`)
+    }
+
+    return true
+}
+
 /**
  * @param {import("@minecraft/server").Entity} entity
  */
@@ -404,15 +385,12 @@ function saveBackpack(entity, reason = "unspecified") {
     const dim = entity.dimension
     const entityLoc = entity.location
     const id = entity.getDynamicProperty("backpack_id")
+    const playerId = entity.getDynamicProperty("playerID")
     const data = backpackData[entity.typeId]
     if (typeof id != "string" || !data) return false
 
-    const context = `backpack ${id}, player ${entity.getDynamicProperty("playerID") ?? "unknown"}`
-    const trackedState = activeBackpackInventoryStates.get(entity.id)
-    if (trackedState?.saveDeferred) {
-        logBackpack(`Deferred save for ${context}; entityId=${entity.id}, inventory={${trackedState.summary}}. The active entity was retained after an unexplained inventory reduction.`)
-        return false
-    }
+    const context = `backpack ${id}, player ${playerId ?? "unknown"}`
+    if (quarantineDuplicateBackpacks(playerId, id)) return false
 
     const opId = nextBackpackDiagOp("save", id)
     const maxCount = data.count
@@ -421,9 +399,6 @@ function saveBackpack(entity, reason = "unspecified") {
 
     const entityInvAtStart = entity.getComponent(EntityInventoryComponent.componentId)
     const inventoryAtSaveStart = containerSummary(entityInvAtStart?.container)
-    if (inventoryAtSaveStart.includes("occupied=0")) {
-        logBackpack(`Saving EMPTY ${entity.typeId}; id=${id}; reason=${reason}; inventory=${inventoryAtSaveStart}`)
-    }
     diagBackpack(`${opId} entity inventory at save start: ${inventoryAtSaveStart}`)
     dumpContainerSlots("entity inventory at save start", entityInvAtStart?.container, opId)
 
@@ -559,9 +534,6 @@ function saveBackpack(entity, reason = "unspecified") {
     }
 
     diagBackpack(`${opId} saveBackpack removing entity after successful save`)
-    logBackpack(`Saved ${entity.typeId}; id=${id}; reason=${reason}; inventory=${inventoryAtSaveStart}`)
-    recordBackpackLifecycle(entity, "Saved")
-    activeBackpackInventoryStates.delete(entity.id)
     entity.remove()
     diagBackpack(`${opId} saveBackpack end: saved=true`)
     return true
@@ -577,6 +549,38 @@ function loadBackpack(entityTypeID, player, item) {
     const id = item.getDynamicProperty("backpack_id")
     const data = backpackData[entityTypeID]
     if (typeof id != "string" || !data) return undefined
+
+    const existing = getMatchingBackpackEntities(player.id, id)
+    if (existing.length > 0) {
+        if (existing.length > 1) {
+            quarantineDuplicateBackpacks(player.id, id)
+            return existing[0]
+        }
+
+        if (existing[0].typeId !== entityTypeID) {
+            existing[0].setDynamicProperty("backpack_quarantined", true)
+            player.addTag(`holdingbackpack.${id}`)
+            const key = `type:${player.id}:${id}`
+            if (!reportedDuplicateBackpacks.has(key)) {
+                reportedDuplicateBackpacks.add(key)
+                warnBackpack(`Backpack type mismatch requires recovery; playerId=${player.id}, backpackId=${id}, entityId=${existing[0].id}, entityType=${existing[0].typeId}, itemType=${entityTypeID}.`)
+            }
+            return existing[0]
+        }
+
+        if (existing[0].dimension.id !== dim.id) {
+            existing[0].setDynamicProperty("backpack_quarantined", true)
+            player.addTag(`holdingbackpack.${id}`)
+            const key = `dimension:${player.id}:${id}`
+            if (!reportedDuplicateBackpacks.has(key)) {
+                reportedDuplicateBackpacks.add(key)
+                warnBackpack(`Backpack in another dimension requires recovery; playerId=${player.id}, backpackId=${id}, entityId=${existing[0].id}, entityDimension=${existing[0].dimension.id}, playerDimension=${dim.id}.`)
+            }
+            return existing[0]
+        }
+
+        return existing[0]
+    }
 
     const context = `backpack ${id}, player ${player.id}`
     const opId = nextBackpackDiagOp("load", id)
@@ -725,12 +729,10 @@ function loadBackpack(entityTypeID, player, item) {
         backPack.nameTag = backpackData[backPack.typeId].name
 
         const finalInventory = containerSummary(entityInv.container)
-        logBackpack(`Loaded ${entityTypeID}; id=${id}; inventory=${finalInventory}`)
         diagBackpack(`${opId} loadBackpack end: success, final entity inventory=${finalInventory}`)
 		dumpContainerSlots("final loaded backpack entity inventory", entityInv.container, opId)
 
 		loaded = true
-		recordBackpackLifecycle(backPack, "Loaded")
 		return backPack
     } catch (e) {
         const failureReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e)
@@ -739,6 +741,8 @@ function loadBackpack(entityTypeID, player, item) {
 
         return undefined
     } finally {
+        if (!loaded && backPack?.isValid()) removeBackpackEntityWithoutDrops(backPack)
+
         if (loaded && secondChanged && block2 != undefined && lastBlock2 != undefined) {
             const inv2 = block2?.getComponent(BlockInventoryComponent.componentId)
 			diagBackpack(`${opId} FINALLY secondary before restore: block=${blockText(block2)}, inv=${containerSummary(inv2?.container)}, loaded=${loaded}`)
@@ -901,6 +905,8 @@ function generateRandomID(length) {
  */
 function backpackTick(entity, player) {
     function tick() {
+        if (entity?.getDynamicProperty("backpack_quarantined") === true) return
+
         if (player?.isValid() && entity?.isValid()) {
             if (portalNearby(player) == false) {
                 entity.teleport(getBackpackFollowLocation(player))
@@ -962,24 +968,35 @@ function getHeldBackpackId(player) {
     return typeof id == "string" && id.length > 0 ? id : undefined
 }
 
-function getActiveBackpackForPlayer(player, backpackId) {
+function getActiveBackpackForPlayer(player, backpackId, entityTypeId) {
     if (!player?.isValid() || typeof backpackId != "string" || backpackId.length < 1) return undefined
 
-    const backpacks = player.dimension.getEntities({ tags: [player.id, "backpack"] })
+    const backpacks = getBackpackEntities(player.dimension, player.id).filter(backpack => backpack.getDynamicProperty("backpack_id") === backpackId)
+
+    if (backpacks.length > 1) {
+        quarantineDuplicateBackpacks(player.id, backpackId)
+        return backpacks[0]
+    }
 
     for (const backpack of backpacks) {
-        if (backpack?.isValid() && backpack.getDynamicProperty("backpack_id") === backpackId) return backpack
+        if (!backpack?.isValid()) continue
+        if (backpack.typeId !== entityTypeId) {
+            backpack.setDynamicProperty("backpack_quarantined", true)
+            player.addTag(`holdingbackpack.${backpackId}`)
+            const key = `type:${player.id}:${backpackId}`
+            if (!reportedDuplicateBackpacks.has(key)) {
+                reportedDuplicateBackpacks.add(key)
+                warnBackpack(`Backpack type mismatch requires recovery; playerId=${player.id}, backpackId=${backpackId}, entityId=${backpack.id}, entityType=${backpack.typeId}, itemType=${entityTypeId}.`)
+            }
+        }
+        return backpack
     }
 
     return undefined
 }
 
-function playerHasActiveBackpack(player, backpackId) {
-    return getActiveBackpackForPlayer(player, backpackId) != undefined
-}
-
 function savePlayerBackpacks(player, reason = "unspecified") {
-    const backpacks = player.dimension.getEntities({ tags: [player.id, "backpack"] })
+    const backpacks = getBackpackEntities(player.dimension, player.id)
     diagBackpack(`savePlayerBackpacks: player=${player.id}, reason=${reason}, found=${backpacks.length}`)
 
     for (const backpack of backpacks) {
@@ -997,7 +1014,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
     const targetId = target.getDynamicProperty("backpack_id")
     const ownerId = target.getDynamicProperty("playerID")
     const heldBackpackId = getHeldBackpackId(player)
-    const allowed = ownerId === player.id && typeof targetId == "string" && heldBackpackId === targetId
+    const quarantined = target.getDynamicProperty("backpack_quarantined") === true
+    const allowed = !quarantined && ownerId === player.id && typeof targetId == "string" && heldBackpackId === targetId
 
     diagBackpack(`interact before: player=${player.id}, target=${target.typeId}, targetId=${targetId ?? "missing"}, owner=${ownerId ?? "missing"}, heldBackpackId=${heldBackpackId ?? "none"}, allowed=${allowed}`)
 
@@ -1020,9 +1038,6 @@ system.runInterval(() => {
     system.runJob(function* () {
         for (const player of world.getAllPlayers()) {
             try {
-                const activeBackpacks = player.dimension.getEntities({ tags: [player.id, "backpack"] })
-                for (const backpack of activeBackpacks) watchActiveBackpackInventory(player, backpack)
-
                 const equipment = player.getComponent(EntityEquippableComponent.componentId)
                 const slot = equipment.getEquipmentSlot(EquipmentSlot.Mainhand)
                 const item = slot.getItem()
@@ -1042,8 +1057,9 @@ system.runInterval(() => {
                         }
 
                         const tag = "holdingbackpack." + id
+                        const activeBackpack = getActiveBackpackForPlayer(player, id, item.typeId)
 
-                        if (!player.hasTag(tag) || !playerHasActiveBackpack(player, id)) {
+                        if (!player.hasTag(tag) || activeBackpack == undefined) {
                             if (player.hasTag(tag)) {
                                 diagBackpack(`player loop: stale backpack tag detected; reloading active backpack. player=${player.id}, tag=${tag}`)
                                 player.removeTag(tag)
@@ -1103,7 +1119,7 @@ world.afterEvents.playerLeave.subscribe((data) => {
 
     for (const dimension of dimensions) {
         const dim = world.getDimension(dimension.typeId)
-        const backpacks = dim.getEntities({ tags: [data.playerId, "backpack"] })
+        const backpacks = getBackpackEntities(dim, data.playerId)
 
         diagBackpack(`playerLeave: dimension=${dimension.typeId}, backpacksFound=${backpacks.length}`)
 
@@ -1118,7 +1134,7 @@ system.runInterval(() => {
     system.runJob(function* () {
         for (const dimension of dimensions) {
             const dim = world.getDimension(dimension.typeId)
-            const backpacks = dim.getEntities({ tags: ["backpack"] })
+            const backpacks = getBackpackEntities(dim)
 
             //if (backpacks.length > 0) diagBackpack(`watchdog loop: dimension=${dimension.typeId}, backpackEntities=${backpacks.length}`)
 
