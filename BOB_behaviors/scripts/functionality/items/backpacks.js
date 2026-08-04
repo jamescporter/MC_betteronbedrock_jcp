@@ -908,25 +908,34 @@ function generateRandomID(length) {
  */
 function backpackTick(entity, player) {
     function tick() {
-        if (entity?.getDynamicProperty("backpack_quarantined") === true) return
+        if (!entity?.isValid()) return
+        if (entity.getDynamicProperty("backpack_quarantined") === true) return
 
-        if (player?.isValid() && entity?.isValid()) {
+        if (player?.isValid()) {
             if (portalNearby(player) == false) {
+                if (!entity?.isValid()) return
                 entity.teleport(getBackpackFollowLocation(player))
                 system.runTimeout(() => {
                     tick()
                 }, 2)
             } else {
+                if (!entity?.isValid()) return
                 diagBackpack(`backpackTick: portal nearby, saving backpack type=${entity.typeId}, id=${entity.getDynamicProperty("backpack_id") ?? "missing"}, player=${player.id}`)
                 saveBackpack(entity, "portal-nearby")
             }
-        } else if (entity?.isValid()) {
+        } else {
+            if (!entity?.isValid()) return
             diagBackpack(`backpackTick: player invalid/missing, saving backpack type=${entity.typeId}, id=${entity.getDynamicProperty("backpack_id") ?? "missing"}`)
             saveBackpack(entity, "player-invalid")
         }
     }
 
-    diagBackpack(`backpackTick start: entity=${entity?.typeId}, entityValid=${validText(entity)}, id=${entity?.getDynamicProperty("backpack_id") ?? "missing"}, player=${player?.id ?? "missing"}, playerValid=${validText(player)}`)
+    const entityValid = entity?.isValid() === true
+    const playerValid = player?.isValid() === true
+    const entityType = entityValid ? entity.typeId : "missing"
+    const backpackId = entityValid ? entity.getDynamicProperty("backpack_id") ?? "missing" : "missing"
+    const playerId = playerValid ? player.id : "missing"
+    diagBackpack(`backpackTick start: entity=${entityType}, entityValid=${entityValid}, id=${backpackId}, player=${playerId}, playerValid=${playerValid}`)
     tick()
 }
 
