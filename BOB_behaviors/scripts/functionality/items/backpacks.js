@@ -1,4 +1,5 @@
 import { world, system, EntityInventoryComponent, DimensionTypes, BlockPermutation, BlockInventoryComponent, EquipmentSlot, EntityEquippableComponent } from "@minecraft/server";
+import { hasBackpackRecoveryAccess } from "./backpack_recovery_sessions.js";
 
 function warnBackpack(message) {
     console.warn(`[BOB Backpacks] ${message}`)
@@ -198,7 +199,7 @@ class block_Manager {
     }
 }
 
-const backpackIDs = [
+export const backpackIDs = [
     "better_on_bedrock:backpack",
     "better_on_bedrock:backpack_medium",
     "better_on_bedrock:backpack_large"
@@ -381,6 +382,7 @@ function quarantineDuplicateBackpacks(playerId, backpackId) {
  */
 function saveBackpack(entity, reason = "unspecified") {
     if (!entity?.isValid()) return false
+    if (entity.getDynamicProperty("backpack_quarantined") === true) return false
 
     const dim = entity.dimension
     const entityLoc = entity.location
@@ -890,7 +892,8 @@ function spawnEntityAnywhere(entityID, location, dimension) {
     return entity
 }
 
-const dimensions = DimensionTypes.getAll()
+export const backpackDimensions = DimensionTypes.getAll()
+const dimensions = backpackDimensions
 
 function generateRandomID(length) {
     const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
@@ -1015,7 +1018,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
     const ownerId = target.getDynamicProperty("playerID")
     const heldBackpackId = getHeldBackpackId(player)
     const quarantined = target.getDynamicProperty("backpack_quarantined") === true
-    const allowed = !quarantined && ownerId === player.id && typeof targetId == "string" && heldBackpackId === targetId
+    const normalAccess = !quarantined && ownerId === player.id && typeof targetId == "string" && heldBackpackId === targetId
+    const allowed = normalAccess || (quarantined && hasBackpackRecoveryAccess(target.id, player.id))
 
     diagBackpack(`interact before: player=${player.id}, target=${target.typeId}, targetId=${targetId ?? "missing"}, owner=${ownerId ?? "missing"}, heldBackpackId=${heldBackpackId ?? "none"}, allowed=${allowed}`)
 
