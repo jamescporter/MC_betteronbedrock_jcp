@@ -23,7 +23,7 @@
 				"default": "textures/entity/overworld/goblin_trader"
 			},
 			"geometry": {
-				"default": "geometry.trader"
+				"default": "geometry.better_on_bedrock.goblin_trader"
 			},
 			"render_controllers": [
 				"controller.render.default"
