@@ -1,7 +1,15 @@
 import { world, system, EntityInventoryComponent, DimensionTypes, BlockPermutation, BlockInventoryComponent, EquipmentSlot, EntityEquippableComponent } from "@minecraft/server";
 import { hasBackpackRecoveryAccess } from "./backpack_recovery_sessions.js";
 
+const BACKPACK_WARNING_COOLDOWN_TICKS = 1200
+const backpackWarningTicks = new Map()
+
 function warnBackpack(message) {
+    const currentTick = system.currentTick
+    const lastWarningTick = backpackWarningTicks.get(message)
+    if (lastWarningTick != undefined && currentTick - lastWarningTick < BACKPACK_WARNING_COOLDOWN_TICKS) return
+
+    backpackWarningTicks.set(message, currentTick)
     console.warn(`[BOB Backpacks] ${message}`)
 }
 
