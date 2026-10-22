@@ -1,1 +1,4 @@
 *.lnk
+
+# Local JetBrains / PyCharm project settings
+.idea/
